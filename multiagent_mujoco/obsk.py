@@ -144,7 +144,7 @@ def build_actions(agent_partitions, k_dict):
     pass
 
 def get_parts_and_edges(label, partitioning):
-    if label in ["half_cheetah", "HalfCheetah-v2"]:
+    if label in ["half_cheetah", "HalfCheetah-v4"]:
 
         # define Mujoco graph
         bthigh = Node("bthigh", -6, -6, 0)
@@ -176,7 +176,7 @@ def get_parts_and_edges(label, partitioning):
 
         return parts, edges, globals
 
-    elif label in ["Ant-v2"]:
+    elif label in ["Ant-v4"]:
 
         # define Mujoco graph
         torso = 1
@@ -230,7 +230,7 @@ def get_parts_and_edges(label, partitioning):
 
         return parts, edges, globals
 
-    elif label in ["Hopper-v2"]:
+    elif label in ["Hopper-v4"]:
 
         # define Mujoco-Graph
         thigh_joint = Node("thigh_joint", -3, -3, 0,
@@ -259,7 +259,7 @@ def get_parts_and_edges(label, partitioning):
 
         return parts, edges, globals
 
-    elif label in ["Humanoid-v2", "HumanoidStandup-v2"]:
+    elif label in ["Humanoid-v4", "HumanoidStandup-v4"]:
 
         # define Mujoco-Graph
         abdomen_y = Node("abdomen_y", -16, -16, 0) # act ordering bug in env -- double check!
@@ -310,7 +310,7 @@ def get_parts_and_edges(label, partitioning):
 
         return parts, edges, globals
 
-    elif label in ["Reacher-v2"]:
+    elif label in ["Reacher-v4"]:
 
         # define Mujoco-Graph
         body0 = 1
@@ -344,7 +344,7 @@ def get_parts_and_edges(label, partitioning):
 
         return parts, edges, globals
 
-    elif label in ["Swimmer-v2"]:
+    elif label in ["Swimmer-v4"]:
 
         # define Mujoco-Graph
         joint0 = Node("rot2", -2, -2, 0) # TODO: double-check ids
@@ -363,7 +363,7 @@ def get_parts_and_edges(label, partitioning):
 
         return parts, edges, globals
 
-    elif label in ["Walker2d-v2"]:
+    elif label in ["Walker2d-v4"]:
 
         # define Mujoco-Graph
         thigh_joint = Node("thigh_joint", -6, -6, 0)

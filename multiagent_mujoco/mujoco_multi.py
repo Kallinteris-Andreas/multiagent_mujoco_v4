@@ -30,7 +30,7 @@ class MujocoMulti(MultiAgentEnv):
 
     def __init__(self, batch_size=None, **kwargs):
         super().__init__(batch_size, **kwargs)
-        self.scenario = kwargs["env_args"]["scenario"]  # e.g. Ant-v2
+        self.scenario = kwargs["env_args"]["scenario"]  # e.g. Ant-v4
         self.agent_conf = kwargs["env_args"]["agent_conf"]  # e.g. '2x3'
 
         self.agent_partitions, self.mujoco_edges, self.mujoco_globals = get_parts_and_edges(self.scenario,
@@ -46,11 +46,11 @@ class MujocoMulti(MultiAgentEnv):
         if self.agent_obsk is not None:
             self.k_categories_label = kwargs["env_args"].get("k_categories")
             if self.k_categories_label is None:
-                if self.scenario in ["Ant-v2", "manyagent_ant"]:
+                if self.scenario in ["Ant-v4", "manyagent_ant"]:
                     self.k_categories_label = "qpos,qvel,cfrc_ext|qpos"
                 elif self.scenario in ["Humanoid-v2", "HumanoidStandup-v2"]:
                     self.k_categories_label = "qpos,qvel,cfrc_ext,cvel,cinert,qfrc_actuator|qpos"
-                elif self.scenario in ["Reacher-v2"]:
+                elif self.scenario in ["Reacher-v4"]:
                     self.k_categories_label = "qpos,qvel,fingertip_dist|qpos"
                 elif self.scenario in ["coupled_half_cheetah"]:
                     self.k_categories_label = "qpos,qvel,ten_J,ten_length,ten_velocity|"
