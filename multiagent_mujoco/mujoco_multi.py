@@ -1,7 +1,7 @@
 from functools import partial
-import gym
-from gym.spaces import Box
-from gym.wrappers import TimeLimit
+import gymnasium as gym
+from gymnasium.spaces import Box
+from gymnasium.wrappers import TimeLimit
 import numpy as np
 
 from .multiagentenv import MultiAgentEnv
