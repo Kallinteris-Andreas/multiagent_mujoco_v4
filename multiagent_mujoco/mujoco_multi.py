@@ -74,8 +74,8 @@ class MujocoMulti(MultiAgentEnv):
         # load scenario from script
         self.episode_limit = self.args.episode_limit
 
-        self.env_version = kwargs["env_args"].get("env_version", 2)
-        if self.env_version == 2:
+        self.env_version = kwargs["env_args"].get("env_version", 4)
+        if self.env_version == 4:
             try:
                 self.wrapped_env = NormalizedActions(gym.make(self.scenario))
             except gym.error.Error:  # env not in gym
