@@ -51,7 +51,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
             if self.k_categories_label is None:
                 if self.scenario in ["Ant-v4", "manyagent_ant"]:
                     self.k_categories_label = "qpos,qvel,cfrc_ext|qpos"
-                elif self.scenario in ["Humanoid-v2", "HumanoidStandup-v2"]:
+                elif self.scenario in ["Humanoid-v4", "HumanoidStandup-v4"]:
                     self.k_categories_label = "qpos,qvel,cfrc_ext,cvel,cinert,qfrc_actuator|qpos"
                 elif self.scenario in ["Reacher-v4"]:
                     self.k_categories_label = "qpos,qvel,fingertip_dist|qpos"
