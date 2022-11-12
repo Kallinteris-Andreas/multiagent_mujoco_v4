@@ -2,3 +2,6 @@
 .DS_Store
 *.pyc
 __pycache__/
+
+build/
+MAMujoco.egg-info/
