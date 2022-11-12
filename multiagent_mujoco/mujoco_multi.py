@@ -35,7 +35,11 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         self.agent_partitions, self.mujoco_edges, self.mujoco_globals = get_parts_and_edges(self.scenario,
                                                                                              self.agent_conf)
 
-        self.n_agents = len(self.agent_partitions)
+        self.num_agents = len(self.agent_partitions)
+        self.agent = range(num_agents)
+        self.possible_agents = agents
+        self.max_num_agents = num_agents
+
         self.n_actions = max([len(l) for l in self.agent_partitions])
         self.obs_add_global_pos = kwargs["env_args"].get("obs_add_global_pos", False)
 
@@ -68,7 +72,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                                                 self.agent_partitions,
                                                 self.mujoco_edges,
                                                 k=self.agent_obsk,
-                                                kagents=False,) for agent_id in range(self.n_agents)]
+                                                kagents=False,) for agent_id in range(self.num_agents)]
 
         # load scenario from script
         self.episode_limit = 1000
@@ -96,18 +100,17 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         self.obs_size = self.get_obs_size()
 
         # COMPATIBILITY
-        self.n = self.n_agents
-        self.observation_space = [Box(low=np.array([-10]*self.n_agents), high=np.array([10]*self.n_agents)) for _ in range(self.n_agents)]
+        self.n = self.num_agents
+        self.observation_space = [Box(low=np.array([-10]*self.num_agents), high=np.array([10]*self.num_agents)) for _ in range(self.num_agents)]
 
         acdims = [len(ap) for ap in self.agent_partitions]
         self.action_space = tuple([Box(self.env.action_space.low[sum(acdims[:a]):sum(acdims[:a+1])],
-                                       self.env.action_space.high[sum(acdims[:a]):sum(acdims[:a+1])]) for a in range(self.n_agents)])
+                                       self.env.action_space.high[sum(acdims[:a]):sum(acdims[:a+1])]) for a in range(self.num_agents)])
         pass
 
     def step(self, actions):
-
         # we need to map actions back into MuJoCo action space
-        env_actions = np.zeros((sum([self.action_space[i].low.shape[0] for i in range(self.n_agents)]),)) + np.nan
+        env_actions = np.zeros((sum([self.action_space[i].low.shape[0] for i in range(self.num_agents)]),)) + np.nan
         for a, partition in enumerate(self.agent_partitions):
             for i, body_part in enumerate(partition):
                 if env_actions[body_part.act_ids] == env_actions[body_part.act_ids]:
@@ -134,7 +137,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     def get_obs(self):
         """ Returns all agent observat3ions in a list """
         obs_n = []
-        for a in range(self.n_agents):
+        for a in range(self.num_agents):
             obs_n.append(self.get_obs_agent(a))
         return obs_n
 
@@ -154,7 +157,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         if self.agent_obsk is None:
             return self.get_obs_agent(0).size
         else:
-            return max([len(self.get_obs_agent(agent_id)) for agent_id in range(self.n_agents)])
+            return max([len(self.get_obs_agent(agent_id)) for agent_id in range(self.num_agents)])
 
 
     def get_state(self, team=None):
@@ -166,7 +169,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         return len(self.get_state())
 
     def get_avail_actions(self): # all actions are always available
-        return np.ones(shape=(self.n_agents, self.n_actions,))
+        return np.ones(shape=(self.num_agents, self.n_actions,))
 
     def get_avail_agent_actions(self, agent_id):
         """ Returns the available actions for agent_id """
@@ -204,7 +207,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         env_info = {"state_shape": self.get_state_size(),
                     "obs_shape": self.get_obs_size(),
                     "n_actions": self.get_total_actions(),
-                    "n_agents": self.n_agents,
+                    "n_agents": self.num_agents,
                     "episode_limit": self.episode_limit,
                     "action_spaces": self.action_space,
                     "actions_dtype": np.float32,
