@@ -2,6 +2,7 @@ from functools import partial
 import gymnasium as gym
 from gymnasium.spaces import Box
 from gymnasium.wrappers import TimeLimit
+import pettingzoo
 import numpy as np
 
 from .multiagentenv import MultiAgentEnv
@@ -26,10 +27,8 @@ class NormalizedActions(gym.ActionWrapper):
         return action
 
 
-class MujocoMulti(MultiAgentEnv):
-
+class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     def __init__(self, batch_size=None, **kwargs):
-        super().__init__(batch_size, **kwargs)
         self.scenario = kwargs["env_args"]["scenario"]  # e.g. Ant-v4
         self.agent_conf = kwargs["env_args"]["agent_conf"]  # e.g. '2x3'
 
@@ -72,7 +71,7 @@ class MujocoMulti(MultiAgentEnv):
                                                 kagents=False,) for agent_id in range(self.n_agents)]
 
         # load scenario from script
-        self.episode_limit = self.args.episode_limit
+        self.episode_limit = 1000
 
         self.env_version = kwargs["env_args"].get("env_version", 4)
         if self.env_version == 4:

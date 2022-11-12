@@ -39,11 +39,12 @@ setup(
       ],
       extras_require=extras_deps,
       install_requires=[
-            "numpy>=1.24.5",
             "gymnasium==0.26.2",
             "mujoco>=2.2.0",
+            #"Pettingzoo>=1.22"
             "scipy>=1.9.0",
             #"Jinja2>=3.0.3",
+            #"numpy>=1.24.5",
             #"glfw>=2.5.1",
             #"Cython>=0.29.28"
       ],
