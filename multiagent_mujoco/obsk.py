@@ -100,10 +100,10 @@ def build_obs(env, k_dict, k_categories, global_dict, global_categories, vec_len
                     obs_lst.extend(items if isinstance(items, list) else [items])
                 else:
                     if c in ["qvel","qpos"]: # this is a "joint position/velocity" item
-                        items = getattr(env.sim.data, c)[getattr(_t, "{}_ids".format(c))]
+                        items = getattr(env.unwrapped.data, c)[getattr(_t, "{}_ids".format(c))]
                         obs_lst.extend(items if isinstance(items, list) else [items])
                     elif c in ["qfrc_actuator"]: # this is a "vel position" item
-                        items = getattr(env.sim.data, c)[getattr(_t, "{}_ids".format("qvel"))]
+                        items = getattr(env.unwrapped.data, c)[getattr(_t, "{}_ids".format("qvel"))]
                         obs_lst.extend(items if isinstance(items, list) else [items])
                     elif c in ["cvel", "cinert", "cfrc_ext"]:  # this is a "body position" item
                         if _t.bodies is not None:
@@ -111,7 +111,7 @@ def build_obs(env, k_dict, k_categories, global_dict, global_categories, vec_len
                                 if c not in body_set_dict:
                                     body_set_dict[c] = set()
                                 if b not in body_set_dict[c]:
-                                    items = getattr(env.sim.data, c)[b].tolist()
+                                    items = getattr(env.unwrapped.data, c)[b].tolist()
                                     items = getattr(_t, "body_fn", lambda _id,x:x)(b, items)
                                     obs_lst.extend(items if isinstance(items, list) else [items])
                                     body_set_dict[c].add(b)
@@ -121,14 +121,14 @@ def build_obs(env, k_dict, k_categories, global_dict, global_categories, vec_len
     for c in global_categories:
         if c in ["qvel", "qpos"]:  # this is a "joint position" item
             for j in global_dict.get("joints", []):
-                items = getattr(env.sim.data, c)[getattr(j, "{}_ids".format(c))]
+                items = getattr(env.unwrapped.data, c)[getattr(j, "{}_ids".format(c))]
                 obs_lst.extend(items if isinstance(items, list) else [items])
         else:
             for b in global_dict.get("bodies", []):
                 if c not in body_set_dict:
                     body_set_dict[c] = set()
                 if b not in body_set_dict[c]:
-                    obs_lst.extend(getattr(env.sim.data, c)[b].tolist())
+                    obs_lst.extend(getattr(env.unwrapped.data, c)[b].tolist())
                     body_set_dict[c].add(b)
 
     if vec_len is not None:
@@ -209,9 +209,9 @@ def get_parts_and_edges(label, partitioning):
                  HyperEdge(hip4, hip1, hip2, hip3),
                  ]
 
-        free_joint = Node("free", 0, 0, -1, extra_obs={"qpos": lambda env: env.sim.data.qpos[:7],
-                                                       "qvel": lambda env: env.sim.data.qvel[:6],
-                                                       "cfrc_ext": lambda env: np.clip(env.sim.data.cfrc_ext[0:1], -1, 1)})
+        free_joint = Node("free", 0, 0, -1, extra_obs={"qpos": lambda env: env.unwrapped.data.qpos[:7],
+                                                       "qvel": lambda env: env.unwrapped.data.qvel[:6],
+                                                       "cfrc_ext": lambda env: np.clip(env.unwrapped.data.cfrc_ext[0:1], -1, 1)})
         globals = {"joints": [free_joint]}
 
         if partitioning == "2x4": # neighbouring legs together
@@ -234,19 +234,19 @@ def get_parts_and_edges(label, partitioning):
 
         # define Mujoco-Graph
         thigh_joint = Node("thigh_joint", -3, -3, 0,
-                           extra_obs={"qvel": lambda env: np.clip(np.array([env.sim.data.qvel[-3]]), -10, 10)})
+                           extra_obs={"qvel": lambda env: np.clip(np.array([env.unwrapped.data.qvel[-3]]), -10, 10)})
         leg_joint = Node("leg_joint", -2, -2, 1,
-                         extra_obs={"qvel": lambda env: np.clip(np.array([env.sim.data.qvel[-2]]), -10, 10)})
+                         extra_obs={"qvel": lambda env: np.clip(np.array([env.unwrapped.data.qvel[-2]]), -10, 10)})
         foot_joint = Node("foot_joint", -1, -1, 2,
-                          extra_obs={"qvel": lambda env: np.clip(np.array([env.sim.data.qvel[-1]]), -10, 10)})
+                          extra_obs={"qvel": lambda env: np.clip(np.array([env.unwrapped.data.qvel[-1]]), -10, 10)})
 
         edges = [HyperEdge(foot_joint, leg_joint),
                  HyperEdge(leg_joint, thigh_joint)]
 
         root_x = Node("root_x", 0, 0, -1, extra_obs={"qpos": lambda env: np.array([]),
-                                                     "qvel": lambda env: np.clip(np.array([env.sim.data.qvel[1]]), -10, 10)})
-        root_z = Node("root_z", 1, 1, -1, extra_obs={"qvel": lambda env: np.clip(np.array([env.sim.data.qvel[1]]), -10, 10)})
-        root_y = Node("root_y", 2, 2, -1, extra_obs={"qvel": lambda env: np.clip(np.array([env.sim.data.qvel[2]]), -10, 10)})
+                                                     "qvel": lambda env: np.clip(np.array([env.unwrapped.data.qvel[1]]), -10, 10)})
+        root_z = Node("root_z", 1, 1, -1, extra_obs={"qvel": lambda env: np.clip(np.array([env.unwrapped.data.qvel[1]]), -10, 10)})
+        root_y = Node("root_y", 2, 2, -1, extra_obs={"qvel": lambda env: np.clip(np.array([env.unwrapped.data.qvel[2]]), -10, 10)})
         globals = {"joints":[root_x, root_y, root_z]}
 
         if partitioning == "3x1":
@@ -318,13 +318,13 @@ def get_parts_and_edges(label, partitioning):
         fingertip = 3
         joint0 = Node("joint0", -4, -4, 0,
                       bodies=[body0, body1],
-                      extra_obs={"qpos":(lambda env:np.array([np.sin(env.sim.data.qpos[-4]),
-                                                              np.cos(env.sim.data.qpos[-4])]))})
+                      extra_obs={"qpos":(lambda env:np.array([np.sin(env.unwrapped.data.qpos[-4]),
+                                                              np.cos(env.unwrapped.data.qpos[-4])]))})
         joint1 = Node("joint1", -3, -3, 1,
                       bodies=[body1, fingertip],
                       extra_obs={"fingertip_dist":(lambda env:env.get_body_com("fingertip") - env.get_body_com("target")),
-                                 "qpos":(lambda env:np.array([np.sin(env.sim.data.qpos[-3]),
-                                                              np.cos(env.sim.data.qpos[-3])]))})
+                                 "qpos":(lambda env:np.array([np.sin(env.unwrapped.data.qpos[-3]),
+                                                              np.cos(env.unwrapped.data.qpos[-3])]))})
         edges = [HyperEdge(joint0, joint1)]
 
         worldbody = 0
@@ -399,9 +399,9 @@ def get_parts_and_edges(label, partitioning):
 
         bthigh = Node("bthigh", -6, -6, 0,
                      tendons=[tendon],
-                     extra_obs = {"ten_J": lambda env: env.sim.data.ten_J[tendon],
-                                  "ten_length": lambda env: env.sim.data.ten_length,
-                                  "ten_velocity": lambda env: env.sim.data.ten_velocity})
+                     extra_obs = {"ten_J": lambda env: env.unwrapped.data.ten_J[tendon],
+                                  "ten_length": lambda env: env.unwrapped.data.ten_length,
+                                  "ten_velocity": lambda env: env.unwrapped.data.ten_velocity})
         bshin = Node("bshin", -5, -5, 1)
         bfoot = Node("bfoot", -4, -4, 2)
         fthigh = Node("fthigh", -3, -3, 3)
@@ -410,9 +410,9 @@ def get_parts_and_edges(label, partitioning):
 
         bthigh2 = Node("bthigh2", -6, -6, 0,
                       tendons=[tendon],
-                      extra_obs={"ten_J": lambda env: env.sim.data.ten_J[tendon],
-                                 "ten_length": lambda env: env.sim.data.ten_length,
-                                 "ten_velocity": lambda env: env.sim.data.ten_velocity})
+                      extra_obs={"ten_J": lambda env: env.unwrapped.data.ten_J[tendon],
+                                 "ten_length": lambda env: env.unwrapped.data.ten_length,
+                                 "ten_velocity": lambda env: env.unwrapped.data.ten_velocity})
         bshin2 = Node("bshin2", -5, -5, 1)
         bfoot2 = Node("bfoot2", -4, -4, 2)
         fthigh2 = Node("fthigh2", -3, -3, 3)
@@ -530,9 +530,9 @@ def get_parts_and_edges(label, partitioning):
                            hip2n,
                            ankle2n])
 
-        free_joint = Node("free", 0, 0, -1, extra_obs={"qpos": lambda env: env.sim.data.qpos[:7],
-                                                       "qvel": lambda env: env.sim.data.qvel[:6],
-                                                       "cfrc_ext": lambda env: np.clip(env.sim.data.cfrc_ext[0:1], -1, 1)})
+        free_joint = Node("free", 0, 0, -1, extra_obs={"qpos": lambda env: env.unwrapped.data.qpos[:7],
+                                                       "qvel": lambda env: env.unwrapped.data.qvel[:6],
+                                                       "cfrc_ext": lambda env: np.clip(env.unwrapped.data.cfrc_ext[0:1], -1, 1)})
         globals = {"joints": [free_joint]}
 
         parts =  [[x for sublist in joints[i * n_segs_per_agents:(i + 1) * n_segs_per_agents] for x in sublist] for i in range(n_agents)]

@@ -141,7 +141,7 @@ class MujocoMulti(MultiAgentEnv):
 
     def get_obs_agent(self, agent_id):
         if self.agent_obsk is None:
-            return self.env._get_obs()
+            return self.env.unwrapped._get_obs()
         else:
             return build_obs(self.env,
                                   self.k_dicts[agent_id],
@@ -160,7 +160,7 @@ class MujocoMulti(MultiAgentEnv):
 
     def get_state(self, team=None):
         # TODO: May want global states for different teams (so cannot see what the other team is communicating e.g.)
-        return self.env._get_obs()
+        return self.env.unwrapped._get_obs()
 
     def get_state_size(self):
         """ Returns the shape of the state"""
