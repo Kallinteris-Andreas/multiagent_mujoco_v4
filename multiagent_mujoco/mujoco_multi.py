@@ -100,15 +100,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         self.timelimit_env.reset()
         self.obs_size = self.get_obs_size()
 
-
-        # COMPATIBILITY
-        acdims = [len(ap) for ap in self.agent_partitions]
-        self.action_space = tuple([Box(self.env.action_space.low[sum(acdims[:a]):sum(acdims[:a+1])],
-                                       self.env.action_space.high[sum(acdims[:a]):sum(acdims[:a+1])]) for a in range(self.num_agents)])
-
-
         #Petting ZOO API
-
         self.observation_spaces, self.action_spaces = {}, {}
         for a, partition in enumerate(self.agent_partitions):
             self.action_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(partition),), dtype=numpy.float32) #TODO LH
@@ -118,7 +110,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
     def step(self, actions):
         # we need to map actions back into MuJoCo action space
-        env_actions = np.zeros((sum([self.action_space[i].low.shape[0] for i in range(self.num_agents)]),)) + np.nan
+        env_actions = np.zeros((self.env.action_space.shape[0],)) + np.nan
         for a, partition in enumerate(self.agent_partitions):
             for i, body_part in enumerate(partition):
                 if env_actions[body_part.act_ids] == env_actions[body_part.act_ids]:
