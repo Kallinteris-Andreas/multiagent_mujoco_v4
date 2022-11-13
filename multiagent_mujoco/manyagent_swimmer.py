@@ -5,8 +5,7 @@ import os
 from jinja2 import Template
 
 class ManyAgentSwimmerEnv(mujoco_env.MujocoEnv, utils.EzPickle):
-    def __init__(self, **kwargs):
-        agent_conf = kwargs.get("agent_conf")
+    def __init__(self, agent_conf):
         n_agents = int(agent_conf.split("x")[0])
         n_segs_per_agents = int(agent_conf.split("x")[1])
         n_segs = n_agents * n_segs_per_agents

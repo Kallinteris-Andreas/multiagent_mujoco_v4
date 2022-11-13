@@ -5,7 +5,7 @@ import os
 
 
 class CoupledHalfCheetah(mujoco_env.MujocoEnv, utils.EzPickle):
-    def __init__(self, **kwargs):
+    def __init__(self, agent_conf):
         mujoco_env.MujocoEnv.__init__(self, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'coupled_half_cheetah.xml'), 5)
         utils.EzPickle.__init__(self)
 

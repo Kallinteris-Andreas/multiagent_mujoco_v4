@@ -392,7 +392,7 @@ def get_parts_and_edges(label, partitioning):
 
         return parts, edges, globals
 
-    elif label in ["coupled_half_cheetah"]:
+    elif label in ["coupled_half_cheetah-v4"]:
 
         # define Mujoco graph
         tendon = 0
@@ -448,7 +448,7 @@ def get_parts_and_edges(label, partitioning):
 
         return parts, edges, globals
 
-    elif label in ["manyagent_swimmer"]:
+    elif label in ["manyagent_swimmer-v4"]:
 
         # Generate asset file
         try:
@@ -468,7 +468,7 @@ def get_parts_and_edges(label, partitioning):
         parts = [tuple(joints[i * n_segs_per_agents:(i + 1) * n_segs_per_agents]) for i in range(n_agents)]
         return parts, edges, globals
 
-    elif label in ["manyagent_ant"]: # TODO: FIX!
+    elif label in ["manyagent_ant-v4"]: # TODO: FIX!
 
         # Generate asset file
         try:

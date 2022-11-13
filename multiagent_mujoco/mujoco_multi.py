@@ -3,6 +3,7 @@ import pettingzoo
 import numpy
 
 from .obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
+#from obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
 
 
 class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
@@ -46,16 +47,18 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         try:
             self.env = (gymnasium.make(self.scenario, render_mode=render_mode))
         except gymnasium.error.Error:  # env not in gymnasium
-            assert False, 'not tested'
-            if self.scenario in ["manyagent_ant"]:
+            assert False, 'non Gymnasium Enviroment have not been implamented'
+            if self.scenario in ["manyagent_ant-v4"]:
                 from .manyagent_ant import ManyAgentAntEnv as this_env
-            elif self.scenario in ["manyagent_swimmer"]:
+            elif self.scenario in ["manyagent_swimmer-v4"]:
                 from .manyagent_swimmer import ManyAgentSwimmerEnv as this_env
-            elif self.scenario in ["coupled_half_cheetah"]:
+            elif self.scenario in ["coupled_half_cheetah-v4"]:
                 from .coupled_half_cheetah import CoupledHalfCheetah as this_env
             else:
                 raise NotImplementedError('Custom env not implemented!')
-            self.env = (this_env(**kwargs["env_args"]))#TODO add compatability
+            env_args = {"scenario": self.scenario, "agent_conf": agent_conf, "agent_obsk": agent_conf}
+            self.env = (agent_conf)#TODO add compatability
+            #self.env = (this_env(**kwargs["env_args"]))#TODO add compatability
 
         #Petting ZOO API
         self.observation_spaces, self.action_spaces = {}, {}
@@ -137,62 +140,3 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
     def seed(self, seed: int = None):
         raise NotImplementedError
-
-
-from pettingzoo.test import parallel_api_test  # noqa: E402
-
-if __name__ == "__main__":
-    for ok in [None, 0, 1]:
-        scenario="Ant"
-        agent_conf="2x4"
-        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
-
-        scenario="Ant"
-        agent_conf="2x4d"
-        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
-
-        scenario="Ant"
-        agent_conf="4x2"
-        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
-
-        scenario="HalfCheetah"
-        agent_conf="2x3"
-        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
-
-        scenario="HalfCheetah"
-        agent_conf="6x1"
-        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
-
-        scenario="Hopper"
-        agent_conf="3x1"
-        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
-
-        scenario="Humanoid"
-        agent_conf="9|8"
-        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
-
-        scenario="HumanoidStandup"
-        agent_conf="9|8"
-        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
-
-        scenario="Reacher"
-        agent_conf="2x1"
-        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
-
-        scenario="Swimmer"
-        agent_conf="2x1"
-        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
-
-        scenario="Walker2d"
-        agent_conf="2x3"
-        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
-
-        #scenario="manyagent_swimmer"
-        #agent_conf="10x2"
-        #parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
-
-        #scenario="manyagent_ant"
-        #agent_conf="2x3"
-
-        #scenario="coupled_half_cheetah"
-        #agent_conf="1p1"
