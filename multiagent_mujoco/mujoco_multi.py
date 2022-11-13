@@ -134,8 +134,8 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         else:
             return self._get_obs(), None
 
-    def render(self, **kwargs):
-        return self.env.render(**kwargs)
+    def render(self):
+        return self.env.render()
 
     def close(self):
         self.env.close()
