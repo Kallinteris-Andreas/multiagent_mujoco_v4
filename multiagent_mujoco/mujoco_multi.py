@@ -11,37 +11,33 @@ from .obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
 
 
 class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
-    def __init__(self, **kwargs):
-        self.scenario = kwargs["env_args"]["scenario"]  # e.g. Ant-v4
-        self.agent_conf = kwargs["env_args"]["agent_conf"]  # e.g. '2x3'
+    def __init__(self, scenario: str, agent_conf: str, agent_obsk: int):
+        self.scenario = scenario + '-v4'
 
-        self.agent_partitions, self.mujoco_edges, self.mujoco_globals = get_parts_and_edges(self.scenario, self.agent_conf)
+        self.agent_partitions, self.mujoco_edges, self.mujoco_globals = get_parts_and_edges(self.scenario, agent_conf)
 
         #Petting Zoo API
         self.possible_agents = [str(agent_id) for agent_id in range(len(self.agent_partitions))]
         self.agents = self.possible_agents
 
-        self.agent_obsk = kwargs["env_args"].get("agent_obsk", None) # if None, fully observable else k>=0 implies observe nearest k agents or joints
+        self.agent_obsk = agent_obsk # if None, fully observable else k>=0 implies observe nearest k agents or joints
 
         if self.agent_obsk is not None:
-            self.k_categories_label = kwargs["env_args"].get("k_categories")
-            if self.k_categories_label is None:
-                if self.scenario in ["Ant-v4", "manyagent_ant"]:
-                    self.k_categories_label = "qpos,qvel,cfrc_ext|qpos"
-                elif self.scenario in ["Humanoid-v4", "HumanoidStandup-v4"]:
-                    self.k_categories_label = "qpos,qvel,cfrc_ext,cvel,cinert,qfrc_actuator|qpos"
-                elif self.scenario in ["Reacher-v4"]:
-                    self.k_categories_label = "qpos,qvel,fingertip_dist|qpos"
-                elif self.scenario in ["coupled_half_cheetah"]:
-                    self.k_categories_label = "qpos,qvel,ten_J,ten_length,ten_velocity|"
-                else:
-                    self.k_categories_label = "qpos,qvel|qpos"
+            if self.scenario in ["Ant-v4", "manyagent_ant"]:
+                self.k_categories_label = "qpos,qvel,cfrc_ext|qpos"
+            elif self.scenario in ["Humanoid-v4", "HumanoidStandup-v4"]:
+                self.k_categories_label = "qpos,qvel,cfrc_ext,cvel,cinert,qfrc_actuator|qpos"
+            elif self.scenario in ["Reacher-v4"]:
+                self.k_categories_label = "qpos,qvel,fingertip_dist|qpos"
+            elif self.scenario in ["coupled_half_cheetah"]:
+                self.k_categories_label = "qpos,qvel,ten_J,ten_length,ten_velocity|"
+            else:
+                self.k_categories_label = "qpos,qvel|qpos"
 
             k_split = self.k_categories_label.split("|")
             self.k_categories = [k_split[k if k < len(k_split) else -1].split(",") for k in range(self.agent_obsk+1)]
 
-            self.global_categories_label = kwargs["env_args"].get("global_categories")
-            self.global_categories = self.global_categories_label.split(",") if self.global_categories_label is not None else []
+            self.global_categories = []
 
 
         if self.agent_obsk is not None:
