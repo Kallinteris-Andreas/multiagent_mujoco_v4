@@ -109,14 +109,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         pass
 
     def step(self, actions: dict[str, numpy.float32]):
-        # we need to map actions back into MuJoCo action space
-        env_actions = np.zeros((self.env.action_space.shape[0],)) + np.nan
-        for a, partition in enumerate(self.agent_partitions):
-            for i, body_part in enumerate(partition):
-                assert env_actions[body_part.act_ids] != env_actions[body_part.act_ids], "FATAL: At least one env action is doubly defined!"
-                env_actions[body_part.act_ids] = actions[str(a)][i]
-        
-        assert not np.isnan(env_actions).any(), "FATAL: At least one env action is undefined!"
+        env_actions = self.map_actions(actions)
 
         obs_n, reward_n, is_terminal_n, is_truncated_n, info_n = self.wrapped_env.step(env_actions)
 
@@ -127,6 +120,17 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         #TODO convert returns to dictionaries
         return obs_n, reward_n, is_terminal_n, is_truncated_n, info
     
+        # Maps actions back into MuJoCo action space
+    def map_actions(self, actions: dict[str, numpy.float32]):
+        env_actions = np.zeros((self.env.action_space.shape[0],)) + np.nan
+        for agent_id, partition in enumerate(self.agent_partitions):
+            for i, body_part in enumerate(partition):
+                #assert env_actions[body_part.act_ids] != env_actions[body_part.act_ids], "FATAL: At least one env action is doubly defined!"
+                env_actions[body_part.act_ids] = actions[str(agent_id)][i]
+        
+        assert not np.isnan(env_actions).any(), "FATAL: At least one env action is undefined!"
+        return env_actions
+
     def observation_space(self, agent: str):
         return self.observation_spaces[int(str)]
 
