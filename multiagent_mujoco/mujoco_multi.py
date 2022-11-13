@@ -146,3 +146,13 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
     def seed(self, seed: int = None):
         raise NotImplementedError
+
+
+from pettingzoo.test import parallel_api_test  # noqa: E402
+
+if __name__ == "__main__":
+    #env_args = {"scenario": "Swimmer-v4", "agent_conf": "2x1", "agent_obsk": 1}
+    #breakpoint()
+    test_env = MujocoMulti(scenario='Swimmer', agent_conf='2x1', agent_obsk=1)
+    parallel_api_test(test_env, num_cycles=1_000_000)
+    #pettingzoo.test.parallel_api_test(MujocoMulti(env_args), num_cycles=1_000_000)
