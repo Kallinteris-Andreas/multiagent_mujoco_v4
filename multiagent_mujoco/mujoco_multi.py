@@ -108,17 +108,15 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
         pass
 
-    def step(self, actions):
+    def step(self, actions: dict[str, numpy.float32]):
         # we need to map actions back into MuJoCo action space
         env_actions = np.zeros((self.env.action_space.shape[0],)) + np.nan
         for a, partition in enumerate(self.agent_partitions):
             for i, body_part in enumerate(partition):
-                if env_actions[body_part.act_ids] == env_actions[body_part.act_ids]:
-                    raise Exception("FATAL: At least one env action is doubly defined!")
-                env_actions[body_part.act_ids] = actions[a][i]
-
-        if np.isnan(env_actions).any():
-            raise Exception("FATAL: At least one env action is undefined!")
+                assert env_actions[body_part.act_ids] != env_actions[body_part.act_ids], "FATAL: At least one env action is doubly defined!"
+                env_actions[body_part.act_ids] = actions[str(a)][i]
+        
+        assert not np.isnan(env_actions).any(), "FATAL: At least one env action is undefined!"
 
         obs_n, reward_n, is_terminal_n, is_truncated_n, info_n = self.wrapped_env.step(env_actions)
 
