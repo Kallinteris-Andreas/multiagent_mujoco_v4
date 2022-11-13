@@ -141,11 +141,11 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         #TODO convert returns to dictionaries
         return obs_n, reward_n, is_terminal_n, is_truncated_n, info
     
-    def observation_space(self, agent):
-        return self.observation_spaces[agent]
+    def observation_space(self, agent: str):
+        return self.observation_spaces[int(str)]
 
-    def action_space(self, agent):
-        return self.action_spaces[agent]
+    def action_space(self, agent: str):
+        return self.action_spaces[int(str)]
     
     def state(self):
         return self.env.unwrapped._get_obs()
