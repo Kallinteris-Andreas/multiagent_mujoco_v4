@@ -197,7 +197,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         self.env.render(**kwargs)
 
     def close(self):
-        raise NotImplementedError
+        self.env.close()
 
     def seed(self, args):
         pass
