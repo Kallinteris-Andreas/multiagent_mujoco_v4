@@ -36,21 +36,15 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
         self.agent_partitions, self.mujoco_edges, self.mujoco_globals = get_parts_and_edges(self.scenario, self.agent_conf)
 
+        #Petting Zoo API
         self.possible_agents = range(len(self.agent_partitions))
         self.agents = self.possible_agents
-        
-
 
         self.n_actions = max([len(l) for l in self.agent_partitions])
         self.obs_add_global_pos = kwargs["env_args"].get("obs_add_global_pos", False)
 
         self.agent_obsk = kwargs["env_args"].get("agent_obsk", None) # if None, fully observable else k>=0 implies observe nearest k agents or joints
         self.agent_obsk_agents = kwargs["env_args"].get("agent_obsk_agents", False)  # observe full k nearest agents (True) or just single joints (False)
-
-        observation_spaces, action_spaces = {}, {}
-        for a, partition in enumerate(self.agent_partitions):
-            action_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(partition),), dtype=numpy.float32) #TODO LH
-            observation_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(self.get_obs_agent(a),), dtype=numpy.float32) #TODO LH
 
         if self.agent_obsk is not None:
             self.k_categories_label = kwargs["env_args"].get("k_categories")
@@ -114,6 +108,15 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         acdims = [len(ap) for ap in self.agent_partitions]
         self.action_space = tuple([Box(self.env.action_space.low[sum(acdims[:a]):sum(acdims[:a+1])],
                                        self.env.action_space.high[sum(acdims[:a]):sum(acdims[:a+1])]) for a in range(self.num_agents)])
+
+
+        #Petting ZOO API
+
+        observation_spaces, action_spaces = {}, {}
+        for a, partition in enumerate(self.agent_partitions):
+            action_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(partition),), dtype=numpy.float32) #TODO LH
+            observation_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(self.get_obs_agent(a)),), dtype=numpy.float32) #TODO LH
+
         pass
 
     def step(self, actions):
@@ -191,15 +194,14 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         pass
 
     #TODO REMOVE
-    def get_env_info(self):
-
-        env_info = {"state_shape": self.get_state_size(),
-                    "obs_shape": self.get_obs_size(),
-                    "n_actions": self.get_total_actions(),
-                    "n_agents": self.num_agents,
-                    "episode_limit": self.episode_limit,
-                    "action_spaces": self.action_space,
-                    "actions_dtype": np.float32,
-                    "normalise_actions": False
-                    }
-        return env_info
+    #def get_env_info(self):
+        #env_info = {"state_shape": len(self.state()),
+                    #"obs_shape": self.get_obs_size(),
+                    #"n_actions": self.get_total_actions(),
+                    #"n_agents": self.num_agents,
+                    #"episode_limit": self.episode_limit,
+                    #"action_spaces": self.action_space,
+                    #"actions_dtype": np.float32,
+                    #"normalise_actions": False
+                    #}
+        #return env_info
