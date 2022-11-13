@@ -22,11 +22,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         self.possible_agents = range(len(self.agent_partitions))
         self.agents = self.possible_agents
 
-        self.n_actions = max([len(l) for l in self.agent_partitions])
-        self.obs_add_global_pos = kwargs["env_args"].get("obs_add_global_pos", False)
-
         self.agent_obsk = kwargs["env_args"].get("agent_obsk", None) # if None, fully observable else k>=0 implies observe nearest k agents or joints
-        self.agent_obsk_agents = kwargs["env_args"].get("agent_obsk_agents", False)  # observe full k nearest agents (True) or just single joints (False)
 
         if self.agent_obsk is not None:
             self.k_categories_label = kwargs["env_args"].get("k_categories")
@@ -57,23 +53,19 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                                                 kagents=False,) for agent_id in range(self.num_agents)]
 
         # load scenario from script
-        self.env_version = kwargs["env_args"].get("env_version", 4)
-        if self.env_version == 4:
-            try:
-                self.env = (gym.make(self.scenario))
-            except gym.error.Error:  # env not in gym
-                assert False, 'not tested'
-                if self.scenario in ["manyagent_ant"]:
-                    from .manyagent_ant import ManyAgentAntEnv as this_env
-                elif self.scenario in ["manyagent_swimmer"]:
-                    from .manyagent_swimmer import ManyAgentSwimmerEnv as this_env
-                elif self.scenario in ["coupled_half_cheetah"]:
-                    from .coupled_half_cheetah import CoupledHalfCheetah as this_env
-                else:
-                    raise NotImplementedError('Custom env not implemented!')
-                self.env = (this_env(**kwargs["env_args"]))
-        else:
-            assert False,  "not implemented!"
+        try:
+            self.env = (gym.make(self.scenario))
+        except gym.error.Error:  # env not in gym
+            assert False, 'not tested'
+            if self.scenario in ["manyagent_ant"]:
+                from .manyagent_ant import ManyAgentAntEnv as this_env
+            elif self.scenario in ["manyagent_swimmer"]:
+                from .manyagent_swimmer import ManyAgentSwimmerEnv as this_env
+            elif self.scenario in ["coupled_half_cheetah"]:
+                from .coupled_half_cheetah import CoupledHalfCheetah as this_env
+            else:
+                raise NotImplementedError('Custom env not implemented!')
+            self.env = (this_env(**kwargs["env_args"]))
 
         #Petting ZOO API
         self.observation_spaces, self.action_spaces = {}, {}
