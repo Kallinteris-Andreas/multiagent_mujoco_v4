@@ -11,7 +11,7 @@ from .obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
 
 
 class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
-    def __init__(self, scenario: str, agent_conf: str, agent_obsk: int):
+    def __init__(self, scenario: str, agent_conf: str, agent_obsk: int, render_mode: int=None):
         self.scenario = scenario + '-v4'
 
         self.agent_partitions, self.mujoco_edges, self.mujoco_globals = get_parts_and_edges(self.scenario, agent_conf)
@@ -49,7 +49,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
         # load scenario from script
         try:
-            self.env = (gym.make(self.scenario))
+            self.env = (gym.make(self.scenario, render_mode=render_mode))
         except gym.error.Error:  # env not in gym
             assert False, 'not tested'
             if self.scenario in ["manyagent_ant"]:
@@ -60,7 +60,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                 from .coupled_half_cheetah import CoupledHalfCheetah as this_env
             else:
                 raise NotImplementedError('Custom env not implemented!')
-            self.env = (this_env(**kwargs["env_args"]))
+            self.env = (this_env(**kwargs["env_args"]))#TODO add compatability
 
         #Petting ZOO API
         self.observation_spaces, self.action_spaces = {}, {}
