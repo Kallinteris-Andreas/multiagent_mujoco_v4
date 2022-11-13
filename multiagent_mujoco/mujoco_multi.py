@@ -1,6 +1,5 @@
 import gymnasium
 import pettingzoo
-import numpy as np
 import numpy
 
 from .obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
@@ -84,13 +83,13 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     
     def _map_actions(self, actions: dict[str, numpy.float32]):
         'Maps actions back into MuJoCo action space'
-        env_actions = np.zeros((self.env.action_space.shape[0],)) + np.nan
+        env_actions = numpy.zeros((self.env.action_space.shape[0],)) + numpy.nan
         for agent_id, partition in enumerate(self.agent_partitions):
             for i, body_part in enumerate(partition):
                 assert numpy.isnan(env_actions[body_part.act_ids]), "FATAL: At least one env action is doubly defined!"
                 env_actions[body_part.act_ids] = actions[str(agent_id)][i]
         
-        assert not np.isnan(env_actions).any(), "FATAL: At least one env action is undefined!"
+        assert not numpy.isnan(env_actions).any(), "FATAL: At least one env action is undefined!"
         return env_actions
 
     def observation_space(self, agent: str):
