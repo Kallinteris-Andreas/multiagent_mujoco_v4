@@ -147,8 +147,57 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 from pettingzoo.test import parallel_api_test  # noqa: E402
 
 if __name__ == "__main__":
-    #env_args = {"scenario": "Swimmer-v4", "agent_conf": "2x1", "agent_obsk": 1}
-    #breakpoint()
-    test_env = MujocoMulti(scenario='Swimmer', agent_conf='2x1', agent_obsk=1)
-    parallel_api_test(test_env, num_cycles=1_000_000)
-    #pettingzoo.test.parallel_api_test(MujocoMulti(env_args), num_cycles=1_000_000)
+    for ok in [None, 0, 1]:
+        scenario="Ant"
+        agent_conf="2x4"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
+        scenario="Ant"
+        agent_conf="2x4d"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
+        scenario="Ant"
+        agent_conf="4x2"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
+        scenario="HalfCheetah"
+        agent_conf="2x3"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
+        scenario="HalfCheetah"
+        agent_conf="6x1"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
+        scenario="Hopper"
+        agent_conf="3x1"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
+        scenario="Humanoid"
+        agent_conf="9|8"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
+        scenario="HumanoidStandup"
+        agent_conf="9|8"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
+        scenario="Reacher"
+        agent_conf="2x1"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
+        scenario="Swimmer"
+        agent_conf="2x1"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
+        scenario="Walker2d"
+        agent_conf="2x3"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
+        #scenario="manyagent_swimmer"
+        #agent_conf="10x2"
+        #parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
+        #scenario="manyagent_ant"
+        #agent_conf="2x3"
+
+        #scenario="coupled_half_cheetah"
+        #agent_conf="1p1"
