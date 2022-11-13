@@ -177,25 +177,6 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
             return max([len(self.get_obs_agent(agent_id)) for agent_id in range(self.num_agents)])
 
 
-    def get_avail_actions(self): # all actions are always available
-        return np.ones(shape=(self.num_agents, self.n_actions,))
-
-    def get_avail_agent_actions(self, agent_id):
-        """ Returns the available actions for agent_id """
-        return np.ones(shape=(self.n_actions,))
-
-    def get_total_actions(self):
-        """ Returns the total number of actions an agent could ever take """
-        return self.n_actions # CAREFUL! - for continuous dims, this is action space dim rather
-        # return self.env.action_space.shape[0]
-
-    def get_stats(self):
-        return {}
-
-    # TODO: Temp hack
-    def get_agg_stats(self, stats):
-        return {}
-
     def reset(self, seed=None, return_info=False, options=None):
         """ Returns initial observations and states"""
         self.steps = 0
