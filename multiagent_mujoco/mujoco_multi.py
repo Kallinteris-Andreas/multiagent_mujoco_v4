@@ -75,8 +75,6 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                                                 kagents=False,) for agent_id in range(self.num_agents)]
 
         # load scenario from script
-        self.episode_limit = 1000
-
         self.env_version = kwargs["env_args"].get("env_version", 4)
         if self.env_version == 4:
             try:
@@ -91,11 +89,10 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                     from .coupled_half_cheetah import CoupledHalfCheetah as this_env
                 else:
                     raise NotImplementedError('Custom env not implemented!')
-                self.wrapped_env = NormalizedActions(TimeLimit(this_env(**kwargs["env_args"]), max_episode_steps=self.episode_limit))
+                self.wrapped_env = NormalizedActions(this_env(**kwargs["env_args"]))
         else:
             assert False,  "not implemented!"
         self.timelimit_env = self.wrapped_env.env
-        self.timelimit_env._max_episode_steps = self.episode_limit
         self.env = self.timelimit_env.env
         self.timelimit_env.reset()
         #self.obs_size = self.get_obs_size()
