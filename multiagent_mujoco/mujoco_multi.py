@@ -1,9 +1,11 @@
 from functools import partial
 import gymnasium as gym
+import gymnasium
 from gymnasium.spaces import Box
 from gymnasium.wrappers import TimeLimit
 import pettingzoo
 import numpy as np
+import numpy
 
 from .multiagentenv import MultiAgentEnv
 from .obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
@@ -34,11 +36,18 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
         self.agent_partitions, self.mujoco_edges, self.mujoco_globals = get_parts_and_edges(self.scenario,
                                                                                              self.agent_conf)
+        
 
-        self.num_agents = len(self.agent_partitions)
-        self.agent = range(num_agents)
-        self.possible_agents = agents
-        self.max_num_agents = num_agents
+        self.possible_agents = range(len(self.agent_partitions))
+        self.agents = self.possible_agents
+        
+        observation_spaces = {}
+        action_spaces = {}
+        for a, partition in enumerate(self.agent_partitions):
+            action_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(partition),), dtype=numpy.float32)
+
+
+
 
         self.n_actions = max([len(l) for l in self.agent_partitions])
         self.obs_add_global_pos = kwargs["env_args"].get("obs_add_global_pos", False)
@@ -82,6 +91,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
             try:
                 self.wrapped_env = NormalizedActions(gym.make(self.scenario))
             except gym.error.Error:  # env not in gym
+                assert False, 'not tested'
                 if self.scenario in ["manyagent_ant"]:
                     from .manyagent_ant import ManyAgentAntEnv as this_env
                 elif self.scenario in ["manyagent_swimmer"]:
@@ -98,6 +108,8 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         self.env = self.timelimit_env.env
         self.timelimit_env.reset()
         self.obs_size = self.get_obs_size()
+
+        breakpoint()
 
         # COMPATIBILITY
         self.n = self.num_agents
@@ -120,19 +132,24 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         if np.isnan(env_actions).any():
             raise Exception("FATAL: At least one env action is undefined!")
 
-        obs_n, reward_n, done_n, info_n = self.wrapped_env.step(env_actions)
+        obs_n, reward_n, is_terminal_n, is_truncated_n, info_n = self.wrapped_env.step(env_actions)
         self.steps += 1
 
         info = {}
         info.update(info_n)
 
-        if done_n:
-            if self.steps < self.episode_limit:
-                info["episode_limit"] = False   # the next state will be masked out
-            else:
-                info["episode_limit"] = True    # the next state will not be masked out
 
-        return reward_n, done_n, info
+        #TODO convert returns to dictionaries
+        return obs_n, reward_n, is_terminal_n, is_truncated_n, info
+    
+    def observation_space(self, agent):
+        return self.observation_spaces[agent]
+
+    def action_space(self, agent):
+        return self.action_spaces[agent]
+    
+    def state(self):
+        return wrapped_env.unwrapped._get_obs()
 
     def get_obs(self):
         """ Returns all agent observat3ions in a list """
@@ -187,10 +204,11 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     def get_agg_stats(self, stats):
         return {}
 
-    def reset(self, **kwargs):
+    def reset(self, seed=None, return_info=False, options=None):
         """ Returns initial observations and states"""
         self.steps = 0
-        self.timelimit_env.reset()
+        self.timelimit_env.reset(seed=seed)
+        #TODO return
         return self.get_obs()
 
     def render(self, **kwargs):
@@ -200,8 +218,10 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         self.env.close()
 
     def seed(self, args):
+        #TODO
         pass
 
+    #TODO REMOVE
     def get_env_info(self):
 
         env_info = {"state_shape": self.get_state_size(),
