@@ -121,7 +121,6 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
             raise Exception("FATAL: At least one env action is undefined!")
 
         obs_n, reward_n, is_terminal_n, is_truncated_n, info_n = self.wrapped_env.step(env_actions)
-        self.steps += 1
 
         info = {}
         info.update(info_n)
@@ -167,7 +166,6 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
     def reset(self, seed=None, return_info=False, options=None):
         """ Returns initial observations and states"""
-        self.steps = 0
         self.timelimit_env.reset(seed=seed)
         #TODO return
         return self.get_obs()
