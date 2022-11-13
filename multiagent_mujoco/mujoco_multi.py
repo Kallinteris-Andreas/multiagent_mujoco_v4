@@ -149,7 +149,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         return self.action_spaces[agent]
     
     def state(self):
-        return wrapped_env.unwrapped._get_obs()
+        return self.env.unwrapped._get_obs()
 
     def get_obs(self):
         """ Returns all agent observat3ions in a list """
