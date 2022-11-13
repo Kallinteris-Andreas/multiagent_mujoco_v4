@@ -98,27 +98,29 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         self.timelimit_env._max_episode_steps = self.episode_limit
         self.env = self.timelimit_env.env
         self.timelimit_env.reset()
-        self.obs_size = self.get_obs_size()
+        #self.obs_size = self.get_obs_size()
 
         #Petting ZOO API
         self.observation_spaces, self.action_spaces = {}, {}
         for a, partition in enumerate(self.agent_partitions):
             self.action_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(partition),), dtype=numpy.float32) #TODO LH
-            self.observation_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(self.get_obs_agent(a)),), dtype=numpy.float32) #TODO LH
+            self.observation_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(self._get_obs_agent(a)),), dtype=numpy.float32) #TODO LH
 
         pass
 
     def step(self, actions: dict[str, numpy.float32]):
         env_actions = self._map_actions(actions)
 
-        obs_n, reward_n, is_terminal_n, is_truncated_n, info_n = self.wrapped_env.step(env_actions)
+        _, reward_n, is_terminal_n, is_truncated_n, info_n = self.wrapped_env.step(env_actions)
+
+        observations = self._get_obs()
+
 
         info = {}
         info.update(info_n)
 
 
-        #TODO convert returns to dictionaries
-        return obs_n, reward_n, is_terminal_n, is_truncated_n, info
+        return observations , reward_n, is_terminal_n, is_truncated_n, info
     
     def _map_actions(self, actions: dict[str, numpy.float32]):
         'Maps actions back into MuJoCo action space'
@@ -140,14 +142,14 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     def state(self):
         return self.env.unwrapped._get_obs()
 
-    def get_obs(self):
-        """ Returns all agent observat3ions in a list """
-        obs_n = []
-        for a in range(self.num_agents):
-            obs_n.append(self.get_obs_agent(a))
-        return obs_n
+    def _get_obs(self):
+        'Returns all agent observations in a dict[str, ActionType]'
+        observations = {}
+        for agent_id in self.agents:
+            observations[str(agent_id)] = self._get_obs_agent(agent_id)
+        return observations
 
-    def get_obs_agent(self, agent_id):
+    def _get_obs_agent(self, agent_id):
         if self.agent_obsk is None:
             return self.env.unwrapped._get_obs()
         else:
@@ -162,8 +164,10 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     def reset(self, seed=None, return_info=False, options=None):
         """ Returns initial observations and states"""
         self.timelimit_env.reset(seed=seed)
-        #TODO return
-        return self.get_obs()
+        if return_info == False:
+            return self._get_obs()
+        else:
+            return self._get_obs(), None
 
     def render(self, **kwargs):
         return self.env.render(**kwargs)
