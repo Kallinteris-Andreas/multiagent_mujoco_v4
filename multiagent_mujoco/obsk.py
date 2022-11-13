@@ -64,7 +64,7 @@ def get_joints_at_kdist(agent_id, agent_partitions, hyperedges, k=0, kagents=Fal
         if not _k:
             new = set(agent_joints)
         else:
-            print(hyperedges)
+            #print(hyperedges)
             new = _adjacent(new) - seen
         seen = seen.union(new)
         k_dict[_k] = sorted(list(new), key=lambda x:x.label)
