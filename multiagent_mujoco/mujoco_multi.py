@@ -109,10 +109,10 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
         #Petting ZOO API
 
-        observation_spaces, action_spaces = {}, {}
+        self.observation_spaces, self.action_spaces = {}, {}
         for a, partition in enumerate(self.agent_partitions):
-            action_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(partition),), dtype=numpy.float32) #TODO LH
-            observation_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(self.get_obs_agent(a)),), dtype=numpy.float32) #TODO LH
+            self.action_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(partition),), dtype=numpy.float32) #TODO LH
+            self.observation_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(self.get_obs_agent(a)),), dtype=numpy.float32) #TODO LH
 
         pass
 
