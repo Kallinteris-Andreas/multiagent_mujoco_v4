@@ -177,14 +177,6 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
             return max([len(self.get_obs_agent(agent_id)) for agent_id in range(self.num_agents)])
 
 
-    def get_state(self, team=None):
-        # TODO: May want global states for different teams (so cannot see what the other team is communicating e.g.)
-        return self.env.unwrapped._get_obs()
-
-    def get_state_size(self):
-        """ Returns the shape of the state"""
-        return len(self.get_state())
-
     def get_avail_actions(self): # all actions are always available
         return np.ones(shape=(self.num_agents, self.n_actions,))
 
