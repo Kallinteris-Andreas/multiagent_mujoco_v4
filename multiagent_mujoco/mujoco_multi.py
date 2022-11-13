@@ -10,24 +10,6 @@ import numpy
 from .multiagentenv import MultiAgentEnv
 from .obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
 
-# using code from https://github.com/ikostrikov/pytorch-ddpg-naf
-class NormalizedActions(gym.ActionWrapper):
-
-    def _action(self, action):
-        action = (action + 1) / 2
-        action *= (self.action_space.high - self.action_space.low)
-        action += self.action_space.low
-        return action
-
-    def action(self, action_):
-        return self._action(action_)
-
-    def _reverse_action(self, action):
-        action -= self.action_space.low
-        action /= (self.action_space.high - self.action_space.low)
-        action = action * 2 - 1
-        return action
-
 
 class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     def __init__(self, batch_size=None, **kwargs):
@@ -78,7 +60,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         self.env_version = kwargs["env_args"].get("env_version", 4)
         if self.env_version == 4:
             try:
-                self.wrapped_env = NormalizedActions(gym.make(self.scenario))
+                self.env = (gym.make(self.scenario))
             except gym.error.Error:  # env not in gym
                 assert False, 'not tested'
                 if self.scenario in ["manyagent_ant"]:
@@ -89,13 +71,9 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                     from .coupled_half_cheetah import CoupledHalfCheetah as this_env
                 else:
                     raise NotImplementedError('Custom env not implemented!')
-                self.wrapped_env = NormalizedActions(this_env(**kwargs["env_args"]))
+                self.env = (this_env(**kwargs["env_args"]))
         else:
             assert False,  "not implemented!"
-        self.timelimit_env = self.wrapped_env.env
-        self.env = self.timelimit_env.env
-        self.timelimit_env.reset()
-        #self.obs_size = self.get_obs_size()
 
         #Petting ZOO API
         self.observation_spaces, self.action_spaces = {}, {}
@@ -106,7 +84,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         pass
 
     def step(self, actions: dict[str, numpy.float32]):
-        _, reward_n, is_terminal_n, is_truncated_n, info_n = self.wrapped_env.step(self._map_actions(actions))
+        _, reward_n, is_terminal_n, is_truncated_n, info_n = self.env.step(self._map_actions(actions))
 
         rewards, terminations, truncations, info = {},{},{},{}
         for agent_id in self.agents:
@@ -158,7 +136,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
     def reset(self, seed=None, return_info=False, options=None):
         """ Returns initial observations and states"""
-        self.timelimit_env.reset(seed=seed)
+        self.env.reset(seed=seed)
         if return_info == False:
             return self._get_obs()
         else:
