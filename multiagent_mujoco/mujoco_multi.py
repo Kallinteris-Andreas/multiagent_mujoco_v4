@@ -58,7 +58,6 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                 raise NotImplementedError('Custom env not implemented!')
             env_args = {"scenario": self.scenario, "agent_conf": agent_conf, "agent_obsk": agent_conf}
             self.env = (agent_conf)#TODO add compatability
-            #self.env = (this_env(**kwargs["env_args"]))#TODO add compatability
 
         #Petting ZOO API
         self.observation_spaces, self.action_spaces = {}, {}
@@ -78,7 +77,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
             terminations[str(agent_id)] = is_terminal_n
             truncations[str(agent_id)] = is_truncated_n
             info[str(agent_id)] = info_n
-            
+
         if is_terminal_n or is_truncated_n:
             self.agents = []
 
