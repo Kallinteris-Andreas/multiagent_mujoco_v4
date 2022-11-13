@@ -7,7 +7,6 @@ import pettingzoo
 import numpy as np
 import numpy
 
-from .multiagentenv import MultiAgentEnv
 from .obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
 
 
