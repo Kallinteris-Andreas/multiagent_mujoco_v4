@@ -102,9 +102,6 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
 
         # COMPATIBILITY
-        self.n = self.num_agents
-        self.observation_space = [Box(low=np.array([-10]*self.num_agents), high=np.array([10]*self.num_agents)) for _ in range(self.num_agents)]
-
         acdims = [len(ap) for ap in self.agent_partitions]
         self.action_space = tuple([Box(self.env.action_space.low[sum(acdims[:a]):sum(acdims[:a+1])],
                                        self.env.action_space.high[sum(acdims[:a]):sum(acdims[:a+1])]) for a in range(self.num_agents)])
