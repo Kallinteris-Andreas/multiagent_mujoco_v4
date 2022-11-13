@@ -12,7 +12,7 @@ from .obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
 
 
 class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
-    def __init__(self, batch_size=None, **kwargs):
+    def __init__(self, **kwargs):
         self.scenario = kwargs["env_args"]["scenario"]  # e.g. Ant-v4
         self.agent_conf = kwargs["env_args"]["agent_conf"]  # e.g. '2x3'
 
