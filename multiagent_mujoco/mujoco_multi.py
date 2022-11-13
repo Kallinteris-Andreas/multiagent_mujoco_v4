@@ -18,7 +18,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         self.agent_partitions, self.mujoco_edges, self.mujoco_globals = get_parts_and_edges(self.scenario, self.agent_conf)
 
         #Petting Zoo API
-        self.possible_agents = range(len(self.agent_partitions))
+        self.possible_agents = [str(agent_id) for agent_id in range(len(self.agent_partitions))]
         self.agents = self.possible_agents
 
         self.agent_obsk = kwargs["env_args"].get("agent_obsk", None) # if None, fully observable else k>=0 implies observe nearest k agents or joints
@@ -78,13 +78,17 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         _, reward_n, is_terminal_n, is_truncated_n, info_n = self.env.step(self._map_actions(actions))
 
         rewards, terminations, truncations, info = {},{},{},{}
+        observations = self._get_obs()
         for agent_id in self.agents:
             rewards[str(agent_id)] = reward_n
             terminations[str(agent_id)] = is_terminal_n
             truncations[str(agent_id)] = is_truncated_n
             info[str(agent_id)] = info_n
+            
+        if is_terminal_n or is_truncated_n:
+            self.agents = []
 
-        return self._get_obs(), rewards, terminations, truncations, info
+        return observations, rewards, terminations, truncations, info
     
     def _map_actions(self, actions: dict[str, numpy.float32]):
         'Maps actions back into MuJoCo action space'
@@ -110,7 +114,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         'Returns all agent observations in a dict[str, ActionType]'
         observations = {}
         for agent_id in self.agents:
-            observations[str(agent_id)] = self._get_obs_agent(agent_id)
+            observations[str(agent_id)] = self._get_obs_agent(int(agent_id))
         return observations
 
     def _get_obs_agent(self, agent_id):
@@ -128,6 +132,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     def reset(self, seed=None, return_info=False, options=None):
         """ Returns initial observations and states"""
         self.env.reset(seed=seed)
+        self.agents = self.possible_agents
         if return_info == False:
             return self._get_obs()
         else:
