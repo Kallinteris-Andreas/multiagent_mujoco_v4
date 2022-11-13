@@ -92,7 +92,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         env_actions = np.zeros((self.env.action_space.shape[0],)) + np.nan
         for agent_id, partition in enumerate(self.agent_partitions):
             for i, body_part in enumerate(partition):
-                #assert env_actions[body_part.act_ids] != env_actions[body_part.act_ids], "FATAL: At least one env action is doubly defined!"
+                assert numpy.isnan(env_actions[body_part.act_ids]), "FATAL: At least one env action is doubly defined!"
                 env_actions[body_part.act_ids] = actions[str(agent_id)][i]
         
         assert not np.isnan(env_actions).any(), "FATAL: At least one env action is undefined!"
