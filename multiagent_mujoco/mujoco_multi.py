@@ -109,18 +109,16 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         pass
 
     def step(self, actions: dict[str, numpy.float32]):
-        env_actions = self._map_actions(actions)
+        _, reward_n, is_terminal_n, is_truncated_n, info_n = self.wrapped_env.step(self._map_actions(actions))
 
-        _, reward_n, is_terminal_n, is_truncated_n, info_n = self.wrapped_env.step(env_actions)
+        rewards, terminations, truncations, info = {},{},{},{}
+        for agent_id in self.agents:
+            rewards[str(agent_id)] = reward_n
+            terminations[str(agent_id)] = is_terminal_n
+            truncations[str(agent_id)] = is_truncated_n
+            info[str(agent_id)] = info_n
 
-        observations = self._get_obs()
-
-
-        info = {}
-        info.update(info_n)
-
-
-        return observations , reward_n, is_terminal_n, is_truncated_n, info
+        return self._get_obs(), rewards, terminations, truncations, info
     
     def _map_actions(self, actions: dict[str, numpy.float32]):
         'Maps actions back into MuJoCo action space'
