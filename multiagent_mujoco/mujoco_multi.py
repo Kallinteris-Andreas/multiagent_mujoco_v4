@@ -1,5 +1,4 @@
 from functools import partial
-import gymnasium as gym
 import gymnasium
 from gymnasium.spaces import Box
 from gymnasium.wrappers import TimeLimit
@@ -49,8 +48,8 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
         # load scenario from script
         try:
-            self.env = (gym.make(self.scenario, render_mode=render_mode))
-        except gym.error.Error:  # env not in gym
+            self.env = (gymnasium.make(self.scenario, render_mode=render_mode))
+        except gymnasium.error.Error:  # env not in gymnasium
             assert False, 'not tested'
             if self.scenario in ["manyagent_ant"]:
                 from .manyagent_ant import ManyAgentAntEnv as this_env
