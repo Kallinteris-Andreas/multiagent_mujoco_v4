@@ -44,7 +44,10 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         observation_spaces = {}
         action_spaces = {}
         for a, partition in enumerate(self.agent_partitions):
-            action_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(partition),), dtype=numpy.float32)
+            action_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(partition),), dtype=numpy.float32) #TODO LH
+
+        for a in possible_agents:
+            observation_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(self.get_obs_agent(a),), dtype=numpy.float32) #TODO LH
 
 
 
