@@ -175,16 +175,3 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
     def seed(self, seed: int = None):
         raise NotImplementedError
-
-    #TODO REMOVE
-    #def get_env_info(self):
-        #env_info = {"state_shape": len(self.state()),
-                    #"obs_shape": self.get_obs_size(),
-                    #"n_actions": self.get_total_actions(),
-                    #"n_agents": self.num_agents,
-                    #"episode_limit": self.episode_limit,
-                    #"action_spaces": self.action_space,
-                    #"actions_dtype": np.float32,
-                    #"normalise_actions": False
-                    #}
-        #return env_info
