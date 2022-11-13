@@ -158,13 +158,6 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                                   self.global_categories,
                                   vec_len=getattr(self, "obs_size", None))
 
-    def get_obs_size(self):
-        """ Returns the shape of the observation """
-        if self.agent_obsk is None:
-            return self.get_obs_agent(0).size
-        else:
-            return max([len(self.get_obs_agent(agent_id)) for agent_id in range(self.num_agents)])
-
 
     def reset(self, seed=None, return_info=False, options=None):
         """ Returns initial observations and states"""
