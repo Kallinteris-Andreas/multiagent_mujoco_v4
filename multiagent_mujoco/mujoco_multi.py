@@ -34,20 +34,11 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         self.scenario = kwargs["env_args"]["scenario"]  # e.g. Ant-v4
         self.agent_conf = kwargs["env_args"]["agent_conf"]  # e.g. '2x3'
 
-        self.agent_partitions, self.mujoco_edges, self.mujoco_globals = get_parts_and_edges(self.scenario,
-                                                                                             self.agent_conf)
-        
+        self.agent_partitions, self.mujoco_edges, self.mujoco_globals = get_parts_and_edges(self.scenario, self.agent_conf)
 
         self.possible_agents = range(len(self.agent_partitions))
         self.agents = self.possible_agents
         
-        observation_spaces = {}
-        action_spaces = {}
-        for a, partition in enumerate(self.agent_partitions):
-            action_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(partition),), dtype=numpy.float32) #TODO LH
-            observation_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(self.get_obs_agent(a),), dtype=numpy.float32) #TODO LH
-
-
 
 
         self.n_actions = max([len(l) for l in self.agent_partitions])
@@ -55,6 +46,11 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
         self.agent_obsk = kwargs["env_args"].get("agent_obsk", None) # if None, fully observable else k>=0 implies observe nearest k agents or joints
         self.agent_obsk_agents = kwargs["env_args"].get("agent_obsk_agents", False)  # observe full k nearest agents (True) or just single joints (False)
+
+        observation_spaces, action_spaces = {}, {}
+        for a, partition in enumerate(self.agent_partitions):
+            action_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(len(partition),), dtype=numpy.float32) #TODO LH
+            observation_spaces[a] = gymnasium.spaces.Box(low=-1, high=1, shape=(self.get_obs_agent(a),), dtype=numpy.float32) #TODO LH
 
         if self.agent_obsk is not None:
             self.k_categories_label = kwargs["env_args"].get("k_categories")
@@ -110,7 +106,6 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         self.timelimit_env.reset()
         self.obs_size = self.get_obs_size()
 
-        breakpoint()
 
         # COMPATIBILITY
         self.n = self.num_agents
