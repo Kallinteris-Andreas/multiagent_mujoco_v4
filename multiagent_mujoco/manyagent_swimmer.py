@@ -1,4 +1,6 @@
 import numpy as np
+import numpy
+import gymnasium
 from gymnasium import utils
 from gymnasium.envs.mujoco import mujoco_env
 import os
@@ -6,6 +8,8 @@ from jinja2 import Template
 
 class ManyAgentSwimmerEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self, agent_conf):
+        self.metadata = {"render_modes": ["human","rgb_array","depth_array",], "render_fps": 50,}
+
         n_agents = int(agent_conf.split("x")[0])
         n_segs_per_agents = int(agent_conf.split("x")[1])
         n_segs = n_agents * n_segs_per_agents
@@ -21,7 +25,8 @@ class ManyAgentSwimmerEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         #asset_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets',git p
         #                          'manyagent_swimmer.xml')
 
-        mujoco_env.MujocoEnv.__init__(self, asset_path, 4)
+        observation_space = gymnasium.spaces.Box(low=-numpy.inf, high=numpy.inf, shape=(n_segs*2 + 4,), dtype=numpy.float32)
+        mujoco_env.MujocoEnv.__init__(self, asset_path, 4, observation_space=observation_space)
         utils.EzPickle.__init__(self)
 
     def _generate_asset(self, n_segs, asset_path):
@@ -62,9 +67,9 @@ class ManyAgentSwimmerEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def step(self, a):
         ctrl_cost_coeff = 0.0001
-        xposbefore = self.sim.data.qpos[0]
+        xposbefore = self.unwrapped.data.qpos[0]
         self.do_simulation(a, self.frame_skip)
-        xposafter = self.sim.data.qpos[0]
+        xposafter = self.unwrapped.data.qpos[0]
         reward_fwd = (xposafter - xposbefore) / self.dt
         reward_ctrl = - ctrl_cost_coeff * np.square(a).sum()
         reward = reward_fwd + reward_ctrl

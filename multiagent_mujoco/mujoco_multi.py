@@ -46,7 +46,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         try:
             self.env = (gymnasium.make(scenario, render_mode=render_mode))
         except gymnasium.error.Error:  # env not in gymnasium
-            assert False, 'Non-Gymnasium Enviroments have not been implamented'
+            #assert False, 'Non-Gymnasium Enviroments have not been implamented'
             if scenario in ["manyagent_ant-v4"]:
                 from .manyagent_ant import ManyAgentAntEnv as this_env
             elif scenario in ["manyagent_swimmer-v4"]:
@@ -55,7 +55,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                 from .coupled_half_cheetah import CoupledHalfCheetah as this_env
             else:
                 raise NotImplementedError('Custom env not implemented!')
-            self.env = this_env(agent_conf)#TODO add compatability
+            self.env = gymnasium.wrappers.TimeLimit(this_env(agent_conf), max_episode_steps=1000)#TODO add compatability
 
         self.observation_spaces, self.action_spaces = {}, {}
         for agent_id, partition in enumerate(self.agent_action_partitions):
