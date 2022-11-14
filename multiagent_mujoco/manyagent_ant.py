@@ -7,7 +7,7 @@ from jinja2 import Template
 import os
 
 class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
-    def __init__(self, agent_conf):
+    def __init__(self, agent_conf, render_mode: str=None):
         self.metadata = {"render_modes": ["human","rgb_array","depth_array",], "render_fps": 50,}
 
         n_agents = int(agent_conf.split("x")[0])
@@ -26,7 +26,7 @@ class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         #                          'manyagent_swimmer.xml')
 
         observation_space = gymnasium.spaces.Box(low=-numpy.inf, high=numpy.inf, shape=(n_segs*50 + 17,), dtype=numpy.float32)
-        mujoco_env.MujocoEnv.__init__(self, asset_path, 4, observation_space=observation_space)
+        mujoco_env.MujocoEnv.__init__(self, asset_path, 4, observation_space=observation_space, render_mode=render_mode)
         utils.EzPickle.__init__(self)
 
     def _generate_asset(self, n_segs, asset_path):
