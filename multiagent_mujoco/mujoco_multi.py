@@ -7,7 +7,7 @@ from .obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
 
 
 class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
-    def __init__(self, scenario: str, agent_conf: str, agent_obsk: int, render_mode: int=None):
+    def __init__(self, scenario: str, agent_conf: str, agent_obsk: int, render_mode: str=None):
         scenario += '-v4'
 
         self.agent_action_partitions, mujoco_edges, self.mujoco_globals = get_parts_and_edges(scenario, agent_conf)
