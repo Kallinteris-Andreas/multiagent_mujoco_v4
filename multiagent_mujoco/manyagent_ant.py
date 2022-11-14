@@ -1,4 +1,6 @@
 import numpy as np
+import numpy
+import gymnasium
 from gymnasium import utils
 from gymnasium.envs.mujoco import mujoco_env
 from jinja2 import Template
@@ -6,6 +8,8 @@ import os
 
 class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
     def __init__(self, agent_conf):
+        self.metadata = {"render_modes": ["human","rgb_array","depth_array",], "render_fps": 50,}
+
         n_agents = int(agent_conf.split("x")[0])
         n_segs_per_agents = int(agent_conf.split("x")[1])
         n_segs = n_agents * n_segs_per_agents
@@ -21,7 +25,8 @@ class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         #asset_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets',git p
         #                          'manyagent_swimmer.xml')
 
-        mujoco_env.MujocoEnv.__init__(self, asset_path, 4)
+        observation_space = gymnasium.spaces.Box(low=-numpy.inf, high=numpy.inf, shape=(n_segs*50 + 17,), dtype=numpy.float32)
+        mujoco_env.MujocoEnv.__init__(self, asset_path, 4, observation_space=observation_space)
         utils.EzPickle.__init__(self)
 
     def _generate_asset(self, n_segs, asset_path):
@@ -84,7 +89,7 @@ class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         forward_reward = (xposafter - xposbefore)/self.dt
         ctrl_cost = .5 * np.square(a).sum()
         contact_cost = 0.5 * 1e-3 * np.sum(
-            np.square(np.clip(self.sim.data.cfrc_ext, -1, 1)))
+            np.square(np.clip(self.unwrapped.data.cfrc_ext, -1, 1)))
         survive_reward = 1.0
         reward = forward_reward - ctrl_cost - contact_cost + survive_reward
         state = self.state_vector()
@@ -92,7 +97,7 @@ class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             and state[2] >= 0.2 and state[2] <= 1.0
         done = not notdone
         ob = self._get_obs()
-        return ob, reward, done, dict(
+        return ob, reward, False, done, dict(
             reward_forward=forward_reward,
             reward_ctrl=-ctrl_cost,
             reward_contact=-contact_cost,
@@ -100,14 +105,15 @@ class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def _get_obs(self):
         return np.concatenate([
-            self.sim.data.qpos.flat[2:],
-            self.sim.data.qvel.flat,
-            np.clip(self.sim.data.cfrc_ext, -1, 1).flat,
+            self.unwrapped.data.qpos.flat[2:],
+            self.unwrapped.data.qvel.flat,
+            np.clip(self.unwrapped.data.cfrc_ext, -1, 1).flat,
         ])
 
     def reset_model(self):
         qpos = self.init_qpos + self.np_random.uniform(size=self.model.nq, low=-.1, high=.1)
-        qvel = self.init_qvel + self.np_random.randn(self.model.nv) * .1
+        qvel = self.init_qvel + self.np_random.random(self.model.nv) * .1
+        #qvel = self.init_qvel + self.np_random.randn(self.model.nv) * .1
         self.set_state(qpos, qvel)
         return self._get_obs()
 
