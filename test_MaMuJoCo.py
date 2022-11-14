@@ -1,4 +1,4 @@
-from pettingzoo.test import parallel_api_test  # noqa: E402
+from pettingzoo.test import parallel_api_test
 from multiagent_mujoco.mujoco_multi import MujocoMulti
 
 if __name__ == "__main__":
