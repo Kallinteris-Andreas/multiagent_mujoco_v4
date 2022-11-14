@@ -74,11 +74,11 @@ class ManyAgentSwimmerEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         reward_ctrl = - ctrl_cost_coeff * np.square(a).sum()
         reward = reward_fwd + reward_ctrl
         ob = self._get_obs()
-        return ob, reward, False, dict(reward_fwd=reward_fwd, reward_ctrl=reward_ctrl)
+        return ob, reward, False, False, dict(reward_fwd=reward_fwd, reward_ctrl=reward_ctrl)
 
     def _get_obs(self):
-        qpos = self.sim.data.qpos
-        qvel = self.sim.data.qvel
+        qpos = self.unwrapped.data.qpos
+        qvel = self.unwrapped.data.qvel
         return np.concatenate([qpos.flat[2:], qvel.flat])
 
     def reset_model(self):
