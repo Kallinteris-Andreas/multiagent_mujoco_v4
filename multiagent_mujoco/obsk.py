@@ -408,16 +408,16 @@ def get_parts_and_edges(label, partitioning):
         fshin = Node("fshin", -2, -2, 4)
         ffoot = Node("ffoot", -1, -1, 5)
 
-        bthigh2 = Node("bthigh2", -6, -6, 0,
+        bthigh2 = Node("bthigh2", -6, -6, 6,
                       tendons=[tendon],
                       extra_obs={"ten_J": lambda env: env.unwrapped.data.ten_J[tendon],
                                  "ten_length": lambda env: env.unwrapped.data.ten_length,
                                  "ten_velocity": lambda env: env.unwrapped.data.ten_velocity})
-        bshin2 = Node("bshin2", -5, -5, 1)
-        bfoot2 = Node("bfoot2", -4, -4, 2)
-        fthigh2 = Node("fthigh2", -3, -3, 3)
-        fshin2 = Node("fshin2", -2, -2, 4)
-        ffoot2 = Node("ffoot2", -1, -1, 5)
+        bshin2 = Node("bshin2", -5, -5, 7)
+        bfoot2 = Node("bfoot2", -4, -4, 8)
+        fthigh2 = Node("fthigh2", -3, -3, 9)
+        fshin2 = Node("fshin2", -2, -2, 10)
+        ffoot2 = Node("ffoot2", -1, -1, 11)
 
 
         edges = [HyperEdge(bfoot, bshin),
