@@ -25,14 +25,14 @@ extras_deps = {
 
 setup(
       name="MAMujoco",
-      version="1.1.0",
+      version="1.4.0",
       description="MAMuJoCo - Multi-Agent MuJoCo.",
       long_description=description,
-      author="Christian Schroeder de Witt",
-      author_email="cs@robots.ox.ac.uk",
+      author="Kallinteris Andreas",
+      author_email="kallinteris@proton.me",
       license="Apache 2.0 License",
-      keywords="Robotics, MuJoCo, Multi-Agent Reinforcement Learning",
-      url="https://github.com/schroederdewitt/multiagent_mujoco",
+      keywords="Robotics, MuJoCo, Multi-Agent Reinforcement Learning, PettingZoo",
+      url="https://github.com/Kallinteris-Andreas/multiagent_mujoco_v4",
       packages=[
             "multiagent_mujoco",
             "multiagent_mujoco.assets",
@@ -41,8 +41,8 @@ setup(
       install_requires=[
             "gymnasium==0.26.2",
             "mujoco>=2.2.0",
-            #"Pettingzoo>=1.22"
-            "scipy>=1.9.0",
+            "PettingZoo==1.22.0"
+            #"scipy>=1.9.0",
             #"Jinja2>=3.0.3",
             #"numpy>=1.24.5",
             #"glfw>=2.5.1",
