@@ -47,17 +47,18 @@ if __name__ == "__main__":
         agent_conf="2x3"
         parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
 
-        #disabled since they do not on the original MaMuJoCo
-        #scenario="manyagent_swimmer"
-        #agent_conf="10x2"
-        #parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+        scenario="manyagent_swimmer"
+        agent_conf="10x2"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+        agent_conf="6x1"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
 
-        #disabled since they do not on the original MaMuJoCo
-        #scenario="manyagent_ant"
-        #agent_conf="2x3"
-        #parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+        scenario="manyagent_ant"
+        agent_conf="2x3"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+        agent_conf="3x1"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
 
-        #disabled since they do not on the original MaMuJoCo
-        #scenario="coupled_half_cheetah"
-        #agent_conf="1p1"
-        #parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+        scenario="coupled_half_cheetah"
+        agent_conf="1p1"
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
