@@ -65,7 +65,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         pass
 
     def step(self, actions: dict[str, numpy.float32]):
-        _, reward_n, is_terminal_n, is_truncated_n, info_n = self.env.step(self._map_actions(actions))
+        _, reward_n, is_terminal_n, is_truncated_n, info_n = self.env.step(self.map_actions(actions))
 
         rewards, terminations, truncations, info = {},{},{},{}
         observations = self._get_obs()
@@ -80,7 +80,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
         return observations, rewards, terminations, truncations, info
     
-    def _map_actions(self, actions: dict[str, numpy.float32]):
+    def map_actions(self, actions: dict[str, numpy.float32]):
         'Maps actions back into MuJoCo action space'
         env_actions = numpy.zeros((self.env.action_space.shape[0],)) + numpy.nan
         for agent_id, partition in enumerate(self.agent_action_partitions):
