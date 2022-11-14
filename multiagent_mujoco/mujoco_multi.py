@@ -55,7 +55,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                 from .coupled_half_cheetah import CoupledHalfCheetah as this_env
             else:
                 raise NotImplementedError('Custom env not implemented!')
-            self.env = (agent_conf)#TODO add compatability
+            self.env = this_env(agent_conf)#TODO add compatability
 
         self.observation_spaces, self.action_spaces = {}, {}
         for agent_id, partition in enumerate(self.agent_action_partitions):
