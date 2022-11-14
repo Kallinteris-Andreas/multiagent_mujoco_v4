@@ -19,7 +19,7 @@ class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
                                                   'manyagent_ant_{}_agents_each_{}_segments.auto.xml'.format(n_agents,
                                                                                                                  n_segs_per_agents))
         #if not os.path.exists(asset_path):
-        print("Auto-Generating Manyagent Ant asset with {} segments at {}.".format(n_segs, asset_path))
+        #print("Auto-Generating Manyagent Ant asset with {} segments at {}.".format(n_segs, asset_path))
         self._generate_asset(n_segs=n_segs, asset_path=asset_path)
 
         #asset_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets',git p
