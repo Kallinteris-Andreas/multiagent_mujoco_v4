@@ -37,6 +37,7 @@ setup(
             "multiagent_mujoco",
             "multiagent_mujoco.assets",
       ],
+      package_data={'multiagent_mujoco.assets': ['*.xml*']},
       extras_require=extras_deps,
       install_requires=[
             "gymnasium==0.26.2",
