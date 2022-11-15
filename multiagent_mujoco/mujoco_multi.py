@@ -116,7 +116,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     agent_conf="1p1"
 
     """
-    def __init__(self, scenario: str, agent_conf: str, agent_obsk: int, render_mode: str=None):
+    def __init__(self, scenario: str, agent_conf: str, agent_obsk: int=1, render_mode: str=None):
         """
         Arguments:
             scenario: The Task to solve 
