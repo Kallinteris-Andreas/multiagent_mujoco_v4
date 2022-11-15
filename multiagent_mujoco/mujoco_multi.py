@@ -10,12 +10,18 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     def __init__(self, scenario: str, agent_conf: str, agent_obsk: int, render_mode: str=None):
         scenario += '-v4'
 
-        self.agent_action_partitions, mujoco_edges, self.mujoco_globals = get_parts_and_edges(scenario, agent_conf)
+        if agent_conf == None:
+            self.agent_obsk = None
+        else:
+            self.agent_obsk = agent_obsk # if None, fully observable else k>=0 implies observe nearest k agents or joints
 
-        self.possible_agents = [str(agent_id) for agent_id in range(len(self.agent_action_partitions))]
+        if self.agent_obsk != None:
+            self.agent_action_partitions, mujoco_edges, self.mujoco_globals = get_parts_and_edges(scenario, agent_conf)
+            self.possible_agents = [str(agent_id) for agent_id in range(len(self.agent_action_partitions))]
+        else:
+            self.possible_agents = ['0']
+
         self.agents = self.possible_agents
-
-        self.agent_obsk = agent_obsk # if None, fully observable else k>=0 implies observe nearest k agents or joints
 
         if self.agent_obsk is not None:
             if scenario in ["Ant-v4", "manyagent_ant"]:
@@ -57,10 +63,14 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                 raise NotImplementedError('Custom env not implemented!')
             self.env = gymnasium.wrappers.TimeLimit(this_env(agent_conf, render_mode), max_episode_steps=1000)
 
-        self.observation_spaces, self.action_spaces = {}, {}
-        for agent_id, partition in enumerate(self.agent_action_partitions):
-            self.action_spaces[agent_id] = gymnasium.spaces.Box(low=self.env.action_space.low[0], high=self.env.action_space.high[1], shape=(len(partition),), dtype=numpy.float32) 
-            self.observation_spaces[agent_id] = gymnasium.spaces.Box(low=-numpy.inf, high=numpy.inf, shape=(len(self._get_obs_agent(agent_id)),), dtype=numpy.float32)
+        if self.agent_obsk == None:
+                self.action_spaces = {'0': self.env.action_space}
+                self.observation_spaces = {'0': self.env.observation_space}
+        else:
+            self.observation_spaces, self.action_spaces = {}, {}
+            for agent_id, partition in enumerate(self.agent_action_partitions):
+                self.action_spaces[str(agent_id)] = gymnasium.spaces.Box(low=self.env.action_space.low[0], high=self.env.action_space.high[1], shape=(len(partition),), dtype=numpy.float32) 
+                self.observation_spaces[str(agent_id)] = gymnasium.spaces.Box(low=-numpy.inf, high=numpy.inf, shape=(len(self._get_obs_agent(agent_id)),), dtype=numpy.float32)
 
         pass
 
@@ -82,6 +92,9 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     
     def map_actions(self, actions: dict[str, numpy.float32]):
         'Maps actions back into MuJoCo action space'
+        if self.agent_obsk == None:
+            return actions['0']
+
         env_actions = numpy.zeros((self.env.action_space.shape[0],)) + numpy.nan
         for agent_id, partition in enumerate(self.agent_action_partitions):
             for i, body_part in enumerate(partition):
@@ -92,10 +105,10 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         return env_actions
 
     def observation_space(self, agent: str):
-        return self.observation_spaces[int(agent)]
+        return self.observation_spaces[str(agent)]
 
     def action_space(self, agent: str):
-        return self.action_spaces[int(agent)]
+        return self.action_spaces[str(agent)]
     
     def state(self):
         return self.env.unwrapped._get_obs()
