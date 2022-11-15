@@ -1,12 +1,11 @@
 import gymnasium
-import pettingzoo
 import numpy
+import pettingzoo
 
+from .coupled_half_cheetah import CoupledHalfCheetah
 from .manyagent_ant import ManyAgentAntEnv
 from .manyagent_swimmer import ManyAgentSwimmerEnv
-from .coupled_half_cheetah import CoupledHalfCheetah
-
-from .obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
+from .obsk import build_obs, get_joints_at_kdist, get_parts_and_edges
 
 # from obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
 

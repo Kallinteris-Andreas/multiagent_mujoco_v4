@@ -1,10 +1,11 @@
-import numpy as np
-import numpy
+import os
+
 import gymnasium
+import numpy
+import numpy as np
 from gymnasium import utils
 from gymnasium.envs.mujoco import mujoco_env
 from jinja2 import Template
-import os
 
 
 class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):

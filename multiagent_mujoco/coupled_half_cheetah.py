@@ -1,9 +1,10 @@
-import numpy as np
-import numpy
+import os
+
 import gymnasium
+import numpy
+import numpy as np
 from gymnasium import utils
 from gymnasium.envs.mujoco import mujoco_env
-import os
 
 
 class CoupledHalfCheetah(mujoco_env.MujocoEnv, utils.EzPickle):
