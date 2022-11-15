@@ -2,8 +2,14 @@ import gymnasium
 import pettingzoo
 import numpy
 
+from .manyagent_ant import ManyAgentAntEnv
+from .manyagent_swimmer import ManyAgentSwimmerEnv
+from .coupled_half_cheetah import CoupledHalfCheetah
+
 from .obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
 #from obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
+
+_MUJOCO_GYM_ENVIROMENTS = ['Ant-v4', 'HalfCheetah-v4', 'Hopper-v4', 'HumanoidStandup-v4', 'Humanoid-v4', 'Reacher-v4', 'Swimmer-v4', 'Walker2d-v4', 'InvertedPendulum-v4', 'InvertedDoublePendulum-v4']
 
 
 class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
