@@ -41,7 +41,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
     # State Spaces
 
-    Depends on state
+    Depends on Enviroment
 
     # valid Configurations
 
