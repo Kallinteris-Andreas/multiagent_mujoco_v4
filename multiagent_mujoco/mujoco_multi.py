@@ -174,13 +174,12 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                 mujoco_edges,
                 self.mujoco_globals,
             ) = get_parts_and_edges(scenario, agent_conf)
-            self.possible_agents = [
-                str(agent_id) for agent_id in range(len(self.agent_action_partitions))
-            ]
         else:
-            self.possible_agents = ["0"]
-            self.agent_action_partitions = ['action' + str(action_id) for action_id in range(self.env.action_space.shape[0])]
+            self.agent_action_partitions = {'0': ['action' + str(action_id) for action_id in range(self.env.action_space.shape[0])]}
 
+        self.possible_agents = [
+            str(agent_id) for agent_id in range(len(self.agent_action_partitions))
+        ]
         self.agents = self.possible_agents
 
         if self.agent_obsk is not None:
