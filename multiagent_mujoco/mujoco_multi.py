@@ -143,6 +143,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
             render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/), valid values: "human","rgb_array","depth_array"
         """
         scenario += "-v4"
+        self.global_categories = []
 
         if agent_conf is None:
             self.agent_obsk = None
@@ -180,8 +181,6 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                 k_split[k if k < len(k_split) else -1].split(",")
                 for k in range(self.agent_obsk + 1)
             ]
-
-            self.global_categories = []
 
         if self.agent_obsk is not None:
             self.k_dicts = [
