@@ -18,9 +18,9 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
     These environments were introduced in ["FACMAC: Factored Multi-Agent Centralised Policy Gradients"](https://arxiv.org/abs/2003.06709)
 
-    There are 2 types or Enviroments inlcuded (1) multi-agent factorizations of [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/) tasks and (2) new complex MuJoCo tasks meant to me solved with multi-agent Algorithms
+    There are 2 types of Environments included (1) multi-agent factorizations of [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/) tasks and (2) new complex MuJoCo tasks meant to me solved with multi-agent Algorithms
 
-    Represents The first easy to use Frameworks for research of agent factorization
+    This Represents the first easy to use Frameworks for research of agent factorization
 
     # Action Spaces
 
@@ -30,7 +30,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     
     # State Spaces
     
-    depends on state
+    Depends on state
     
     # valid Configurations
 
@@ -114,13 +114,14 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
     scenario="coupled_half_cheetah"
     agent_conf="1p1"
+
     """
     def __init__(self, scenario: str, agent_conf: str, agent_obsk: int, render_mode: str=None):
         """
         Arguments:
             scenario: The Task to solve 
-            agent_conf: '${Number Of Agents}x${Number Of Segments per Agnt}${Optionally Additional options}', eg '1x6', '2x4', '2x4d', (the agest observes the entire enviroment, and performs all the actions)
-            agent_obsk: Number of nearest joints to observe, if set to 0 it only observes local state, if set to 1 it observes local state + 1 joint over, if it set to None the task becomes singel agent (the agest observes the entire enviroment, and performs all the actions)
+            agent_conf: '${Number Of Agents}x${Number Of Segments per Agent}${Optionally Additional options}', eg '1x6', '2x4', '2x4d', if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
+            agent_obsk: Number of nearest joints to observe, if set to 0 it only observes local state, if set to 1 it observes local state + 1 joint over, if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
             render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/), valid values: "human","rgb_array","depth_array"
         """
         scenario += '-v4'
