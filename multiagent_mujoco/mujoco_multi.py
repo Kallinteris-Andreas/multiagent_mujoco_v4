@@ -145,6 +145,24 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         scenario += "-v4"
         self.global_categories = []
 
+        # load scenario from script
+        if scenario in _MUJOCO_GYM_ENVIROMENTS:
+            self.env = gymnasium.make(scenario, render_mode=render_mode)
+        elif scenario in ["manyagent_ant-v4"]:
+            self.env = gymnasium.wrappers.TimeLimit(
+                ManyAgentAntEnv(agent_conf, render_mode), max_episode_steps=1000
+            )
+        elif scenario in ["manyagent_swimmer-v4"]:
+            self.env = gymnasium.wrappers.TimeLimit(
+                ManyAgentSwimmerEnv(agent_conf, render_mode), max_episode_steps=1000
+            )
+        elif scenario in ["coupled_half_cheetah-v4"]:
+            self.env = gymnasium.wrappers.TimeLimit(
+                CoupledHalfCheetah(agent_conf, render_mode), max_episode_steps=1000
+            )
+        else:
+            raise NotImplementedError("Custom env not implemented!")
+
         if agent_conf is None:
             self.agent_obsk = None
         else:
@@ -181,24 +199,6 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                 k_split[k if k < len(k_split) else -1].split(",")
                 for k in range(self.agent_obsk + 1)
             ]
-
-        # load scenario from script
-        if scenario in _MUJOCO_GYM_ENVIROMENTS:
-            self.env = gymnasium.make(scenario, render_mode=render_mode)
-        elif scenario in ["manyagent_ant-v4"]:
-            self.env = gymnasium.wrappers.TimeLimit(
-                ManyAgentAntEnv(agent_conf, render_mode), max_episode_steps=1000
-            )
-        elif scenario in ["manyagent_swimmer-v4"]:
-            self.env = gymnasium.wrappers.TimeLimit(
-                ManyAgentSwimmerEnv(agent_conf, render_mode), max_episode_steps=1000
-            )
-        elif scenario in ["coupled_half_cheetah-v4"]:
-            self.env = gymnasium.wrappers.TimeLimit(
-                CoupledHalfCheetah(agent_conf, render_mode), max_episode_steps=1000
-            )
-        else:
-            raise NotImplementedError("Custom env not implemented!")
 
         if self.agent_obsk is not None:
             self.k_dicts = [
