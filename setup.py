@@ -43,8 +43,8 @@ setup(
             "gymnasium==0.26.2",
             "mujoco>=2.2.0",
             "PettingZoo==1.22.0"
+            "Jinja2>=3.0.3",
             #"scipy>=1.9.0",
-            #"Jinja2>=3.0.3",
             #"numpy>=1.24.5",
             #"glfw>=2.5.1",
             #"Cython>=0.29.28"
