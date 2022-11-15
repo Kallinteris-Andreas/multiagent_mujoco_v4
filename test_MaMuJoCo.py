@@ -3,6 +3,10 @@ from multiagent_mujoco.mujoco_multi import MujocoMulti
 
 if __name__ == "__main__":
     for ok in [None, 0, 1]:
+        scenario="InvertedPendulum" #for debugging
+        agent_conf=None
+        parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+
         scenario="Ant"
         agent_conf=None
         parallel_api_test(MujocoMulti(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
