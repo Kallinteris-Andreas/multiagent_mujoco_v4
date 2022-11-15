@@ -49,19 +49,16 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                                                 kagents=False,) for agent_id in range(self.num_agents)]
 
         # load scenario from script
-        try:
+        if scenario in _MUJOCO_GYM_ENVIROMENTS:
             self.env = (gymnasium.make(scenario, render_mode=render_mode))
-        except gymnasium.error.Error:  # env not in gymnasium
-            #assert False, 'Non-Gymnasium Enviroments have not been implamented'
-            if scenario in ["manyagent_ant-v4"]:
-                from .manyagent_ant import ManyAgentAntEnv as this_env
-            elif scenario in ["manyagent_swimmer-v4"]:
-                from .manyagent_swimmer import ManyAgentSwimmerEnv as this_env
-            elif scenario in ["coupled_half_cheetah-v4"]:
-                from .coupled_half_cheetah import CoupledHalfCheetah as this_env
-            else:
-                raise NotImplementedError('Custom env not implemented!')
-            self.env = gymnasium.wrappers.TimeLimit(this_env(agent_conf, render_mode), max_episode_steps=1000)
+        elif scenario in ["manyagent_ant-v4"]:
+            self.env = gymnasium.wrappers.TimeLimit(ManyAgentAntEnv(agent_conf, render_mode), max_episode_steps=1000)
+        elif scenario in ["manyagent_swimmer-v4"]:
+            self.env = gymnasium.wrappers.TimeLimit(ManyAgentSwimmerEnv(agent_conf, render_mode), max_episode_steps=1000)
+        elif scenario in ["coupled_half_cheetah-v4"]:
+            self.env = gymnasium.wrappers.TimeLimit(CoupledHalfCheetah(agent_conf, render_mode), max_episode_steps=1000)
+        else:
+            raise NotImplementedError('Custom env not implemented!')
 
         if self.agent_obsk == None:
                 self.action_spaces = {'0': self.env.action_space}
