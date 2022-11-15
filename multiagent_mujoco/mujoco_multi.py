@@ -13,7 +13,116 @@ _MUJOCO_GYM_ENVIROMENTS = ['Ant-v4', 'HalfCheetah-v4', 'Hopper-v4', 'HumanoidSta
 
 
 class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
+    """
+    # MaMuJoCo (Multi-Agent MuJoCo)
+
+    These environments were introduced in ["FACMAC: Factored Multi-Agent Centralised Policy Gradients"](https://arxiv.org/abs/2003.06709)
+
+    There are 2 types or Enviroments inlcuded (1) multi-agent factorizations of [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/) tasks and (2) new complex MuJoCo tasks meant to me solved with multi-agent Algorithms
+
+    Represents The first easy to use Frameworks for research of agent factorization
+
+    # Action Spaces
+
+    For (1) the action space shape is the shape of the single agent domain divided by the number of agents
+    
+    For (2) it Depends on the configuration
+    
+    # State Spaces
+    
+    depends on state
+    
+    # valid Configurations
+
+    ### 2-Agent Ant
+
+    scenario="Ant-v2"
+    agent_conf="2x4"
+
+    ### 2-Agent Ant Diag
+
+    scenario="Ant-v2"
+    agent_conf="2x4d"
+
+    ### 4-Agent Ant
+
+    scenario="Ant-v2"
+    agent_conf="4x2"
+
+    ### 2-Agent HalfCheetah
+
+    scenario="HalfCheetah-v2"
+    agent_conf="2x3"
+
+    ### 6-Agent HalfCheetah
+
+    scenario="HalfCheetah-v2"
+    agent_conf="6x1"
+
+    ### 3-Agent Hopper
+
+    scenario="Hopper-v2"
+    agent_conf="3x1"
+
+    ### 2-Agent Humanoid
+
+    scenario="Humanoid-v2"
+    agent_conf="9|8"
+
+    ### 2-Agent HumanoidStandup
+
+    scenario="HumanoidStandup-v2"
+    agent_conf="9|8"
+
+    ### 2-Agent Reacher
+
+    scenario="Reacher-v2"
+    agent_conf="2x1"
+
+    ### 2-Agent Swimmer
+
+    scenario="Swimmer-v2"
+    agent_conf="2x1"
+
+    ### 2-Agent Walker
+
+    scenario="Walker2d-v2"
+    agent_conf="2x3"
+
+    ### 1-Agent InvertedPendulum (for debugging algorithms)
+    scenario="InvertedPendulum"
+    agent_conf=None
+
+    ### Manyagent Swimmer
+
+    scenario="manyagent_swimmer"
+    agent_conf="10x2"
+
+    scenario="manyagent_swimmer"
+    agent_conf="$Xx$Y" # where $X, $Y any positive integers e,g, "42x6", "10x2", "2x3"
+
+
+    ### Manyagent Ant
+
+    scenario="manyagent_ant"
+    agent_conf="2x3"
+
+    scenario="manyagent_ant"
+    agent_conf="$Xx$Y" # where $X, $Y any positive integers e,g, "42x6", "10x2", "2x3"
+
+    ### Coupled HalfCheetah (NEW!)
+
+    scenario="coupled_half_cheetah"
+    agent_conf="1p1"
+    """
     def __init__(self, scenario: str, agent_conf: str, agent_obsk: int, render_mode: str=None):
+        """
+        Arguments:
+            scenario: The Task to solve 
+            agent_conf: '${Number Of Agents}x${Number Of Segments per Agnt}${Optionally Additional options}', eg '1x6', '2x4', '2x4d', (the agest observes the entire enviroment, and performs all the actions)
+            agent_obsk: Number of nearest joints to observe, if set to 0 it only observes local state, if set to 1 it observes local state + 1 joint over, if it set to None the task becomes singel agent (the agest observes the entire enviroment, and performs all the actions)
+            render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/), valid values: "human","rgb_array","depth_array"
+        """
         scenario += '-v4'
 
         if agent_conf == None:
@@ -94,7 +203,11 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         return observations, rewards, terminations, truncations, info
     
     def map_actions(self, actions: dict[str, numpy.float32]):
-        'Maps actions back into MuJoCo action space'
+        """
+        Maps actions back into MuJoCo action space
+        Returns:
+            The actions of the whole domain in a single list
+        """
         if self.agent_obsk == None:
             return actions['0']
 
