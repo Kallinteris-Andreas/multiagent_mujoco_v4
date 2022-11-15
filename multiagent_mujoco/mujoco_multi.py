@@ -220,7 +220,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
             for agent_id, partition in enumerate(self.agent_action_partitions):
                 self.action_spaces[str(agent_id)] = gymnasium.spaces.Box(
                     low=self.env.action_space.low[0],
-                    high=self.env.action_space.high[1],
+                    high=self.env.action_space.high[0],
                     shape=(len(partition),),
                     dtype=numpy.float32,
                 )
