@@ -6,32 +6,58 @@ from gymnasium.envs.mujoco import mujoco_env
 from jinja2 import Template
 import os
 
+
 class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
-    def __init__(self, agent_conf, render_mode: str=None):
-        self.metadata = {"render_modes": ["human","rgb_array","depth_array",], "render_fps": 50,}
+    def __init__(self, agent_conf, render_mode: str = None):
+        self.metadata = {
+            "render_modes": [
+                "human",
+                "rgb_array",
+                "depth_array",
+            ],
+            "render_fps": 50,
+        }
 
         n_agents = int(agent_conf.split("x")[0])
         n_segs_per_agents = int(agent_conf.split("x")[1])
         n_segs = n_agents * n_segs_per_agents
 
         # Check whether asset file exists already, otherwise create it
-        asset_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets',
-                                                  'manyagent_ant_{}_agents_each_{}_segments.auto.xml'.format(n_agents,
-                                                                                                                 n_segs_per_agents))
-        #if not os.path.exists(asset_path):
-        #print("Auto-Generating Manyagent Ant asset with {} segments at {}.".format(n_segs, asset_path))
+        asset_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "assets",
+            "manyagent_ant_{}_agents_each_{}_segments.auto.xml".format(
+                n_agents, n_segs_per_agents
+            ),
+        )
+        # if not os.path.exists(asset_path):
+        # print("Auto-Generating Manyagent Ant asset with {} segments at {}.".format(n_segs, asset_path))
         self._generate_asset(n_segs=n_segs, asset_path=asset_path)
 
-        #asset_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets',git p
+        # asset_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets',git p
         #                          'manyagent_swimmer.xml')
 
-        observation_space = gymnasium.spaces.Box(low=-numpy.inf, high=numpy.inf, shape=(n_segs*50 + 17,), dtype=numpy.float32)
-        mujoco_env.MujocoEnv.__init__(self, asset_path, 4, observation_space=observation_space, render_mode=render_mode)
+        observation_space = gymnasium.spaces.Box(
+            low=-numpy.inf,
+            high=numpy.inf,
+            shape=(n_segs * 50 + 17,),
+            dtype=numpy.float32,
+        )
+        mujoco_env.MujocoEnv.__init__(
+            self,
+            asset_path,
+            4,
+            observation_space=observation_space,
+            render_mode=render_mode,
+        )
         utils.EzPickle.__init__(self)
 
     def _generate_asset(self, n_segs, asset_path):
-        template_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets',
-                                                  'manyagent_ant.xml.template')
+        template_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "assets",
+            "manyagent_ant.xml.template",
+        )
         with open(template_path, "r") as f:
             t = Template(f.read())
         body_str_template = """
@@ -62,20 +88,20 @@ class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
             </body>
         """
 
-        body_close_str_template ="</body>\n"
+        body_close_str_template = "</body>\n"
         actuator_str_template = """\t     <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="hip1_{:d}" gear="150"/>
                                           <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="ankle1_{:d}" gear="150"/>
                                           <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="hip2_{:d}" gear="150"/>
                                           <motor ctrllimited="true" ctrlrange="-1.0 1.0" joint="ankle2_{:d}" gear="150"/>\n"""
 
         body_str = ""
-        for i in range(1,n_segs):
-            body_str += body_str_template.format(*([i]*16))
-        body_str += body_close_str_template*(n_segs-1)
+        for i in range(1, n_segs):
+            body_str += body_str_template.format(*([i] * 16))
+        body_str += body_close_str_template * (n_segs - 1)
 
         actuator_str = ""
         for i in range(n_segs):
-            actuator_str += actuator_str_template.format(*([i]*8))
+            actuator_str += actuator_str_template.format(*([i] * 8))
 
         rt = t.render(body=body_str, actuators=actuator_str)
         with open(asset_path, "w") as f:
@@ -86,34 +112,45 @@ class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         xposbefore = self.get_body_com("torso_0")[0]
         self.do_simulation(a, self.frame_skip)
         xposafter = self.get_body_com("torso_0")[0]
-        forward_reward = (xposafter - xposbefore)/self.dt
-        ctrl_cost = .5 * np.square(a).sum()
-        contact_cost = 0.5 * 1e-3 * np.sum(
-            np.square(np.clip(self.unwrapped.data.cfrc_ext, -1, 1)))
+        forward_reward = (xposafter - xposbefore) / self.dt
+        ctrl_cost = 0.5 * np.square(a).sum()
+        contact_cost = (
+            0.5 * 1e-3 * np.sum(np.square(np.clip(self.unwrapped.data.cfrc_ext, -1, 1)))
+        )
         survive_reward = 1.0
         reward = forward_reward - ctrl_cost - contact_cost + survive_reward
         state = self.state_vector()
-        notdone = np.isfinite(state).all() \
-            and state[2] >= 0.2 and state[2] <= 1.0
+        notdone = np.isfinite(state).all() and state[2] >= 0.2 and state[2] <= 1.0
         done = not notdone
         ob = self._get_obs()
-        return ob, reward, False, done, dict(
-            reward_forward=forward_reward,
-            reward_ctrl=-ctrl_cost,
-            reward_contact=-contact_cost,
-            reward_survive=survive_reward)
+        return (
+            ob,
+            reward,
+            False,
+            done,
+            dict(
+                reward_forward=forward_reward,
+                reward_ctrl=-ctrl_cost,
+                reward_contact=-contact_cost,
+                reward_survive=survive_reward,
+            ),
+        )
 
     def _get_obs(self):
-        return np.concatenate([
-            self.unwrapped.data.qpos.flat[2:],
-            self.unwrapped.data.qvel.flat,
-            np.clip(self.unwrapped.data.cfrc_ext, -1, 1).flat,
-        ])
+        return np.concatenate(
+            [
+                self.unwrapped.data.qpos.flat[2:],
+                self.unwrapped.data.qvel.flat,
+                np.clip(self.unwrapped.data.cfrc_ext, -1, 1).flat,
+            ]
+        )
 
     def reset_model(self):
-        qpos = self.init_qpos + self.np_random.uniform(size=self.model.nq, low=-.1, high=.1)
-        qvel = self.init_qvel + self.np_random.random(self.model.nv) * .1
-        #qvel = self.init_qvel + self.np_random.randn(self.model.nv) * .1
+        qpos = self.init_qpos + self.np_random.uniform(
+            size=self.model.nq, low=-0.1, high=0.1
+        )
+        qvel = self.init_qvel + self.np_random.random(self.model.nv) * 0.1
+        # qvel = self.init_qvel + self.np_random.randn(self.model.nv) * .1
         self.set_state(qpos, qvel)
         return self._get_obs()
 

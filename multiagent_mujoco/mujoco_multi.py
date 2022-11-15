@@ -7,9 +7,21 @@ from .manyagent_swimmer import ManyAgentSwimmerEnv
 from .coupled_half_cheetah import CoupledHalfCheetah
 
 from .obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
-#from obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
 
-_MUJOCO_GYM_ENVIROMENTS = ['Ant-v4', 'HalfCheetah-v4', 'Hopper-v4', 'HumanoidStandup-v4', 'Humanoid-v4', 'Reacher-v4', 'Swimmer-v4', 'Walker2d-v4', 'InvertedPendulum-v4', 'InvertedDoublePendulum-v4']
+# from obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
+
+_MUJOCO_GYM_ENVIROMENTS = [
+    "Ant-v4",
+    "HalfCheetah-v4",
+    "Hopper-v4",
+    "HumanoidStandup-v4",
+    "Humanoid-v4",
+    "Reacher-v4",
+    "Swimmer-v4",
+    "Walker2d-v4",
+    "InvertedPendulum-v4",
+    "InvertedDoublePendulum-v4",
+]
 
 
 class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
@@ -25,13 +37,13 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     # Action Spaces
 
     For (1) the action space shape is the shape of the single agent domain divided by the number of agents
-    
+
     For (2) it Depends on the configuration
-    
+
     # State Spaces
-    
+
     Depends on state
-    
+
     # valid Configurations
 
     ### 2-Agent Ant
@@ -116,26 +128,39 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
     agent_conf="1p1"
 
     """
-    def __init__(self, scenario: str, agent_conf: str, agent_obsk: int=1, render_mode: str=None):
+
+    def __init__(
+        self,
+        scenario: str,
+        agent_conf: str,
+        agent_obsk: int = 1,
+        render_mode: str = None,
+    ):
         """
         Arguments:
-            scenario: The Task to solve 
+            scenario: The Task to solve
             agent_conf: '${Number Of Agents}x${Number Of Segments per Agent}${Optionally Additional options}', eg '1x6', '2x4', '2x4d', if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
             agent_obsk: Number of nearest joints to observe, if set to 0 it only observes local state, if set to 1 it observes local state + 1 joint over, if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
             render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/), valid values: "human","rgb_array","depth_array"
         """
-        scenario += '-v4'
+        scenario += "-v4"
 
         if agent_conf == None:
             self.agent_obsk = None
         else:
-            self.agent_obsk = agent_obsk # if None, fully observable else k>=0 implies observe nearest k agents or joints
+            self.agent_obsk = agent_obsk  # if None, fully observable else k>=0 implies observe nearest k agents or joints
 
         if self.agent_obsk != None:
-            self.agent_action_partitions, mujoco_edges, self.mujoco_globals = get_parts_and_edges(scenario, agent_conf)
-            self.possible_agents = [str(agent_id) for agent_id in range(len(self.agent_action_partitions))]
+            (
+                self.agent_action_partitions,
+                mujoco_edges,
+                self.mujoco_globals,
+            ) = get_parts_and_edges(scenario, agent_conf)
+            self.possible_agents = [
+                str(agent_id) for agent_id in range(len(self.agent_action_partitions))
+            ]
         else:
-            self.possible_agents = ['0']
+            self.possible_agents = ["0"]
 
         self.agents = self.possible_agents
 
@@ -152,45 +177,70 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                 k_categories_label = "qpos,qvel|qpos"
 
             k_split = k_categories_label.split("|")
-            self.k_categories = [k_split[k if k < len(k_split) else -1].split(",") for k in range(self.agent_obsk+1)]
+            self.k_categories = [
+                k_split[k if k < len(k_split) else -1].split(",")
+                for k in range(self.agent_obsk + 1)
+            ]
 
             self.global_categories = []
 
-
         if self.agent_obsk is not None:
-            self.k_dicts = [get_joints_at_kdist(agent_id,
-                                                self.agent_action_partitions,
-                                                mujoco_edges,
-                                                k=self.agent_obsk,
-                                                kagents=False,) for agent_id in range(self.num_agents)]
+            self.k_dicts = [
+                get_joints_at_kdist(
+                    agent_id,
+                    self.agent_action_partitions,
+                    mujoco_edges,
+                    k=self.agent_obsk,
+                    kagents=False,
+                )
+                for agent_id in range(self.num_agents)
+            ]
 
         # load scenario from script
         if scenario in _MUJOCO_GYM_ENVIROMENTS:
-            self.env = (gymnasium.make(scenario, render_mode=render_mode))
+            self.env = gymnasium.make(scenario, render_mode=render_mode)
         elif scenario in ["manyagent_ant-v4"]:
-            self.env = gymnasium.wrappers.TimeLimit(ManyAgentAntEnv(agent_conf, render_mode), max_episode_steps=1000)
+            self.env = gymnasium.wrappers.TimeLimit(
+                ManyAgentAntEnv(agent_conf, render_mode), max_episode_steps=1000
+            )
         elif scenario in ["manyagent_swimmer-v4"]:
-            self.env = gymnasium.wrappers.TimeLimit(ManyAgentSwimmerEnv(agent_conf, render_mode), max_episode_steps=1000)
+            self.env = gymnasium.wrappers.TimeLimit(
+                ManyAgentSwimmerEnv(agent_conf, render_mode), max_episode_steps=1000
+            )
         elif scenario in ["coupled_half_cheetah-v4"]:
-            self.env = gymnasium.wrappers.TimeLimit(CoupledHalfCheetah(agent_conf, render_mode), max_episode_steps=1000)
+            self.env = gymnasium.wrappers.TimeLimit(
+                CoupledHalfCheetah(agent_conf, render_mode), max_episode_steps=1000
+            )
         else:
-            raise NotImplementedError('Custom env not implemented!')
+            raise NotImplementedError("Custom env not implemented!")
 
         if self.agent_obsk == None:
-                self.action_spaces = {'0': self.env.action_space}
-                self.observation_spaces = {'0': self.env.observation_space}
+            self.action_spaces = {"0": self.env.action_space}
+            self.observation_spaces = {"0": self.env.observation_space}
         else:
             self.observation_spaces, self.action_spaces = {}, {}
             for agent_id, partition in enumerate(self.agent_action_partitions):
-                self.action_spaces[str(agent_id)] = gymnasium.spaces.Box(low=self.env.action_space.low[0], high=self.env.action_space.high[1], shape=(len(partition),), dtype=numpy.float32) 
-                self.observation_spaces[str(agent_id)] = gymnasium.spaces.Box(low=-numpy.inf, high=numpy.inf, shape=(len(self._get_obs_agent(agent_id)),), dtype=numpy.float32)
+                self.action_spaces[str(agent_id)] = gymnasium.spaces.Box(
+                    low=self.env.action_space.low[0],
+                    high=self.env.action_space.high[1],
+                    shape=(len(partition),),
+                    dtype=numpy.float32,
+                )
+                self.observation_spaces[str(agent_id)] = gymnasium.spaces.Box(
+                    low=-numpy.inf,
+                    high=numpy.inf,
+                    shape=(len(self._get_obs_agent(agent_id)),),
+                    dtype=numpy.float32,
+                )
 
         pass
 
     def step(self, actions: dict[str, numpy.float32]):
-        _, reward_n, is_terminal_n, is_truncated_n, info_n = self.env.step(self.map_actions(actions))
+        _, reward_n, is_terminal_n, is_truncated_n, info_n = self.env.step(
+            self.map_actions(actions)
+        )
 
-        rewards, terminations, truncations, info = {},{},{},{}
+        rewards, terminations, truncations, info = {}, {}, {}, {}
         observations = self._get_obs()
         for agent_id in self.agents:
             rewards[str(agent_id)] = reward_n
@@ -202,7 +252,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
             self.agents = []
 
         return observations, rewards, terminations, truncations, info
-    
+
     def map_actions(self, actions: dict[str, numpy.float32]):
         """
         Maps actions back into MuJoCo action space
@@ -210,15 +260,19 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
             The actions of the whole domain in a single list
         """
         if self.agent_obsk == None:
-            return actions['0']
+            return actions["0"]
 
         env_actions = numpy.zeros((self.env.action_space.shape[0],)) + numpy.nan
         for agent_id, partition in enumerate(self.agent_action_partitions):
             for i, body_part in enumerate(partition):
-                assert numpy.isnan(env_actions[body_part.act_ids]), "FATAL: At least one env action is doubly defined!"
+                assert numpy.isnan(
+                    env_actions[body_part.act_ids]
+                ), "FATAL: At least one env action is doubly defined!"
                 env_actions[body_part.act_ids] = actions[str(agent_id)][i]
-        
-        assert not numpy.isnan(env_actions).any(), "FATAL: At least one env action is undefined!"
+
+        assert not numpy.isnan(
+            env_actions
+        ).any(), "FATAL: At least one env action is undefined!"
         return env_actions
 
     def observation_space(self, agent: str):
@@ -226,12 +280,12 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
 
     def action_space(self, agent: str):
         return self.action_spaces[str(agent)]
-    
+
     def state(self):
         return self.env.unwrapped._get_obs()
 
     def _get_obs(self):
-        'Returns all agent observations in a dict[str, ActionType]'
+        "Returns all agent observations in a dict[str, ActionType]"
         observations = {}
         for agent_id in self.agents:
             observations[str(agent_id)] = self._get_obs_agent(int(agent_id))
@@ -241,16 +295,17 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         if self.agent_obsk is None:
             return self.env.unwrapped._get_obs()
         else:
-            return build_obs(self.env,
-                                  self.k_dicts[agent_id],
-                                  self.k_categories,
-                                  self.mujoco_globals,
-                                  self.global_categories,
-                                  vec_len=getattr(self, "obs_size", None))
-
+            return build_obs(
+                self.env,
+                self.k_dicts[agent_id],
+                self.k_categories,
+                self.mujoco_globals,
+                self.global_categories,
+                vec_len=getattr(self, "obs_size", None),
+            )
 
     def reset(self, seed=None, return_info=False, options=None):
-        """ Returns initial observations and states"""
+        """Returns initial observations and states"""
         self.env.reset(seed=seed)
         self.agents = self.possible_agents
         if return_info == False:
