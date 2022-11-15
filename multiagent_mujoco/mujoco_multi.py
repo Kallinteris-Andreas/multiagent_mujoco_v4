@@ -179,6 +179,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
             ]
         else:
             self.possible_agents = ["0"]
+            self.agent_action_partitions = ['action' + str(action_id) for action_id in range(self.env.action_space.shape[0])]
 
         self.agents = self.possible_agents
 
