@@ -23,7 +23,7 @@ _MUJOCO_GYM_ENVIROMENTS = [
 ]
 
 
-class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
+class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     """
     # MaMuJoCo (Multi-Agent MuJoCo)
 

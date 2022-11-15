@@ -27,7 +27,7 @@ pip install .
 
 ```python
 import numpy
-from multiagent_mujoco.mujoco_multi import MujocoMulti
+from multiagent_mujoco.mujoco_multi import MaMuJoCo
 
 if __name__ == "__main__":
     #env = MujocoMulti(scenario='InvertedPendulum', agent_conf=None, agent_obsk=1, render_mode='human')
