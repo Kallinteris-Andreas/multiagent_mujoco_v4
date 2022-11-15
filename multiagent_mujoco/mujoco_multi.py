@@ -144,12 +144,12 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         """
         scenario += "-v4"
 
-        if agent_conf == None:
+        if agent_conf is None:
             self.agent_obsk = None
         else:
             self.agent_obsk = agent_obsk  # if None, fully observable else k>=0 implies observe nearest k agents or joints
 
-        if self.agent_obsk != None:
+        if self.agent_obsk is not None:
             (
                 self.agent_action_partitions,
                 mujoco_edges,
@@ -213,7 +213,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         else:
             raise NotImplementedError("Custom env not implemented!")
 
-        if self.agent_obsk == None:
+        if self.agent_obsk is None:
             self.action_spaces = {"0": self.env.action_space}
             self.observation_spaces = {"0": self.env.observation_space}
         else:
@@ -258,7 +258,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         Returns:
             The actions of the whole domain in a single list
         """
-        if self.agent_obsk == None:
+        if self.agent_obsk is None:
             return actions["0"]
 
         env_actions = numpy.zeros((self.env.action_space.shape[0],)) + numpy.nan
@@ -307,7 +307,7 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
         """Returns initial observations and states"""
         self.env.reset(seed=seed)
         self.agents = self.possible_agents
-        if return_info == False:
+        if return_info is False:
             return self._get_obs()
         else:
             return self._get_obs(), None
