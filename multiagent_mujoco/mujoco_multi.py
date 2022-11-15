@@ -182,18 +182,6 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
                 for k in range(self.agent_obsk + 1)
             ]
 
-        if self.agent_obsk is not None:
-            self.k_dicts = [
-                get_joints_at_kdist(
-                    agent_id,
-                    self.agent_action_partitions,
-                    mujoco_edges,
-                    k=self.agent_obsk,
-                    kagents=False,
-                )
-                for agent_id in range(self.num_agents)
-            ]
-
         # load scenario from script
         if scenario in _MUJOCO_GYM_ENVIROMENTS:
             self.env = gymnasium.make(scenario, render_mode=render_mode)
@@ -211,6 +199,18 @@ class MujocoMulti(pettingzoo.utils.env.ParallelEnv):
             )
         else:
             raise NotImplementedError("Custom env not implemented!")
+
+        if self.agent_obsk is not None:
+            self.k_dicts = [
+                get_joints_at_kdist(
+                    agent_id,
+                    self.agent_action_partitions,
+                    mujoco_edges,
+                    k=self.agent_obsk,
+                    kagents=False,
+                )
+                for agent_id in range(self.num_agents)
+            ]
 
         if self.agent_obsk is None:
             self.action_spaces = {"0": self.env.action_space}
