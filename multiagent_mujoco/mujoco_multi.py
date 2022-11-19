@@ -304,7 +304,10 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
     def reset(self, seed=None, return_info=False, options=None):
         """Returns initial observations and states"""
-        self.env.reset(seed=seed)
+        _, info_n = self.env.reset(seed=seed)
+        info = {}
+        for agent_id in self.agents:
+            info[str(agent_id)] = info_n
         self.agents = self.possible_agents
         if return_info is False:
             return self._get_obs()
