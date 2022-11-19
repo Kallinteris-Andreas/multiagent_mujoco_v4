@@ -312,7 +312,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         if return_info is False:
             return self._get_obs()
         else:
-            return self._get_obs(), None
+            return self._get_obs(), info
 
     def render(self):
         return self.env.render()
