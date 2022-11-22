@@ -71,11 +71,11 @@ def get_joints_at_kdist(
     def _adjacent(lst, kagents=False):
         # return all sets adjacent to any element in lst
         ret = set([])
-        for l in lst:
+        for element in lst:
             ret = ret.union(
                 set(
                     itertools.chain(
-                        *[e.edges.difference({l}) for e in hyperedges if l in e]
+                        *[e.edges.difference({element}) for e in hyperedges if element in e]
                     )
                 )
             )
