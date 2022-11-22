@@ -140,7 +140,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             scenario: The Task to solve
             agent_conf: '${Number Of Agents}x${Number Of Segments per Agent}${Optionally Additional options}', eg '1x6', '2x4', '2x4d', if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
             agent_obsk: Number of nearest joints to observe, if set to 0 it only observes local state, if set to 1 it observes local state + 1 joint over, if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
-            render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/), valid values: "human","rgb_array","depth_array"
+            render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/), valid values: 'human', 'rgb_array', 'depth_array'
         """
         scenario += "-v4"
         self.global_categories = []
