@@ -40,8 +40,8 @@ class CoupledHalfCheetah(mujoco_env.MujocoEnv, utils.EzPickle):
         xposafter1 = self.unwrapped.data.qpos[0]
         xposafter2 = self.unwrapped.data.qpos[len(self.unwrapped.data.qpos) // 2]
         ob = self._get_obs()
-        reward_ctrl1 = -0.1 * np.square(action[0: len(action) // 2]).sum()
-        reward_ctrl2 = -0.1 * np.square(action[len(action) // 2:]).sum()
+        reward_ctrl1 = -0.1 * np.square(action[0 : len(action) // 2]).sum()
+        reward_ctrl2 = -0.1 * np.square(action[len(action) // 2 :]).sum()
         reward_run1 = (xposafter1 - xposbefore1) / self.dt
         reward_run2 = (xposafter2 - xposbefore2) / self.dt
         reward = (reward_ctrl1 + reward_ctrl2) / 2.0 + (reward_run1 + reward_run2) / 2.0

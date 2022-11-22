@@ -75,7 +75,11 @@ def get_joints_at_kdist(
             ret = ret.union(
                 set(
                     itertools.chain(
-                        *[e.edges.difference({element}) for e in hyperedges if element in e]
+                        *[
+                            e.edges.difference({element})
+                            for e in hyperedges
+                            if element in e
+                        ]
                     )
                 )
             )
@@ -705,7 +709,7 @@ def get_parts_and_edges(label, partitioning):
         globals = {}
 
         parts = [
-            tuple(joints[i * n_segs_per_agents: (i + 1) * n_segs_per_agents])
+            tuple(joints[i * n_segs_per_agents : (i + 1) * n_segs_per_agents])
             for i in range(n_agents)
         ]
         return parts, edges, globals
@@ -817,7 +821,7 @@ def get_parts_and_edges(label, partitioning):
             [
                 x
                 for sublist in joints[
-                    i * n_segs_per_agents: (i + 1) * n_segs_per_agents
+                    i * n_segs_per_agents : (i + 1) * n_segs_per_agents
                 ]
                 for x in sublist
             ]
