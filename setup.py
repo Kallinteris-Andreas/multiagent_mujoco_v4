@@ -42,7 +42,7 @@ setup(
       install_requires=[
             "gymnasium==0.26.2",
             "mujoco>=2.2.0",
-            "PettingZoo==1.22.0"
+            "PettingZoo==1.22.0",
             "Jinja2>=3.0.3",
             #"scipy>=1.9.0",
             #"numpy>=1.24.5",
