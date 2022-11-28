@@ -147,7 +147,9 @@ def build_obs(env, k_dict, k_categories, global_dict, global_categories):
                                 if category not in body_set_dict:
                                     body_set_dict[category] = set()
                                 if b not in body_set_dict[category]:
-                                    items = getattr(env.unwrapped.data, category)[b].tolist()
+                                    items = getattr(env.unwrapped.data, category)[
+                                        b
+                                    ].tolist()
                                     items = getattr(_t, "body_fn", lambda _id, x: x)(
                                         b, items
                                     )
@@ -161,7 +163,9 @@ def build_obs(env, k_dict, k_categories, global_dict, global_categories):
     for category in global_categories:
         if category in ["qvel", "qpos"]:  # this is a "joint position" item
             for j in global_dict.get("joints", []):
-                items = getattr(env.unwrapped.data, category)[getattr(j, "{}_ids".format(category))]
+                items = getattr(env.unwrapped.data, category)[
+                    getattr(j, "{}_ids".format(category))
+                ]
                 obs_lst.extend(items if isinstance(items, list) else [items])
         else:
             for b in global_dict.get("bodies", []):
