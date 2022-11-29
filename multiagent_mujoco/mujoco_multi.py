@@ -240,13 +240,13 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
     def step(
         self, actions: dict[str, numpy.array]
-    ) -> tuple(
+    ) -> tuple[
         dict[str, numpy.array],
         dict[str, numpy.array],
         dict[str, numpy.array],
         dict[str, numpy.array],
-        dict[str, str],
-    ):
+        dict[str, str]
+    ]:
         _, reward_n, is_terminal_n, is_truncated_n, info_n = self.env.step(
             self.map_actions(actions)
         )
