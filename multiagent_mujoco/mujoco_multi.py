@@ -248,7 +248,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         dict[str, str]
     ]:
         _, reward_n, is_terminal_n, is_truncated_n, info_n = self.env.step(
-            self.map_actions(actions)
+            self.map_local_actions_to_global_action(actions)
         )
 
         rewards, terminations, truncations, info = {}, {}, {}, {}
@@ -264,7 +264,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
         return observations, rewards, terminations, truncations, info
 
-    def map_actions(self, actions: dict[str, numpy.array]) -> numpy.array:
+    def map_local_actions_to_global_action(self, actions: dict[str, numpy.array]) -> numpy.array:
         """
         Maps actions back into MuJoCo action space
         Returns:
