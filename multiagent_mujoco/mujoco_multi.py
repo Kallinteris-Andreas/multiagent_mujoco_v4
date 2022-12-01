@@ -286,6 +286,21 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         ).any(), "FATAL: At least one env action is undefined!"
         return env_actions
 
+    def map_global_action_to_local_actions(self, action: numpy.ndarray) -> dict[str, numpy.ndarray]:
+        """
+        Arguments:
+            action: An array representing the actions of the single agent for this domain
+        Returns:
+            A dictionary of actions to be performed by each agent
+        """
+        if self.agent_obsk is None:
+            return {self.possible_agents[0], action}
+
+        local_actions = {}
+        for agent_id, partition in enumerate(self.agent_action_partitions):
+            local_actions[self.possible_agents[agent_id]] = numpy.array([action[node.act_ids] for node in partition])
+        return local_actions
+
     def observation_space(self, agent: str) -> gymnasium.spaces.Box:
         return self.observation_spaces[str(agent)]
 
