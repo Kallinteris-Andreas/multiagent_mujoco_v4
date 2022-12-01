@@ -176,7 +176,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             ) = get_parts_and_edges(scenario, agent_conf)
         else:
             self.agent_action_partitions = {
-                "0": [
+                'single agent': [
                     "action" + str(action_id)
                     for action_id in range(self.env.action_space.shape[0])
                 ]
@@ -218,8 +218,8 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             ]
 
         if self.agent_obsk is None:
-            self.action_spaces = {"0": self.env.action_space}
-            self.observation_spaces = {"0": self.env.observation_space}
+            self.action_spaces = {self.possible_agents[0]: self.env.action_space}
+            self.observation_spaces = {self.possible_agents[0]: self.env.observation_space}
         else:
             self.observation_spaces, self.action_spaces = {}, {}
             for agent_id, partition in enumerate(self.agent_action_partitions):
@@ -271,7 +271,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             The actions of the whole domain in a single list
         """
         if self.agent_obsk is None:
-            return actions["0"]
+            return actions[self.possible_agents[0]]
 
         env_actions = numpy.zeros((self.env.action_space.shape[0],)) + numpy.nan
         for agent_id, partition in enumerate(self.agent_action_partitions):
