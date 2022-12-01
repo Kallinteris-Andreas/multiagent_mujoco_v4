@@ -7,6 +7,7 @@ from .manyagent_ant import ManyAgentAntEnv
 from .manyagent_swimmer import ManyAgentSwimmerEnv
 from .obsk import build_obs, get_joints_at_kdist, get_parts_and_edges
 
+
 _MUJOCO_GYM_ENVIROMENTS = [
     "Ant-v4",
     "HalfCheetah-v4",
@@ -174,7 +175,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             ) = get_parts_and_edges(scenario, agent_conf)
         else:
             self.agent_action_partitions = {
-                'single agent': [
+                "single agent": [
                     "action" + str(action_id)
                     for action_id in range(self.env.action_space.shape[0])
                 ]
@@ -216,7 +217,9 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
         if self.agent_obsk is None:
             self.action_spaces = {self.possible_agents[0]: self.env.action_space}
-            self.observation_spaces = {self.possible_agents[0]: self.env.observation_space}
+            self.observation_spaces = {
+                self.possible_agents[0]: self.env.observation_space
+            }
         else:
             self.observation_spaces, self.action_spaces = {}, {}
             for agent_id, partition in enumerate(self.agent_action_partitions):
@@ -242,7 +245,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         dict[str, numpy.array],
         dict[str, numpy.array],
         dict[str, numpy.array],
-        dict[str, str]
+        dict[str, str],
     ]:
         _, reward_n, is_terminal_n, is_truncated_n, info_n = self.env.step(
             self.map_local_actions_to_global_action(actions)
@@ -261,7 +264,9 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
         return observations, rewards, terminations, truncations, info
 
-    def map_local_actions_to_global_action(self, actions: dict[str, numpy.array]) -> numpy.array:
+    def map_local_actions_to_global_action(
+        self, actions: dict[str, numpy.array]
+    ) -> numpy.array:
         """
         Maps actions back into MuJoCo action space
         Returns:
@@ -283,7 +288,9 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         ).any(), "FATAL: At least one env action is undefined!"
         return env_actions
 
-    def map_global_action_to_local_actions(self, action: numpy.ndarray) -> dict[str, numpy.ndarray]:
+    def map_global_action_to_local_actions(
+        self, action: numpy.ndarray
+    ) -> dict[str, numpy.ndarray]:
         """
         Arguments:
             action: An array representing the actions of the single agent for this domain
@@ -295,10 +302,14 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
         local_actions = {}
         for agent_id, partition in enumerate(self.agent_action_partitions):
-            local_actions[self.possible_agents[agent_id]] = numpy.array([action[node.act_ids] for node in partition])
+            local_actions[self.possible_agents[agent_id]] = numpy.array(
+                [action[node.act_ids] for node in partition]
+            )
         return local_actions
 
-    def map_global_state_to_local_observations(self, global_state: numpy.ndarray) -> dict[str, numpy.ndarray]:
+    def map_global_state_to_local_observations(
+        self, global_state: numpy.ndarray
+    ) -> dict[str, numpy.ndarray]:
         # self.env.unwrapped
         breakpoint()
         pass
