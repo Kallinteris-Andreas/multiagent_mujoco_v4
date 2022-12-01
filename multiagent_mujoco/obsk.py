@@ -52,7 +52,6 @@ def get_joints_at_kdist(
     agent_partitions,
     hyperedges,
     k=0,
-    kagents=False,
 ):
     """Identify all joints at distance <= k from agent agent_id
 
@@ -60,15 +59,12 @@ def get_joints_at_kdist(
     :param agent_partitions: list of joint tuples in order of agentids
     :param edges: list of tuples (joint1, joint2)
     :param k: kth degree
-    :param kagents: True (observe all joints of an agent if a single one is) or False (individual joint granularity)
     :return:
         dict with k as key, and list of joints at that distance
     """
-    assert not kagents, "kagents not implemented!"
-
     agent_joints = agent_partitions[agent_id]
 
-    def _adjacent(lst, kagents=False):
+    def _adjacent(lst):
         # return all sets adjacent to any element in lst
         ret = set()
         for element in lst:

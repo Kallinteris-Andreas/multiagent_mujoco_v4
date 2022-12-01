@@ -7,8 +7,6 @@ from .manyagent_ant import ManyAgentAntEnv
 from .manyagent_swimmer import ManyAgentSwimmerEnv
 from .obsk import build_obs, get_joints_at_kdist, get_parts_and_edges
 
-# from obsk import get_joints_at_kdist, get_parts_and_edges, build_obs
-
 _MUJOCO_GYM_ENVIROMENTS = [
     "Ant-v4",
     "HalfCheetah-v4",
@@ -212,7 +210,6 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                     self.agent_action_partitions,
                     mujoco_edges,
                     k=self.agent_obsk,
-                    kagents=False,
                 )
                 for agent_id in range(self.num_agents)
             ]
@@ -300,6 +297,11 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         for agent_id, partition in enumerate(self.agent_action_partitions):
             local_actions[self.possible_agents[agent_id]] = numpy.array([action[node.act_ids] for node in partition])
         return local_actions
+
+    def map_global_state_to_local_observations(self, global_state: numpy.ndarray) -> dict[str, numpy.ndarray]:
+        # self.env.unwrapped
+        breakpoint()
+        pass
 
     def observation_space(self, agent: str) -> gymnasium.spaces.Box:
         return self.observation_spaces[str(agent)]
