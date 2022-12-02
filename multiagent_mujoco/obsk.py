@@ -34,7 +34,7 @@ class Node:
 
 
 class HyperEdge:
-    def __init__(self, *edges):
+    def __init__(self, *edges: Node):
         self.edges = set(edges)
 
     def __contains__(self, item):
@@ -62,8 +62,6 @@ def get_joints_at_kdist(
     :return:
         dict with k as key, and list of joints at that distance
     """
-    agent_joints = agent_partitions[agent_id]
-
     def _adjacent(lst):
         # return all sets adjacent to any element in lst
         ret = set()
@@ -86,12 +84,13 @@ def get_joints_at_kdist(
     k_dict = {}
     for _k in range(k + 1):
         if not _k:
-            new = set(agent_joints)
+            new = set(agent_partitions[agent_id])
         else:
             # print(hyperedges)
             new = _adjacent(new) - seen
         seen = seen.union(new)
         k_dict[_k] = sorted(list(new), key=lambda x: x.label)
+    breakpoint()
     return k_dict
 
 
