@@ -79,18 +79,13 @@ def get_joints_at_kdist(
             )
         return ret
 
-    seen = set()
-    new = set()
-    k_dict = {}
-    for _k in range(k + 1):
-        if not _k:
-            new = set(agent_partitions[agent_id])
-        else:
-            # print(hyperedges)
-            new = _adjacent(new) - seen
-        seen = seen.union(new)
-        k_dict[_k] = sorted(list(new), key=lambda x: x.label)
-    breakpoint()
+    explored_nodes = set(agent_partitions[agent_id])
+    new_nodes = explored_nodes
+    k_dict = {0 : sorted(list(new_nodes), key=lambda x: x.label)}
+    for key in range(1, k + 1):
+        new_nodes = _adjacent(new_nodes) - explored_nodes
+        explored_nodes = explored_nodes.union(new_nodes)
+        k_dict[key] = sorted(list(new_nodes), key=lambda x: x.label)
     return k_dict
 
 
