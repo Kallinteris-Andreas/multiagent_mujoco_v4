@@ -55,7 +55,7 @@ def get_joints_at_kdist(
     agent_partitions,
     hyperedges,
     k=0,
-):
+) -> dict[int : list[Node]]:
     """Identify all joints at distance <= k from agent agent_id
 
     :param agent_id: id of agent to be considered
@@ -171,7 +171,7 @@ def build_obs(env, k_dict, k_categories, global_dict, global_categories):
     return np.array(obs_lst)
 
 
-def get_parts_and_edges(label, partitioning) -> tuple[list[tuple], list[HyperEdge], dict[str: list[Node]]]:
+def get_parts_and_edges(label, partitioning) -> tuple[list[tuple[Node, ...]], list[HyperEdge], dict[str: list[Node]]]:
     if label in ["half_cheetah", "HalfCheetah-v4"]:
 
         # define Mujoco graph
