@@ -16,6 +16,9 @@ class Node:
         extra_obs=None,
         tendons=None,
     ):
+        """
+        A node of the mujoco graph for single action, and it's corrisponding observetions
+        """
         self.label = label
         self.qpos_ids = qpos_ids
         self.qvel_ids = qvel_ids
@@ -57,8 +60,8 @@ def get_joints_at_kdist(
 
     :param agent_id: id of agent to be considered
     :param agent_partitions: list of joint tuples in order of agentids
-    :param edges: list of tuples (joint1, joint2)
-    :param k: kth degree
+    :param hyperedges: list of tuples (joint1, joint2)
+    :param k: kth degree (number of nearest joints to observe)
     :return:
         dict with k as key, and list of joints at that distance
     """
