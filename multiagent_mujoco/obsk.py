@@ -51,14 +51,14 @@ class HyperEdge:
 
 
 def get_joints_at_kdist(
-    agent_partition,
-    hyperedges,
-    k=0,
+    agent_partition: list[tuple[Node, ...]],
+    hyperedges: list[HyperEdge],
+    k: int = 0,
 ) -> dict[int : list[Node]]:
     """Identify all joints at distance <= k from agent agent_id
 
     :param agent_partition: tuples of nodes of an agent
-    :param hyperedges: list of tuples (joint1, joint2)
+    :param hyperedges: hyperedges of the graph
     :param k: kth degree (number of nearest joints to observe)
     :return:
         dict with k as key, and list of joints at that distance
