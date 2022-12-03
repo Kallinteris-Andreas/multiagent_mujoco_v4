@@ -298,20 +298,26 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             A dictionary of actions to be performed by each agent
         """
         if self.agent_obsk is None:
-            return {self.possible_agents[0], action}
+            return {self.possible_agents[0] : action}
 
         local_actions = {}
         for agent_id, partition in enumerate(self.agent_action_partitions):
             local_actions[self.possible_agents[agent_id]] = numpy.array(
                 [action[node.act_ids] for node in partition]
             )
+
+        # assert sizes
+        assert len(local_actions) == len(self.action_spaces)
+        for agent in self.possible_agents:
+            assert len(local_actions[agent]) == self.action_spaces[agent_id].shape[0]
+
         return local_actions
 
     def map_global_state_to_local_observations(
         self, global_state: numpy.ndarray
     ) -> dict[str, numpy.ndarray]:
         # self.env.unwrapped
-        breakpoint()
+        # breakpoint()
         pass
 
     def observation_space(self, agent: str) -> gymnasium.spaces.Box:
