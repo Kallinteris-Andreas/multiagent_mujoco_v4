@@ -2,6 +2,7 @@ import itertools
 from copy import deepcopy
 
 import numpy as np
+import numpy
 
 
 class Node:
@@ -88,10 +89,13 @@ def get_joints_at_kdist(
         new_nodes = _adjacent(new_nodes) - explored_nodes
         explored_nodes = explored_nodes.union(new_nodes)
         k_dict[key] = sorted(list(new_nodes), key=lambda x: x.label)
+    # TODO assert that the nodes are mutally exclusive
     return k_dict
 
 
-def build_obs(env, k_dict, k_categories, global_dict, global_categories) -> numpy.ndarray:
+def build_obs(
+    env, k_dict, k_categories, global_dict, global_categories
+) -> numpy.ndarray:
     """Given a k_dict from get_joints_at_kdist, extract observation vector.
 
     :param k_dict: k_dict
@@ -110,10 +114,10 @@ def build_obs(env, k_dict, k_categories, global_dict, global_categories) -> nump
     obs_lst = []
     # Add parts attributes
     for k in sorted(list(k_dict.keys())):
-        for _t in k_dict[k]:
+        for node in k_dict[k]:
             for category in k_categories[k]:
-                if category in _t.extra_obs:
-                    items = _t.extra_obs[category](env).tolist()
+                if category in node.extra_obs:
+                    items = node.extra_obs[category](env).tolist()
                     obs_lst.extend(items if isinstance(items, list) else [items])
                 else:
                     if category in [
@@ -121,12 +125,12 @@ def build_obs(env, k_dict, k_categories, global_dict, global_categories) -> nump
                         "qpos",
                     ]:  # this is a "joint position/velocity" item
                         items = getattr(env.unwrapped.data, category)[
-                            getattr(_t, "{}_ids".format(category))
+                            getattr(node, "{}_ids".format(category))
                         ]
                         obs_lst.extend(items if isinstance(items, list) else [items])
                     elif category in ["qfrc_actuator"]:  # this is a "vel position" item
                         items = getattr(env.unwrapped.data, category)[
-                            getattr(_t, "{}_ids".format("qvel"))
+                            getattr(node, "{}_ids".format("qvel"))
                         ]
                         obs_lst.extend(items if isinstance(items, list) else [items])
                     elif category in [
@@ -134,15 +138,15 @@ def build_obs(env, k_dict, k_categories, global_dict, global_categories) -> nump
                         "cinert",
                         "cfrc_ext",
                     ]:  # this is a "body position" item
-                        if _t.bodies is not None:
-                            for b in _t.bodies:
+                        if node.bodies is not None:
+                            for b in node.bodies:
                                 if category not in body_set_dict:
                                     body_set_dict[category] = set()
                                 if b not in body_set_dict[category]:
                                     items = getattr(env.unwrapped.data, category)[
                                         b
                                     ].tolist()
-                                    items = getattr(_t, "body_fn", lambda _id, x: x)(
+                                    items = getattr(node, "body_fn", lambda _id, x: x)(
                                         b, items
                                     )
                                     obs_lst.extend(
