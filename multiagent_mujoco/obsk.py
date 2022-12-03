@@ -91,7 +91,7 @@ def get_joints_at_kdist(
     return k_dict
 
 
-def build_obs(env, k_dict, k_categories, global_dict, global_categories):
+def build_obs(env, k_dict, k_categories, global_dict, global_categories) -> numpy.ndarray:
     """Given a k_dict from get_joints_at_kdist, extract observation vector.
 
     :param k_dict: k_dict
@@ -171,7 +171,7 @@ def build_obs(env, k_dict, k_categories, global_dict, global_categories):
 
 
 def get_parts_and_edges(
-    label, partitioning
+    label: str, partitioning: str
 ) -> tuple[list[tuple[Node, ...]], list[HyperEdge], dict[str : list[Node]]]:
     if label in ["half_cheetah", "HalfCheetah-v4"]:
 
