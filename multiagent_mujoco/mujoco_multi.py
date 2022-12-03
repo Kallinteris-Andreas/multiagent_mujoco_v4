@@ -357,25 +357,18 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             return None
 
         if scenario in ["Ant-v4", "manyagent_ant"]:
-            k_categories_label = "qpos,qvel,cfrc_ext|qpos"
-            # k_split = ['qpos,qvel,cfrc_ext', 'qpos']
+            k_split = ["qpos,qvel,cfrc_ext", "qpos"]
         elif scenario in ["Humanoid-v4", "HumanoidStandup-v4"]:
-            k_categories_label = "qpos,qvel,cfrc_ext,cvel,cinert,qfrc_actuator|qpos"
-            # k_split = ['qpos,qvel,cfrc_ext,cvel,cinert,qfrc_actuator', 'qpos']
+            k_split = ["qpos,qvel,cfrc_ext,cvel,cinert,qfrc_actuator", "qpos"]
         elif scenario in ["Reacher-v4"]:
-            k_categories_label = "qpos,qvel,fingertip_dist|qpos"
-            # k_split = ['qpos,qvel,fingertip_dist', 'qpos']
-        elif scenario in ["coupled_half_cheetah"]:
-            k_categories_label = "qpos,qvel,ten_J,ten_length,ten_velocity|"
-            # k_split = ['qpos,qvel', 'qpos']
+            k_split = ["qpos,qvel,fingertip_dist", "qpos"]
+        elif scenario in ["coupled_half_cheetah-v4"]:
+            k_split = ["qpos,qvel,ten_J,ten_length,ten_velocity", ""]
         else:
-            k_categories_label = "qpos,qvel|qpos"
-            # k_split = ['qpos,qvel', 'qpos']
+            k_split = ["qpos,qvel", "qpos"]
 
-        k_split = k_categories_label.split("|")
         categories = [
             k_split[k if k < len(k_split) else -1].split(",")
             for k in range(self.agent_obsk + 1)
         ]
-        breakpoint()
         return categories
