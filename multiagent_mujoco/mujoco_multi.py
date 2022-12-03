@@ -207,8 +207,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         if self.agent_obsk is not None:
             self.k_dicts = [
                 get_joints_at_kdist(
-                    agent_id,
-                    self.agent_action_partitions,
+                    self.agent_action_partitions[agent_id],
                     mujoco_edges,
                     k=self.agent_obsk,
                 )
