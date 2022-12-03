@@ -297,7 +297,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             A dictionary of actions to be performed by each agent
         """
         if self.agent_obsk is None:
-            return {self.possible_agents[0] : action}
+            return {self.possible_agents[0]: action}
 
         local_actions = {}
         for agent_id, partition in enumerate(self.agent_action_partitions):

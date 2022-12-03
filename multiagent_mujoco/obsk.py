@@ -63,6 +63,7 @@ def get_joints_at_kdist(
     :return:
         dict with k as key, and list of joints at that distance
     """
+
     def _adjacent(lst):
         # return all sets adjacent to any element in lst
         ret = set()
@@ -82,7 +83,7 @@ def get_joints_at_kdist(
 
     explored_nodes = set(agent_partition)
     new_nodes = explored_nodes
-    k_dict = {0 : sorted(list(new_nodes), key=lambda x: x.label)}
+    k_dict = {0: sorted(list(new_nodes), key=lambda x: x.label)}
     for key in range(1, k + 1):
         new_nodes = _adjacent(new_nodes) - explored_nodes
         explored_nodes = explored_nodes.union(new_nodes)
@@ -169,7 +170,9 @@ def build_obs(env, k_dict, k_categories, global_dict, global_categories):
     return np.array(obs_lst)
 
 
-def get_parts_and_edges(label, partitioning) -> tuple[list[tuple[Node, ...]], list[HyperEdge], dict[str: list[Node]]]:
+def get_parts_and_edges(
+    label, partitioning
+) -> tuple[list[tuple[Node, ...]], list[HyperEdge], dict[str : list[Node]]]:
     if label in ["half_cheetah", "HalfCheetah-v4"]:
 
         # define Mujoco graph
