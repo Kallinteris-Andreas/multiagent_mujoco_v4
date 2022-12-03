@@ -171,7 +171,7 @@ def build_obs(env, k_dict, k_categories, global_dict, global_categories):
     return np.array(obs_lst)
 
 
-def get_parts_and_edges(label, partitioning):
+def get_parts_and_edges(label, partitioning) -> tuple[list[tuple], list[HyperEdge], dict[str: list[Node]]]:
     if label in ["half_cheetah", "HalfCheetah-v4"]:
 
         # define Mujoco graph
