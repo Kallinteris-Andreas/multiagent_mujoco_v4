@@ -9,8 +9,8 @@ class Node:
     def __init__(
         self,
         label,
-        qpos_ids,
-        qvel_ids,
+        qpos_ids,  # Note: as far as i can tell this does nothing
+        qvel_ids,  # Note: as far as i can tell this does nothing
         act_ids,
         body_fn=None,
         bodies=None,
