@@ -62,8 +62,11 @@ def get_joints_at_kdist(
     :param hyperedges: hyperedges of the graph
     :param k: kth degree (number of nearest joints to observe)
     :return:
-        dict with k as key, and list of joints at that distance
+        dict with k as key, and list of joints/nodes at that distance
     """
+
+    if k is None:
+        return None
 
     def _adjacent(lst):
         # return all sets adjacent to any element in lst
@@ -177,6 +180,8 @@ def build_obs(
 def get_parts_and_edges(
     label: str, partitioning: str
 ) -> tuple[list[tuple[Node, ...]], list[HyperEdge], dict[str : list[Node]]]:
+    """
+    """
     if label in ["half_cheetah", "HalfCheetah-v4"]:
 
         # define Mujoco graph

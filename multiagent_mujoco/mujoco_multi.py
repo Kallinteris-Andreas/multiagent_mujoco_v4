@@ -188,15 +188,14 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
         self.k_categories = self._generate_categories(scenario)
 
-        if self.agent_obsk is not None:
-            self.k_dicts = [
-                get_joints_at_kdist(
-                    self.agent_action_partitions[agent_id],
-                    mujoco_edges,
-                    k=self.agent_obsk,
-                )
-                for agent_id in range(self.num_agents)
-            ]
+        self.k_dicts = [
+            get_joints_at_kdist(
+                self.agent_action_partitions[agent_id],
+                mujoco_edges,
+                k=self.agent_obsk,
+            )
+            for agent_id in range(self.num_agents)
+        ]
 
         if self.agent_obsk is None:
             self.action_spaces = {self.possible_agents[0]: self.env.action_space}
@@ -352,7 +351,12 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     def seed(self, seed: int = None):
         raise NotImplementedError
 
-    def _generate_categories(self, scenario: str):
+    def _generate_categories(self, scenario: str) -> list[list[str]]:
+        """
+            :param scenario: the mujoco task
+            :return:
+                a list of observetion types per observation depth
+        """
         if self.agent_obsk is None:
             return None
 
@@ -371,4 +375,5 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             k_split[k if k < len(k_split) else -1].split(",")
             for k in range(self.agent_obsk + 1)
         ]
+        breakpoint()
         return categories
