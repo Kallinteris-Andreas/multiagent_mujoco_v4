@@ -184,7 +184,6 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
         self.k_categories = self._generate_categories(scenario)
 
-        #if self.agent_obsk is not None:
         self.k_dicts = [
             get_joints_at_kdist(
                 self.agent_action_partitions[agent_id],
