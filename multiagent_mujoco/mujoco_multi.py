@@ -175,6 +175,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             ) = get_parts_and_edges(scenario, agent_conf)
         else:
             self.agent_action_partitions = tuple([tuple('0')])
+            mujoco_edges = None
 
         self.possible_agents = [
             str(agent_id) for agent_id in range(len(self.agent_action_partitions))
@@ -183,15 +184,15 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
         self.k_categories = self._generate_categories(scenario)
 
-        if self.agent_obsk is not None:
-            self.k_dicts = [
-                get_joints_at_kdist(
-                    self.agent_action_partitions[agent_id],
-                    mujoco_edges,
-                    k=self.agent_obsk,
-                )
-                for agent_id in range(self.num_agents)
-            ]
+        #if self.agent_obsk is not None:
+        self.k_dicts = [
+            get_joints_at_kdist(
+                self.agent_action_partitions[agent_id],
+                mujoco_edges,
+                k=self.agent_obsk,
+            )
+            for agent_id in range(self.num_agents)
+        ]
 
         if self.agent_obsk is None:
             self.action_spaces = {self.possible_agents[0]: self.env.action_space}
