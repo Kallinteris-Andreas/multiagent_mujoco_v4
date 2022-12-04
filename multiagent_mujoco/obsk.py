@@ -829,4 +829,7 @@ def get_parts_and_edges(
 
         return parts, edges, globals
     else:
+        if partitioning is None:
+            print('Warning: using single agent on unknown MuJoCo Enviroment: ' + label)
+            return tuple([tuple('0')]), None, None
         raise Exception("UNKNOWN label enviroment: {}".format(label))
