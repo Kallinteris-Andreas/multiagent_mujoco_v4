@@ -174,7 +174,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                 self.mujoco_globals,
             ) = get_parts_and_edges(scenario, agent_conf)
         else:
-            self.agent_action_partitions = tuple([tuple('0')])
+            self.agent_action_partitions = tuple([tuple("0")])
             mujoco_edges = None
 
         self.possible_agents = [
