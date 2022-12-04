@@ -186,7 +186,7 @@ def get_parts_and_edges(
     :return:
         the partition of the mujoco graph nodes, the graph edges, and global nodes
     """
-    if label in ["half_cheetah", "HalfCheetah-v4"]:
+    if label in ["HalfCheetah-v4"]:
 
         # define Mujoco graph
         bthigh = Node("bthigh", -6, -6, 0)
@@ -828,3 +828,5 @@ def get_parts_and_edges(
         ]
 
         return parts, edges, globals
+    else:
+        raise Exception("UNKNOWN label enviroment: {}".format(label))
