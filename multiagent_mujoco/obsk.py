@@ -180,7 +180,12 @@ def build_obs(
 def get_parts_and_edges(
     label: str, partitioning: str
 ) -> tuple[list[tuple[Node, ...]], list[HyperEdge], dict[str : list[Node]]]:
-    """ """
+    """
+    :param label: the mujoco task to partion
+    :param partitioning: the partioneing scheme
+    :return:
+        the partition of the mujoco graph nodes, the graph edges, and globals
+    """
     if label in ["half_cheetah", "HalfCheetah-v4"]:
 
         # define Mujoco graph
