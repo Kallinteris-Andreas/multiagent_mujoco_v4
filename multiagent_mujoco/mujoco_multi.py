@@ -206,13 +206,13 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         else:
             self.observation_spaces, self.action_spaces = {}, {}
             for agent_id, partition in enumerate(self.agent_action_partitions):
-                self.action_spaces[str(agent_id)] = gymnasium.spaces.Box(
+                self.action_spaces[self.possible_agents[agent_id]] = gymnasium.spaces.Box(
                     low=self.env.action_space.low[0],
                     high=self.env.action_space.high[0],
                     shape=(len(partition),),
                     dtype=numpy.float32,
                 )
-                self.observation_spaces[str(agent_id)] = gymnasium.spaces.Box(
+                self.observation_spaces[self.possible_agents[agent_id]] = gymnasium.spaces.Box(
                     low=-numpy.inf,
                     high=numpy.inf,
                     shape=(len(self._get_obs_agent(agent_id)),),
