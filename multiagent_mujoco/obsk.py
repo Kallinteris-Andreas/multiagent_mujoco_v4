@@ -184,7 +184,7 @@ def get_parts_and_edges(
     :param label: the mujoco task to partion
     :param partitioning: the partioneing scheme
     :return:
-        the partition of the mujoco graph nodes, the graph edges, and globals
+        the partition of the mujoco graph nodes, the graph edges, and global nodes
     """
     if label in ["half_cheetah", "HalfCheetah-v4"]:
 
