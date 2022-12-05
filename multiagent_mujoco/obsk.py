@@ -833,3 +833,63 @@ def get_parts_and_edges(
             print("Warning: using single agent on unknown MuJoCo Enviroment: " + label)
             return tuple([tuple("0")]), None, None
         raise Exception("UNKNOWN label enviroment: {}".format(label))
+
+
+def observation_structure(scenario: str) -> dict[str:int]:
+    """
+    :param scenario: the mujoco scenartio
+    :return:
+        a dictionary keyied by observation type with values indicating the number of observations for that type
+    """
+    ret = {
+        "qpos": 0,  # Position
+        "qvel": 0,  # Velocity
+        "cinert": 0,  # com inertia
+        "cvel": 0,  # com velocity
+        "qfrc_actuator": 0,  # Actuator Forces
+        "cfrc_ext": 0,  # Contact Forces
+    }
+
+    if scenario == "Ant-v4":
+        ret["qpos"] = 13
+        ret["qvel"] = 14
+        # ret["cfrc_ext"] = 84
+    elif scenario == "HalfCheetah-v4":
+        ret["qpos"] = 8
+        ret["qvel"] = 9
+    elif scenario == "Hopper-v4":
+        ret["qpos"] = 5
+        ret["qvel"] = 6
+    elif scenario == "HumanoidStandup-v4" or scenario == "Humanoid-v4":
+        ret["qpos"] = 22
+        ret["qvel"] = 23
+        ret["cinert"] = 140
+        ret["cvel"] = 84
+        ret["qfrc_actuator"] = 23
+        ret["cfrc_ext"] = 84
+    elif scenario == "InvertedDoublePendulum-v4":
+        assert False, scenario + 'can not be factorized'
+        ret["qpos"] = 3
+        ret["qvel"] = 3
+        # qfrc_constraint = 3
+    elif scenario == "InvertedPendulum-v4":
+        assert False, scenario + 'can not be factorized'
+        ret["qpos"] = 2
+        ret["qvel"] = 2
+    elif scenario == "Pusher-v4":
+        assert False, scenario + 'is not supported'
+        ret["qpos"] = 7
+        ret["qvel"] = 7
+        # 9 body_com
+    elif scenario == "Reacher-v4":
+        ret["qpos"] = 6
+        ret["qvel"] = 2
+        # 3 body_com
+    elif scenario == "Swimmer-v4":
+        ret["qpos"] = 3
+        ret["qvel"] = 5
+    elif scenario == "Walker2d-v4":
+        ret["qpos"] = 8
+        ret["qvel"] = 9
+
+    return ret
