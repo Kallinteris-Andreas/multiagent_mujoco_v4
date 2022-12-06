@@ -20,7 +20,7 @@ class Node:
     ):
         """
         A node of the mujoco graph for single action, and it's corrisponding observetions
-        :param act_ids: the action assicaiated with that node, if set to -1 it means no action is associated with that node
+        :param act_ids: the action assicaiated with that node
         :param extra_obs: an optional overwrite of observation types keyied by categories
         """
         self.label = label
@@ -209,9 +209,9 @@ def get_parts_and_edges(
             HyperEdge(fshin, ffoot),
         ]
 
-        root_x = Node("root_x", 0, 0, -1, extra_obs={"qpos": lambda data: np.array([])})
-        root_z = Node("root_z", 1, 1, -1)
-        root_y = Node("root_y", 2, 2, -1)
+        root_x = Node("root_x", 0, 0, None, extra_obs={"qpos": lambda data: np.array([])})
+        root_z = Node("root_z", 1, 1, None)
+        root_y = Node("root_y", 2, 2, None)
         globals = {"joints": [root_x, root_y, root_z]}
 
         if partitioning == "2x3":
@@ -317,7 +317,7 @@ def get_parts_and_edges(
             "free",
             0,
             0,
-            -1,
+            None,
             extra_obs={
                 "qpos": lambda data: data.qpos[:7],
                 "qvel": lambda data: data.qvel[:6],
@@ -374,7 +374,7 @@ def get_parts_and_edges(
             "root_x",
             0,
             0,
-            -1,
+            None,
             extra_obs={
                 "qpos": lambda data: np.array([]),
                 "qvel": lambda data: np.clip(np.array([data.qvel[1]]), -10, 10),
@@ -384,14 +384,14 @@ def get_parts_and_edges(
             "root_z",
             1,
             1,
-            -1,
+            None,
             extra_obs={"qvel": lambda data: np.clip(np.array([data.qvel[1]]), -10, 10)},
         )
         root_y = Node(
             "root_y",
             2,
             2,
-            -1,
+            None,
             extra_obs={"qvel": lambda data: np.clip(np.array([data.qvel[2]]), -10, 10)},
         )
         globals = {"joints": [root_x, root_y, root_z]}
@@ -483,7 +483,7 @@ def get_parts_and_edges(
 
         return parts, edges, globals
 
-    elif label in ["Reacher-v4"]:  # NOTE: 'get_body_com' obs are not observed
+    elif label in ["Reacher-v4"]:
 
         # define Mujoco-Graph
         body0 = 1
@@ -531,10 +531,10 @@ def get_parts_and_edges(
         worldbody = 0
         target = 4
         target_x = Node(
-            "target_x", -2, -2, -1, extra_obs={"qvel": (lambda data: np.array([]))}
+            "target_x", -2, -2, None, extra_obs={"qvel": (lambda data: np.array([]))}
         )
         target_y = Node(
-            "target_y", -1, -1, -1, extra_obs={"qvel": (lambda data: np.array([]))}
+            "target_y", -1, -1, None, extra_obs={"qvel": (lambda data: np.array([]))}
         )
         globals = {"bodies": [worldbody, target], "joints": [target_x, target_y]}
 
@@ -658,9 +658,9 @@ def get_parts_and_edges(
         ]
         globals = {}
 
-        root_x = Node("root_x", 0, 0, -1, extra_obs={"qpos": lambda data: np.array([])})
-        root_z = Node("root_z", 1, 1, -1)
-        root_y = Node("root_y", 2, 2, -1)
+        root_x = Node("root_x", 0, 0, None, extra_obs={"qpos": lambda data: np.array([])})
+        root_z = Node("root_z", 1, 1, None)
+        root_y = Node("root_y", 2, 2, None)
         globals = {"joints": [root_x, root_y, root_z]}
 
         if partitioning == "1p1":
@@ -791,7 +791,7 @@ def get_parts_and_edges(
             "free",
             0,
             0,
-            -1,
+            None,
             extra_obs={
                 "qpos": lambda data: data.qpos[:7],
                 "qvel": lambda data: data.qvel[:6],
