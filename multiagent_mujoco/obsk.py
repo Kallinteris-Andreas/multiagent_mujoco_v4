@@ -589,7 +589,9 @@ def get_parts_and_edges(
         edges = [HyperEdge(joint0, joint1)]
         globals = {}
 
-        if partitioning == "2x1":
+        if partitioning is None:
+            parts = [(joint0, joint1,)]
+        elif partitioning == "2x1":
             # isolate upper and lower body
             parts = [(joint0,), (joint1,)]
             # TODO: There could be tons of decompositions here
@@ -618,7 +620,14 @@ def get_parts_and_edges(
         ]
         globals = {}
 
-        if partitioning == "2x3":
+        if partitioning is None:
+            parts = [
+                (foot_joint, leg_joint, thigh_joint,
+                    foot_left_joint,
+                    leg_left_joint,
+                    thigh_left_joint,),
+            ]
+        elif partitioning == "2x3":
             # isolate upper and lower body
             parts = [
                 (foot_joint, leg_joint, thigh_joint),
