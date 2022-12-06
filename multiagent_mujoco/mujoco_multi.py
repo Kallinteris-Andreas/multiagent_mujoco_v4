@@ -5,7 +5,7 @@ import pettingzoo
 from .coupled_half_cheetah import CoupledHalfCheetah
 from .manyagent_ant import ManyAgentAntEnv
 from .manyagent_swimmer import ManyAgentSwimmerEnv
-from .obsk import build_obs, get_joints_at_kdist, get_parts_and_edges
+from .obsk import build_obs, get_joints_at_kdist, get_parts_and_edges, observation_structure
 
 # TODO for v1?
 # color the renderer
@@ -301,9 +301,45 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     def map_global_state_to_local_observations(
         self, global_state: numpy.ndarray
     ) -> dict[str, numpy.ndarray]:
-        # self.env.unwrapped
-        # breakpoint()
-        pass
+        if self.agent_obsk is None:
+            return {self.possible_agents[0]: global_state}
+
+        class data_struct:
+            def __init__(self, qpos, qvel, cinert, cvel, qfrc_actuator, cfrc_ext):
+                self.qpos = qpos
+                self.qvel = qvel
+                self.cinert = cinert
+                self.cvel = cvel
+                self.qfrc_actuator = qfrc_actuator
+                self.cfrc_ext = cfrc_ext
+                pass
+
+        obs_struct = observation_structure(self.env.spec.id)
+        qpos_end_index = obs_struct['qpos']
+        qvel_end_index = qpos_end_index + obs_struct['qvel']
+        cinert_end_index = qvel_end_index + obs_struct['cinert']
+        cvel_end_index = cinert_end_index + obs_struct['cvel']
+        qfrc_actuator_end_index = cvel_end_index + obs_struct['qfrc_actuator']
+        cfrc_ext_end_index = qfrc_actuator_end_index + obs_struct['cfrc_ext']
+
+        assert len(global_state) == cfrc_ext_end_index
+
+        data = data_struct(
+            qpos=numpy.concatenate((numpy.zeros(obs_struct['skipped_qpos']), global_state[0:qpos_end_index])),
+            qvel=numpy.array(global_state[qpos_end_index:qvel_end_index]),
+            cinert=numpy.array(global_state[qvel_end_index:cinert_end_index]),
+            cvel=numpy.array(global_state[cinert_end_index:cvel_end_index]),
+            qfrc_actuator=numpy.array(global_state[cvel_end_index:qfrc_actuator_end_index]),
+            cfrc_ext=numpy.array(global_state[qfrc_actuator_end_index:cfrc_ext_end_index]),
+        )
+
+        assert len(self.env.unwrapped.data.qpos.flat) == len(data.qpos)
+        assert len(self.env.unwrapped.data.qvel.flat) == len(data.qvel)
+
+        observations = {}
+        for agent_id, agent in enumerate(self.agents):
+            observations[agent] = self._get_obs_agent(agent_id, data)
+        return observations
 
     def observation_space(self, agent: str) -> gymnasium.spaces.Box:
         return self.observation_spaces[str(agent)]
@@ -321,12 +357,20 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             observations[agent] = self._get_obs_agent(agent_id)
         return observations
 
-    def _get_obs_agent(self, agent_id) -> numpy.array:
+    def _get_obs_agent(self, agent_id: int, data=None) -> numpy.array:
         if self.agent_obsk is None:
             return self.env.unwrapped._get_obs()
-        else:
+        elif data is None:
             return build_obs(
                 self.env.unwrapped.data,
+                self.k_dicts[agent_id],
+                self.k_categories,
+                self.mujoco_globals,
+                self.global_categories,
+            )
+        else:
+            return build_obs(
+                data,
                 self.k_dicts[agent_id],
                 self.k_categories,
                 self.mujoco_globals,
