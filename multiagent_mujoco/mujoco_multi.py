@@ -326,7 +326,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             return self.env.unwrapped._get_obs()
         else:
             return build_obs(
-                self.env,
+                self.env.unwrapped.data,
                 self.k_dicts[agent_id],
                 self.k_categories,
                 self.mujoco_globals,

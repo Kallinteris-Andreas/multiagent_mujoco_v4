@@ -97,7 +97,7 @@ def get_joints_at_kdist(
 
 
 def build_obs(
-    env, k_dict, k_categories, global_dict, global_categories
+    data, k_dict, k_categories, global_dict, global_categories
 ) -> numpy.ndarray:
     """Given a k_dict from get_joints_at_kdist, extract observation vector.
 
@@ -120,19 +120,19 @@ def build_obs(
         for node in k_dict[k]:
             for category in k_categories[k]:
                 if category in node.extra_obs:
-                    items = node.extra_obs[category](env).tolist()
+                    items = node.extra_obs[category](data).tolist()
                     obs_lst.extend(items if isinstance(items, list) else [items])
                 else:
                     if category in [
                         "qvel",
                         "qpos",
                     ]:  # this is a "joint position/velocity" item
-                        items = getattr(env.unwrapped.data, category)[
+                        items = getattr(data, category)[
                             getattr(node, "{}_ids".format(category))
                         ]
                         obs_lst.extend(items if isinstance(items, list) else [items])
                     elif category in ["qfrc_actuator"]:  # this is a "vel position" item
-                        items = getattr(env.unwrapped.data, category)[
+                        items = getattr(data, category)[
                             getattr(node, "{}_ids".format("qvel"))
                         ]
                         obs_lst.extend(items if isinstance(items, list) else [items])
@@ -146,7 +146,7 @@ def build_obs(
                                 if category not in body_set_dict:
                                     body_set_dict[category] = set()
                                 if b not in body_set_dict[category]:
-                                    items = getattr(env.unwrapped.data, category)[
+                                    items = getattr(data, category)[
                                         b
                                     ].tolist()
                                     items = getattr(node, "body_fn", lambda _id, x: x)(
@@ -162,7 +162,7 @@ def build_obs(
     for category in global_categories:
         if category in ["qvel", "qpos"]:  # this is a "joint position" item
             for j in global_dict.get("joints", []):
-                items = getattr(env.unwrapped.data, category)[
+                items = getattr(data, category)[
                     getattr(j, "{}_ids".format(category))
                 ]
                 obs_lst.extend(items if isinstance(items, list) else [items])
@@ -171,7 +171,7 @@ def build_obs(
                 if category not in body_set_dict:
                     body_set_dict[category] = set()
                 if b not in body_set_dict[category]:
-                    obs_lst.extend(getattr(env.unwrapped.data, category)[b].tolist())
+                    obs_lst.extend(getattr(data, category)[b].tolist())
                     body_set_dict[category].add(b)
 
     return np.array(obs_lst)
@@ -204,7 +204,7 @@ def get_parts_and_edges(
             HyperEdge(fshin, ffoot),
         ]
 
-        root_x = Node("root_x", 0, 0, -1, extra_obs={"qpos": lambda env: np.array([])})
+        root_x = Node("root_x", 0, 0, -1, extra_obs={"qpos": lambda data: np.array([])})
         root_z = Node("root_z", 1, 1, -1)
         root_y = Node("root_y", 2, 2, -1)
         globals = {"joints": [root_x, root_y, root_z]}
@@ -314,10 +314,10 @@ def get_parts_and_edges(
             0,
             -1,
             extra_obs={
-                "qpos": lambda env: env.unwrapped.data.qpos[:7],
-                "qvel": lambda env: env.unwrapped.data.qvel[:6],
-                "cfrc_ext": lambda env: np.clip(
-                    env.unwrapped.data.cfrc_ext[0:1], -1, 1
+                "qpos": lambda data: data.qpos[:7],
+                "qvel": lambda data: data.qvel[:6],
+                "cfrc_ext": lambda data: np.clip(
+                    data.cfrc_ext[0:1], -1, 1
                 ),
             },
         )
@@ -343,8 +343,8 @@ def get_parts_and_edges(
             -3,
             0,
             extra_obs={
-                "qvel": lambda env: np.clip(
-                    np.array([env.unwrapped.data.qvel[-3]]), -10, 10
+                "qvel": lambda data: np.clip(
+                    np.array([data.qvel[-3]]), -10, 10
                 )
             },
         )
@@ -354,8 +354,8 @@ def get_parts_and_edges(
             -2,
             1,
             extra_obs={
-                "qvel": lambda env: np.clip(
-                    np.array([env.unwrapped.data.qvel[-2]]), -10, 10
+                "qvel": lambda data: np.clip(
+                    np.array([data.qvel[-2]]), -10, 10
                 )
             },
         )
@@ -365,8 +365,8 @@ def get_parts_and_edges(
             -1,
             2,
             extra_obs={
-                "qvel": lambda env: np.clip(
-                    np.array([env.unwrapped.data.qvel[-1]]), -10, 10
+                "qvel": lambda data: np.clip(
+                    np.array([data.qvel[-1]]), -10, 10
                 )
             },
         )
@@ -379,9 +379,9 @@ def get_parts_and_edges(
             0,
             -1,
             extra_obs={
-                "qpos": lambda env: np.array([]),
-                "qvel": lambda env: np.clip(
-                    np.array([env.unwrapped.data.qvel[1]]), -10, 10
+                "qpos": lambda data: np.array([]),
+                "qvel": lambda data: np.clip(
+                    np.array([data.qvel[1]]), -10, 10
                 ),
             },
         )
@@ -391,8 +391,8 @@ def get_parts_and_edges(
             1,
             -1,
             extra_obs={
-                "qvel": lambda env: np.clip(
-                    np.array([env.unwrapped.data.qvel[1]]), -10, 10
+                "qvel": lambda data: np.clip(
+                    np.array([data.qvel[1]]), -10, 10
                 )
             },
         )
@@ -402,8 +402,8 @@ def get_parts_and_edges(
             2,
             -1,
             extra_obs={
-                "qvel": lambda env: np.clip(
-                    np.array([env.unwrapped.data.qvel[2]]), -10, 10
+                "qvel": lambda data: np.clip(
+                    np.array([data.qvel[2]]), -10, 10
                 )
             },
         )
@@ -496,7 +496,7 @@ def get_parts_and_edges(
 
         return parts, edges, globals
 
-    elif label in ["Reacher-v4"]:
+    elif label in ["Reacher-v4"]:  # NOTE: 'get_body_com' obs are not observed
 
         # define Mujoco-Graph
         body0 = 1
@@ -510,10 +510,10 @@ def get_parts_and_edges(
             bodies=[body0, body1],
             extra_obs={
                 "qpos": (
-                    lambda env: np.array(
+                    lambda data: np.array(
                         [
-                            np.sin(env.unwrapped.data.qpos[-4]),
-                            np.cos(env.unwrapped.data.qpos[-4]),
+                            np.sin(data.qpos[-4]),
+                            np.cos(data.qpos[-4]),
                         ]
                     )
                 )
@@ -527,14 +527,14 @@ def get_parts_and_edges(
             bodies=[body1, fingertip],
             extra_obs={
                 "fingertip_dist": (
-                    lambda env: env.get_body_com("fingertip")
-                    - env.get_body_com("target")
+                    lambda data:
+                    data.body("fingertip").xpos - data.body("target").xpos
                 ),
                 "qpos": (
-                    lambda env: np.array(
+                    lambda data: np.array(
                         [
-                            np.sin(env.unwrapped.data.qpos[-3]),
-                            np.cos(env.unwrapped.data.qpos[-3]),
+                            np.sin(data.qpos[-3]),
+                            np.cos(data.qpos[-3]),
                         ]
                     )
                 ),
@@ -545,10 +545,10 @@ def get_parts_and_edges(
         worldbody = 0
         target = 4
         target_x = Node(
-            "target_x", -2, -2, -1, extra_obs={"qvel": (lambda env: np.array([]))}
+            "target_x", -2, -2, -1, extra_obs={"qvel": (lambda data: np.array([]))}
         )
         target_y = Node(
-            "target_y", -1, -1, -1, extra_obs={"qvel": (lambda env: np.array([]))}
+            "target_y", -1, -1, -1, extra_obs={"qvel": (lambda data: np.array([]))}
         )
         globals = {"bodies": [worldbody, target], "joints": [target_x, target_y]}
 
@@ -629,9 +629,9 @@ def get_parts_and_edges(
             0,
             tendons=[tendon],
             extra_obs={
-                "ten_J": lambda env: env.unwrapped.data.ten_J[tendon],
-                "ten_length": lambda env: env.unwrapped.data.ten_length,
-                "ten_velocity": lambda env: env.unwrapped.data.ten_velocity,
+                "ten_J": lambda data: data.ten_J[tendon],
+                "ten_length": lambda data: data.ten_length,
+                "ten_velocity": lambda data: data.ten_velocity,
             },
         )
         bshin = Node("bshin", -5, -5, 1)
@@ -647,9 +647,9 @@ def get_parts_and_edges(
             6,
             tendons=[tendon],
             extra_obs={
-                "ten_J": lambda env: env.unwrapped.data.ten_J[tendon],
-                "ten_length": lambda env: env.unwrapped.data.ten_length,
-                "ten_velocity": lambda env: env.unwrapped.data.ten_velocity,
+                "ten_J": lambda data: data.ten_J[tendon],
+                "ten_length": lambda data: data.ten_length,
+                "ten_velocity": lambda data: data.ten_velocity,
             },
         )
         bshin2 = Node("bshin2", -5, -5, 7)
@@ -672,7 +672,7 @@ def get_parts_and_edges(
         ]
         globals = {}
 
-        root_x = Node("root_x", 0, 0, -1, extra_obs={"qpos": lambda env: np.array([])})
+        root_x = Node("root_x", 0, 0, -1, extra_obs={"qpos": lambda data: np.array([])})
         root_z = Node("root_z", 1, 1, -1)
         root_y = Node("root_y", 2, 2, -1)
         globals = {"joints": [root_x, root_y, root_z]}
@@ -807,10 +807,10 @@ def get_parts_and_edges(
             0,
             -1,
             extra_obs={
-                "qpos": lambda env: env.unwrapped.data.qpos[:7],
-                "qvel": lambda env: env.unwrapped.data.qvel[:6],
-                "cfrc_ext": lambda env: np.clip(
-                    env.unwrapped.data.cfrc_ext[0:1], -1, 1
+                "qpos": lambda data: data.qpos[:7],
+                "qvel": lambda data: data.qvel[:6],
+                "cfrc_ext": lambda data: np.clip(
+                    data.cfrc_ext[0:1], -1, 1
                 ),
             },
         )
