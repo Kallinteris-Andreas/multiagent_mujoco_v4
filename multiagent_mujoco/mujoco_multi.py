@@ -7,6 +7,9 @@ from .manyagent_ant import ManyAgentAntEnv
 from .manyagent_swimmer import ManyAgentSwimmerEnv
 from .obsk import build_obs, get_joints_at_kdist, get_parts_and_edges
 
+# TODO for v1?
+# color the renderer
+# add global categories
 
 _MUJOCO_GYM_ENVIROMENTS = [
     "Ant-v4",
