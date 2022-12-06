@@ -3,6 +3,7 @@ from copy import deepcopy
 
 import numpy as np
 import numpy
+import typing
 
 
 class Node:
@@ -14,12 +15,13 @@ class Node:
         act_ids,
         body_fn=None,
         bodies=None,
-        extra_obs=None,
+        extra_obs: dict[str:typing.Callable] = None,
         tendons=None,
     ):
         """
         A node of the mujoco graph for single action, and it's corrisponding observetions
         :param act_ids: the action assicaiated with that node, if set to -1 it means no action is associated with that node
+        :param extra_obs: an optional overwrite of observation types keyied by categories
         """
         self.label = label
         self.qpos_ids = qpos_ids
