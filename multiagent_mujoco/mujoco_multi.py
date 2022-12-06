@@ -291,7 +291,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         # assert sizes
         assert len(local_actions) == len(self.action_spaces)
         for agent in self.possible_agents:
-            assert len(local_actions[agent]) == self.action_spaces[agent_id].shape[0]
+            assert len(local_actions[agent]) == self.action_spaces[agent].shape[0]
 
         return local_actions
 
