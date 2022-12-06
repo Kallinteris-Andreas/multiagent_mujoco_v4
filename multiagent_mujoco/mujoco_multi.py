@@ -5,7 +5,12 @@ import pettingzoo
 from .coupled_half_cheetah import CoupledHalfCheetah
 from .manyagent_ant import ManyAgentAntEnv
 from .manyagent_swimmer import ManyAgentSwimmerEnv
-from .obsk import build_obs, get_joints_at_kdist, get_parts_and_edges, observation_structure
+from .obsk import (
+    build_obs,
+    get_joints_at_kdist,
+    get_parts_and_edges,
+    observation_structure,
+)
 
 # TODO for v1?
 # color the renderer
@@ -315,22 +320,31 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                 pass
 
         obs_struct = observation_structure(self.env.spec.id)
-        qpos_end_index = obs_struct['qpos']
-        qvel_end_index = qpos_end_index + obs_struct['qvel']
-        cinert_end_index = qvel_end_index + obs_struct['cinert']
-        cvel_end_index = cinert_end_index + obs_struct['cvel']
-        qfrc_actuator_end_index = cvel_end_index + obs_struct['qfrc_actuator']
-        cfrc_ext_end_index = qfrc_actuator_end_index + obs_struct['cfrc_ext']
+        qpos_end_index = obs_struct["qpos"]
+        qvel_end_index = qpos_end_index + obs_struct["qvel"]
+        cinert_end_index = qvel_end_index + obs_struct["cinert"]
+        cvel_end_index = cinert_end_index + obs_struct["cvel"]
+        qfrc_actuator_end_index = cvel_end_index + obs_struct["qfrc_actuator"]
+        cfrc_ext_end_index = qfrc_actuator_end_index + obs_struct["cfrc_ext"]
 
         assert len(global_state) == cfrc_ext_end_index
 
         data = data_struct(
-            qpos=numpy.concatenate((numpy.zeros(obs_struct['skipped_qpos']), global_state[0:qpos_end_index])),
+            qpos=numpy.concatenate(
+                (
+                    numpy.zeros(obs_struct["skipped_qpos"]),
+                    global_state[0:qpos_end_index],
+                )
+            ),
             qvel=numpy.array(global_state[qpos_end_index:qvel_end_index]),
             cinert=numpy.array(global_state[qvel_end_index:cinert_end_index]),
             cvel=numpy.array(global_state[cinert_end_index:cvel_end_index]),
-            qfrc_actuator=numpy.array(global_state[cvel_end_index:qfrc_actuator_end_index]),
-            cfrc_ext=numpy.array(global_state[qfrc_actuator_end_index:cfrc_ext_end_index]),
+            qfrc_actuator=numpy.array(
+                global_state[cvel_end_index:qfrc_actuator_end_index]
+            ),
+            cfrc_ext=numpy.array(
+                global_state[qfrc_actuator_end_index:cfrc_ext_end_index]
+            ),
         )
 
         assert len(self.env.unwrapped.data.qpos.flat) == len(data.qpos)

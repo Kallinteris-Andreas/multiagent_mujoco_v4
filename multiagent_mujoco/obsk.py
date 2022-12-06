@@ -15,7 +15,7 @@ class Node:
         act_ids,
         body_fn=None,
         bodies=None,
-        extra_obs: dict[str:typing.Callable] = None,
+        extra_obs: dict[str : typing.Callable] = None,
         tendons=None,
     ):
         """
@@ -209,7 +209,9 @@ def get_parts_and_edges(
             HyperEdge(fshin, ffoot),
         ]
 
-        root_x = Node("root_x", 0, 0, None, extra_obs={"qpos": lambda data: np.array([])})
+        root_x = Node(
+            "root_x", 0, 0, None, extra_obs={"qpos": lambda data: np.array([])}
+        )
         root_z = Node("root_z", 1, 1, None)
         root_y = Node("root_y", 2, 2, None)
         globals = {"joints": [root_x, root_y, root_z]}
@@ -658,7 +660,9 @@ def get_parts_and_edges(
         ]
         globals = {}
 
-        root_x = Node("root_x", 0, 0, None, extra_obs={"qpos": lambda data: np.array([])})
+        root_x = Node(
+            "root_x", 0, 0, None, extra_obs={"qpos": lambda data: np.array([])}
+        )
         root_z = Node("root_z", 1, 1, None)
         root_y = Node("root_y", 2, 2, None)
         globals = {"joints": [root_x, root_y, root_z]}
