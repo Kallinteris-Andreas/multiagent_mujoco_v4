@@ -368,7 +368,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             k_split = ["qpos,qvel", "qpos"]
         elif scenario in ["Humanoid-v4", "HumanoidStandup-v4"]:
             k_split = [
-                "qpos,qvel,cfrc_ext,cvel,cinert,qfrc_actuator",
+                "qpos,qvel,cinert,cvel,qfrc_actuator,cfrc_ext",
                 "qpos",
             ]  # note this does not use the same output order as gymansism
         elif scenario in ["Reacher-v4"]:
