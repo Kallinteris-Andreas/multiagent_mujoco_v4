@@ -9,8 +9,8 @@ class Node:
     def __init__(
         self,
         label,
-        qpos_ids,  # Note: as far as i can tell this does nothing
-        qvel_ids,  # Note: as far as i can tell this does nothing
+        qpos_ids,
+        qvel_ids,
         act_ids,
         body_fn=None,
         bodies=None,
@@ -19,6 +19,7 @@ class Node:
     ):
         """
         A node of the mujoco graph for single action, and it's corrisponding observetions
+        :param act_ids: the action assicaiated with that node, if set to -1 it means no action is associated with that node
         """
         self.label = label
         self.qpos_ids = qpos_ids
