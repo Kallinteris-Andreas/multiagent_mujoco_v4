@@ -97,15 +97,17 @@ def get_joints_at_kdist(
 
 
 def build_obs(
-    data, k_dict, k_categories, global_dict, global_categories
+    data, k_dict: dict[int: list[Node]], k_categories: list[list[str]], global_dict: dict[int: list[Node]], global_categories: list[list[str]]
 ) -> numpy.ndarray:
     """Given a k_dict from get_joints_at_kdist, extract observation vector.
 
-    :param k_dict: k_dict
-    :param qpos: qpos numpy array
-    :param qvel: qvel numpy array
+    :param data: a structure containing the global state of the agent
+    :param k_dict: the k_dict of an agent
+    :param k_categories: the categories at every depth level
+    :param global_dict: Not implemented for now
+    :param global_categories: Not implemented for now
     :return:
-    observation vector
+        observation for the agent (indicated by K_dict)
     """
 
     # TODO: This needs to be fixed, it was designed for half-cheetah only!
