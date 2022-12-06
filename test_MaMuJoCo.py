@@ -2,7 +2,9 @@ from pettingzoo.test import parallel_api_test
 from multiagent_mujoco.mujoco_multi import MaMuJoCo
 
 if __name__ == "__main__":
+    #
     # General Test
+    #
     for ok in [None, 0, 1]:
         scenario = "InvertedPendulum"  # for debugging
         agent_conf = None
@@ -104,7 +106,9 @@ if __name__ == "__main__":
         agent_conf = None
         parallel_api_test(MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
 
+    #
     # Test k_dict
+    #
     scenario = "Ant"
     agent_conf = "2x4"
     test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=0)
