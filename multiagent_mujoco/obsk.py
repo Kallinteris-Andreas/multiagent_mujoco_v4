@@ -376,8 +376,8 @@ def get_parts_and_edges(
             0,
             None,
             extra_obs={
-                "qpos": lambda data: np.array([]),
-                "qvel": lambda data: np.clip(np.array([data.qvel[1]]), -10, 10),
+                "qpos": lambda data: np.array([]),  # Disable observation
+                "qvel": lambda data: np.clip(np.array([data.qvel[0]]), -10, 10),
             },
         )
         root_z = Node(
