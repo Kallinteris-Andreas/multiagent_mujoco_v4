@@ -1,5 +1,13 @@
 from pettingzoo.test import parallel_api_test
 from multiagent_mujoco.mujoco_multi import MaMuJoCo
+import numpy
+
+
+def assert_dict_numpy_are_equal(dict_a: dict[any:numpy.array], dict_b: dict[any:numpy.array]) -> None:
+    assert (dict_a.keys() == dict_b.keys())
+    for key in dict_a.keys():
+        assert ((dict_a[key] == dict_b[key]).all())
+
 
 if __name__ == "__main__":
     #
@@ -250,7 +258,7 @@ if __name__ == "__main__":
     assert str(test_env.k_dicts) == '[{0: [bfoot, bshin, bthigh, ffoot, fshin, fthigh], 1: [], 2: []}, {0: [bfoot2, bshin2, bthigh2, ffoot2, fshin2, fthigh2], 1: [], 2: []}]', 'wrong k_dicts: ' + str(test_env.k_dicts)
 
     #
-    # test action mapping
+    # test action & observation mapping
     #
 
     # assert [a_s.sample() for a_s in test_env.action_spaces.values()]
@@ -260,120 +268,161 @@ if __name__ == "__main__":
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Ant"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Ant"
         agent_conf = "2x4"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Ant"
         agent_conf = "2x4d"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Ant"
         agent_conf = "4x2"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "HalfCheetah"
         agent_conf = "2x3"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "HalfCheetah"
         agent_conf = "6x1"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "HalfCheetah"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Hopper"
         agent_conf = "3x1"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Hopper"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Humanoid"
         agent_conf = "9|8"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Humanoid"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "HumanoidStandup"
         agent_conf = "9|8"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "HumanoidStandup"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Reacher"
         agent_conf = "2x1"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        # observation mapping not implented on 'Reacher' Enviroment
+        # test_env.reset()
+        # assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Reacher"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Swimmer"
         agent_conf = "2x1"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Swimmer"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Walker2d"
         agent_conf = "2x3"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "Walker2d"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
 
         scenario = "manyagent_swimmer"
         agent_conf = "10x2"
@@ -384,6 +433,7 @@ if __name__ == "__main__":
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        # observation mapping not implented non-Gymansium mujoco enviroments
 
         scenario = "manyagent_ant"
         agent_conf = "2x3"
@@ -394,15 +444,18 @@ if __name__ == "__main__":
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        # observation mapping not implented non-Gymansium mujoco enviroments
 
         scenario = "coupled_half_cheetah"
         agent_conf = "1p1"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        # observation mapping not implented non-Gymansium mujoco enviroments
 
         scenario = "coupled_half_cheetah"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
+        # observation mapping not implented non-Gymansium mujoco enviroments
