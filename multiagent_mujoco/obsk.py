@@ -882,6 +882,7 @@ def observation_structure(scenario: str) -> dict[str:int]:
         ret["qvel"] = 7
         # 9 body_com
     elif scenario == "Reacher-v4":
+        assert False, scenario + 'can not be factorized'
         ret["qpos"] = 6
         ret["qvel"] = 2
         # 3 body_com
