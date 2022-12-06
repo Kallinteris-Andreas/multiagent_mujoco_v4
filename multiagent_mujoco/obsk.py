@@ -216,7 +216,9 @@ def get_parts_and_edges(
         root_y = Node("root_y", 2, 2, None)
         globals = {"joints": [root_x, root_y, root_z]}
 
-        if partitioning == "2x3":
+        if partitioning is None:
+            parts = [(bfoot, bshin, bthigh, ffoot, fshin, fthigh)]
+        elif partitioning == "2x3":
             parts = [(bfoot, bshin, bthigh), (ffoot, fshin, fthigh)]
         elif partitioning == "6x1":
             parts = [(bfoot,), (bshin,), (bthigh,), (ffoot,), (fshin,), (fthigh,)]
@@ -328,7 +330,9 @@ def get_parts_and_edges(
         )
         globals = {"joints": [free_joint]}
 
-        if partitioning == "2x4":  # neighbouring legs together
+        if partitioning is None:
+            parts = [(hip1, ankle1, hip2, ankle2, hip3, ankle3, hip4, ankle4)]
+        elif partitioning == "2x4":  # neighbouring legs together
             parts = [(hip1, ankle1, hip2, ankle2), (hip3, ankle3, hip4, ankle4)]
         elif partitioning == "2x4d":  # diagonal legs together
             parts = [(hip1, ankle1, hip3, ankle3), (hip2, ankle2, hip4, ankle4)]
@@ -398,7 +402,9 @@ def get_parts_and_edges(
         )
         globals = {"joints": [root_x, root_y, root_z]}
 
-        if partitioning == "3x1":
+        if partitioning is None:
+            parts = [(thigh_joint, leg_joint, foot_joint,)]
+        elif partitioning == "3x1":
             parts = [(thigh_joint,), (leg_joint,), (foot_joint,)]
 
         else:
@@ -451,7 +457,29 @@ def get_parts_and_edges(
 
         globals = {}
 
-        if (
+        if partitioning is None:
+            parts = [
+                (
+                    left_shoulder1,
+                    left_shoulder2,
+                    abdomen_x,
+                    abdomen_y,
+                    abdomen_z,
+                    right_shoulder1,
+                    right_shoulder2,
+                    right_elbow,
+                    left_elbow,
+                    left_hip_x,
+                    left_hip_y,
+                    left_hip_z,
+                    right_hip_x,
+                    right_hip_y,
+                    right_hip_z,
+                    right_knee,
+                    left_knee,
+                ),
+            ]
+        elif (
             partitioning == "9|8"
         ):  # 17 in total, so one action is a dummy (to be handled by pymarl)
             # isolate upper and lower body
@@ -540,7 +568,9 @@ def get_parts_and_edges(
         )
         globals = {"bodies": [worldbody, target], "joints": [target_x, target_y]}
 
-        if partitioning == "2x1":
+        if partitioning is None:
+            parts = [(joint0, joint1,)]
+        elif partitioning == "2x1":
             # isolate upper and lower arms
             parts = [(joint0,), (joint1,)]
             # TODO: There could be tons of decompositions here
@@ -667,7 +697,11 @@ def get_parts_and_edges(
         root_y = Node("root_y", 2, 2, None)
         globals = {"joints": [root_x, root_y, root_z]}
 
-        if partitioning == "1p1":
+        if partitioning is None:
+            parts = [
+                (bfoot, bshin, bthigh, ffoot, fshin, fthigh, bfoot2, bshin2, bthigh2, ffoot2, fshin2, fthigh2),
+            ]
+        elif partitioning == "1p1":
             parts = [
                 (bfoot, bshin, bthigh, ffoot, fshin, fthigh),
                 (bfoot2, bshin2, bthigh2, ffoot2, fshin2, fthigh2),
@@ -697,10 +731,13 @@ def get_parts_and_edges(
         edges = [HyperEdge(joints[i], joints[i + 1]) for i in range(n_segs - 1)]
         globals = {}
 
-        parts = [
-            tuple(joints[i * n_segs_per_agents : (i + 1) * n_segs_per_agents])
-            for i in range(n_agents)
-        ]
+        if partitioning is None:
+            parts = tuple(joints)
+        else:
+            parts = [
+                tuple(joints[i * n_segs_per_agents : (i + 1) * n_segs_per_agents])
+                for i in range(n_agents)
+            ]
         return parts, edges, globals
 
     elif label in ["manyagent_ant-v4"]:  # TODO: FIX!
@@ -804,16 +841,19 @@ def get_parts_and_edges(
         )
         globals = {"joints": [free_joint]}
 
-        parts = [
-            [
-                x
-                for sublist in joints[
-                    i * n_segs_per_agents : (i + 1) * n_segs_per_agents
+        if partitioning is None:
+            parts = tuple([item for sublist in joints for item in sublist])
+        else:
+            parts = [
+                [
+                    x
+                    for sublist in joints[
+                        i * n_segs_per_agents : (i + 1) * n_segs_per_agents
+                    ]
+                    for x in sublist
                 ]
-                for x in sublist
+                for i in range(n_agents)
             ]
-            for i in range(n_agents)
-        ]
 
         return parts, edges, globals
     else:
