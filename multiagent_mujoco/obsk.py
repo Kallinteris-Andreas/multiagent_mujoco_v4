@@ -826,6 +826,7 @@ def observation_structure(scenario: str) -> dict[str:int]:
         a dictionary keyied by observation type with values indicating the number of observations for that type
     """
     ret = {
+        "skipped_qpos": 0,  # Position data what is exluded/skip
         "qpos": 0,  # Position
         "qvel": 0,  # Velocity
         "cinert": 0,  # com inertia
@@ -835,16 +836,20 @@ def observation_structure(scenario: str) -> dict[str:int]:
     }
 
     if scenario == "Ant-v4":
+        ret["skipped_qpos"] = 2
         ret["qpos"] = 13
         ret["qvel"] = 14
         # ret["cfrc_ext"] = 84
     elif scenario == "HalfCheetah-v4":
+        ret["skipped_qpos"] = 1
         ret["qpos"] = 8
         ret["qvel"] = 9
     elif scenario == "Hopper-v4":
+        ret["skipped_qpos"] = 1
         ret["qpos"] = 5
         ret["qvel"] = 6
     elif scenario == "HumanoidStandup-v4" or scenario == "Humanoid-v4":
+        ret["skipped_qpos"] = 2
         ret["qpos"] = 22
         ret["qvel"] = 23
         ret["cinert"] = 140
@@ -871,9 +876,11 @@ def observation_structure(scenario: str) -> dict[str:int]:
         ret["qvel"] = 2
         # 3 body_com
     elif scenario == "Swimmer-v4":
+        ret["skipped_qpos"] = 2
         ret["qpos"] = 3
         ret["qvel"] = 5
     elif scenario == "Walker2d-v4":
+        ret["skipped_qpos"] = 1
         ret["qpos"] = 8
         ret["qvel"] = 9
 
