@@ -317,8 +317,8 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     def _get_obs(self) -> dict[str, numpy.array]:
         "Returns all agent observations in a dict[str, ActionType]"
         observations = {}
-        for agent_id in self.agents:
-            observations[str(agent_id)] = self._get_obs_agent(int(agent_id))
+        for agent_id, agent in enumerate(self.agents):
+            observations[agent] = self._get_obs_agent(agent_id)
         return observations
 
     def _get_obs_agent(self, agent_id) -> numpy.array:
