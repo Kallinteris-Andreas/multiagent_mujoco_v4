@@ -97,7 +97,11 @@ def get_joints_at_kdist(
 
 
 def build_obs(
-    data, k_dict: dict[int: list[Node]], k_categories: list[list[str]], global_dict: dict[int: list[Node]], global_categories: list[list[str]]
+    data,
+    k_dict: dict[int : list[Node]],
+    k_categories: list[list[str]],
+    global_dict: dict[int : list[Node]],
+    global_categories: list[list[str]],
 ) -> numpy.ndarray:
     """Given a k_dict from get_joints_at_kdist, extract observation vector.
 
@@ -148,9 +152,7 @@ def build_obs(
                                 if category not in body_set_dict:
                                     body_set_dict[category] = set()
                                 if b not in body_set_dict[category]:
-                                    items = getattr(data, category)[
-                                        b
-                                    ].tolist()
+                                    items = getattr(data, category)[b].tolist()
                                     items = getattr(node, "body_fn", lambda _id, x: x)(
                                         b, items
                                     )
@@ -164,9 +166,7 @@ def build_obs(
     for category in global_categories:
         if category in ["qvel", "qpos"]:  # this is a "joint position" item
             for j in global_dict.get("joints", []):
-                items = getattr(data, category)[
-                    getattr(j, "{}_ids".format(category))
-                ]
+                items = getattr(data, category)[getattr(j, "{}_ids".format(category))]
                 obs_lst.extend(items if isinstance(items, list) else [items])
         else:
             for b in global_dict.get("bodies", []):
@@ -318,9 +318,7 @@ def get_parts_and_edges(
             extra_obs={
                 "qpos": lambda data: data.qpos[:7],
                 "qvel": lambda data: data.qvel[:6],
-                "cfrc_ext": lambda data: np.clip(
-                    data.cfrc_ext[0:1], -1, 1
-                ),
+                "cfrc_ext": lambda data: np.clip(data.cfrc_ext[0:1], -1, 1),
             },
         )
         globals = {"joints": [free_joint]}
@@ -345,9 +343,7 @@ def get_parts_and_edges(
             -3,
             0,
             extra_obs={
-                "qvel": lambda data: np.clip(
-                    np.array([data.qvel[-3]]), -10, 10
-                )
+                "qvel": lambda data: np.clip(np.array([data.qvel[-3]]), -10, 10)
             },
         )
         leg_joint = Node(
@@ -356,9 +352,7 @@ def get_parts_and_edges(
             -2,
             1,
             extra_obs={
-                "qvel": lambda data: np.clip(
-                    np.array([data.qvel[-2]]), -10, 10
-                )
+                "qvel": lambda data: np.clip(np.array([data.qvel[-2]]), -10, 10)
             },
         )
         foot_joint = Node(
@@ -367,9 +361,7 @@ def get_parts_and_edges(
             -1,
             2,
             extra_obs={
-                "qvel": lambda data: np.clip(
-                    np.array([data.qvel[-1]]), -10, 10
-                )
+                "qvel": lambda data: np.clip(np.array([data.qvel[-1]]), -10, 10)
             },
         )
 
@@ -382,9 +374,7 @@ def get_parts_and_edges(
             -1,
             extra_obs={
                 "qpos": lambda data: np.array([]),
-                "qvel": lambda data: np.clip(
-                    np.array([data.qvel[1]]), -10, 10
-                ),
+                "qvel": lambda data: np.clip(np.array([data.qvel[1]]), -10, 10),
             },
         )
         root_z = Node(
@@ -392,22 +382,14 @@ def get_parts_and_edges(
             1,
             1,
             -1,
-            extra_obs={
-                "qvel": lambda data: np.clip(
-                    np.array([data.qvel[1]]), -10, 10
-                )
-            },
+            extra_obs={"qvel": lambda data: np.clip(np.array([data.qvel[1]]), -10, 10)},
         )
         root_y = Node(
             "root_y",
             2,
             2,
             -1,
-            extra_obs={
-                "qvel": lambda data: np.clip(
-                    np.array([data.qvel[2]]), -10, 10
-                )
-            },
+            extra_obs={"qvel": lambda data: np.clip(np.array([data.qvel[2]]), -10, 10)},
         )
         globals = {"joints": [root_x, root_y, root_z]}
 
@@ -529,8 +511,7 @@ def get_parts_and_edges(
             bodies=[body1, fingertip],
             extra_obs={
                 "fingertip_dist": (
-                    lambda data:
-                    data.body("fingertip").xpos - data.body("target").xpos
+                    lambda data: data.body("fingertip").xpos - data.body("target").xpos
                 ),
                 "qpos": (
                     lambda data: np.array(
@@ -811,9 +792,7 @@ def get_parts_and_edges(
             extra_obs={
                 "qpos": lambda data: data.qpos[:7],
                 "qvel": lambda data: data.qvel[:6],
-                "cfrc_ext": lambda data: np.clip(
-                    data.cfrc_ext[0:1], -1, 1
-                ),
+                "cfrc_ext": lambda data: np.clip(data.cfrc_ext[0:1], -1, 1),
             },
         )
         globals = {"joints": [free_joint]}
@@ -870,21 +849,21 @@ def observation_structure(scenario: str) -> dict[str:int]:
         ret["qfrc_actuator"] = 23
         ret["cfrc_ext"] = 84
     elif scenario == "InvertedDoublePendulum-v4":
-        assert False, scenario + 'can not be factorized'
+        assert False, scenario + "can not be factorized"
         ret["qpos"] = 3
         ret["qvel"] = 3
         # qfrc_constraint = 3
     elif scenario == "InvertedPendulum-v4":
-        assert False, scenario + 'can not be factorized'
+        assert False, scenario + "can not be factorized"
         ret["qpos"] = 2
         ret["qvel"] = 2
     elif scenario == "Pusher-v4":
-        assert False, scenario + 'is not supported'
+        assert False, scenario + "is not supported"
         ret["qpos"] = 7
         ret["qvel"] = 7
         # 9 body_com
     elif scenario == "Reacher-v4":
-        assert False, scenario + 'can not be factorized'
+        assert False, scenario + "can not be factorized"
         ret["qpos"] = 6
         ret["qvel"] = 2
         # 3 body_com
