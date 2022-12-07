@@ -190,7 +190,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                 self.mujoco_globals,
             ) = get_parts_and_edges(scenario, agent_conf)
         else:
-            self.agent_action_partitions = tuple([tuple("0")])
+            self.agent_action_partitions = [tuple([None for _ in range(self.env.action_space.shape[0])])]
             mujoco_edges = None
 
         self.possible_agents = [
@@ -209,30 +209,24 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             for agent_id in range(self.num_agents)
         ]
 
-        if self.agent_obsk is None:
-            self.action_spaces = {self.possible_agents[0]: self.env.action_space}
-            self.observation_spaces = {
-                self.possible_agents[0]: self.env.observation_space
-            }
-        else:
-            self.observation_spaces, self.action_spaces = {}, {}
-            for agent_id, partition in enumerate(self.agent_action_partitions):
-                self.action_spaces[
-                    self.possible_agents[agent_id]
-                ] = gymnasium.spaces.Box(
-                    low=self.env.action_space.low[0],
-                    high=self.env.action_space.high[0],
-                    shape=(len(partition),),
-                    dtype=numpy.float32,
-                )
-                self.observation_spaces[
-                    self.possible_agents[agent_id]
-                ] = gymnasium.spaces.Box(
-                    low=-numpy.inf,
-                    high=numpy.inf,
-                    shape=(len(self._get_obs_agent(agent_id)),),
-                    dtype=numpy.float32,
-                )
+        self.observation_spaces, self.action_spaces = {}, {}
+        for agent_id, partition in enumerate(self.agent_action_partitions):
+            self.action_spaces[
+                self.possible_agents[agent_id]
+            ] = gymnasium.spaces.Box(
+                low=self.env.action_space.low[0],
+                high=self.env.action_space.high[0],
+                shape=(len(partition),),
+                dtype=numpy.float32,
+            )
+            self.observation_spaces[
+                self.possible_agents[agent_id]
+            ] = gymnasium.spaces.Box(
+                low=-numpy.inf,
+                high=numpy.inf,
+                shape=(len(self._get_obs_agent(agent_id)),),
+                dtype=numpy.float32,
+            )
 
         pass
 
