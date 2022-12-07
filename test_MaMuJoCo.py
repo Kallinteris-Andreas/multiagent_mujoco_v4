@@ -1,4 +1,4 @@
-from pettingzoo.test import parallel_api_test
+from pettingzoo.test import parallel_api_test, render_test  # noqa
 from multiagent_mujoco.mujoco_multi import MaMuJoCo
 import numpy
 
@@ -17,6 +17,8 @@ if __name__ == "__main__":
         scenario = "InvertedPendulum"  # for debugging
         agent_conf = None
         parallel_api_test(MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok), num_cycles=1_000_000)
+        # test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
+        # render_test(test_env)
 
         scenario = "Ant"
         agent_conf = None
@@ -269,7 +271,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Ant"
         agent_conf = None
@@ -277,7 +282,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Ant"
         agent_conf = "2x4"
@@ -285,7 +293,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Ant"
         agent_conf = "2x4d"
@@ -293,7 +304,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Ant"
         agent_conf = "4x2"
@@ -301,7 +315,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "HalfCheetah"
         agent_conf = "2x3"
@@ -309,7 +326,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "HalfCheetah"
         agent_conf = "6x1"
@@ -317,7 +337,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "HalfCheetah"
         agent_conf = None
@@ -325,7 +348,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Hopper"
         agent_conf = "3x1"
@@ -333,7 +359,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Hopper"
         agent_conf = None
@@ -341,7 +370,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Humanoid"
         agent_conf = "9|8"
@@ -349,7 +381,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Humanoid"
         agent_conf = None
@@ -357,7 +392,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "HumanoidStandup"
         agent_conf = "9|8"
@@ -365,7 +403,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "HumanoidStandup"
         agent_conf = None
@@ -373,7 +414,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Reacher"
         agent_conf = "2x1"
@@ -382,7 +426,10 @@ if __name__ == "__main__":
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         # observation mapping not implented on 'Reacher' Enviroment
         # test_env.reset()
-        # assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        # global_observations = test_env.state()
+        # local_observations = test_env.unwrapped._get_obs()
+        # test_env.reset()
+        # assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Reacher"
         agent_conf = None
@@ -390,7 +437,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Swimmer"
         agent_conf = "2x1"
@@ -398,7 +448,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Swimmer"
         agent_conf = None
@@ -406,7 +459,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Walker2d"
         agent_conf = "2x3"
@@ -414,7 +470,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "Walker2d"
         agent_conf = None
@@ -422,7 +481,10 @@ if __name__ == "__main__":
         global_action = test_env.env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
-        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations((test_env.state())), test_env.unwrapped._get_obs())
+        global_observations = test_env.state()
+        local_observations = test_env.unwrapped._get_obs()
+        test_env.reset()
+        assert_dict_numpy_are_equal(test_env.map_global_state_to_local_observations(global_observations), local_observations)
 
         scenario = "manyagent_swimmer"
         agent_conf = "10x2"
