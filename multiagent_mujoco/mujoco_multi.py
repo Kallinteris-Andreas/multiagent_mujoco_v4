@@ -15,6 +15,7 @@ from .obsk import (
 # TODO for v1?
 # color the renderer
 # add global categories
+# create a mechanism for allowing the user to make custom factorizations
 
 _MUJOCO_GYM_ENVIROMENTS = [
     "Ant-v4",
@@ -239,17 +240,22 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         dict[str, numpy.array],
         dict[str, str],
     ]:
+        """
+        Note: if step is called after the agents have terminated/truncated the envrioment will continue to work as normal
+        :param actions: the actions of all agents
+        :return: see pettingzoo.utils.env.ParallelEnv.step() doc
+        """
         _, reward_n, is_terminal_n, is_truncated_n, info_n = self.env.step(
             self.map_local_actions_to_global_action(actions)
         )
 
         rewards, terminations, truncations, info = {}, {}, {}, {}
         observations = self._get_obs()
-        for agent_id in self.agents:
-            rewards[str(agent_id)] = reward_n
-            terminations[str(agent_id)] = is_terminal_n
-            truncations[str(agent_id)] = is_truncated_n
-            info[str(agent_id)] = info_n
+        for agents in self.possible_agents:
+            rewards[agents] = reward_n
+            terminations[agents] = is_terminal_n
+            truncations[agents] = is_truncated_n
+            info[agents] = info_n
 
         if is_terminal_n or is_truncated_n:
             self.agents = []
@@ -273,7 +279,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                 assert numpy.isnan(
                     env_actions[body_part.act_ids]
                 ), "FATAL: At least one env action is doubly defined!"
-                env_actions[body_part.act_ids] = actions[str(agent_id)][i]
+                env_actions[body_part.act_ids] = actions[self.possible_agents[agent_id]][i]
 
         assert not numpy.isnan(
             env_actions
@@ -353,15 +359,15 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         assert len(self.env.unwrapped.data.qvel.flat) == len(data.qvel)
 
         observations = {}
-        for agent_id, agent in enumerate(self.agents):
+        for agent_id, agent in enumerate(self.possible_agents):
             observations[agent] = self._get_obs_agent(agent_id, data)
         return observations
 
     def observation_space(self, agent: str) -> gymnasium.spaces.Box:
-        return self.observation_spaces[str(agent)]
+        return self.observation_spaces[agent]
 
     def action_space(self, agent: str) -> gymnasium.spaces.Box:
-        return self.action_spaces[str(agent)]
+        return self.action_spaces[agent]
 
     def state(self) -> numpy.array:
         return self.env.unwrapped._get_obs()
@@ -369,36 +375,30 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     def _get_obs(self) -> dict[str, numpy.array]:
         "Returns all agent observations in a dict[str, ActionType]"
         observations = {}
-        for agent_id, agent in enumerate(self.agents):
+        for agent_id, agent in enumerate(self.possible_agents):
             observations[agent] = self._get_obs_agent(agent_id)
         return observations
 
     def _get_obs_agent(self, agent_id: int, data=None) -> numpy.array:
         if self.agent_obsk is None:
             return self.env.unwrapped._get_obs()
-        elif data is None:
-            return build_obs(
-                self.env.unwrapped.data,
-                self.k_dicts[agent_id],
-                self.k_categories,
-                self.mujoco_globals,
-                self.global_categories,
-            )
-        else:
-            return build_obs(
-                data,
-                self.k_dicts[agent_id],
-                self.k_categories,
-                self.mujoco_globals,
-                self.global_categories,
-            )
+        if data is None:
+            data = self.env.unwrapped.data
+
+        return build_obs(
+            self.env.unwrapped.data,
+            self.k_dicts[agent_id],
+            self.k_categories,
+            self.mujoco_globals,
+            self.global_categories,
+        )
 
     def reset(self, seed=None, return_info=False, options=None):
         """Returns initial observations and states"""
         _, info_n = self.env.reset(seed=seed)
         info = {}
-        for agent_id in self.agents:
-            info[str(agent_id)] = info_n
+        for agent in self.possible_agents:
+            info[agent] = info_n
         self.agents = self.possible_agents
         if return_info is False:
             return self._get_obs()
@@ -430,7 +430,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             k_split = [
                 "qpos,qvel,cinert,cvel,qfrc_actuator,cfrc_ext",
                 "qpos",
-            ]  # note this does not use the same output order as gymansism
+            ]
         elif scenario in ["Reacher-v4"]:
             k_split = ["qpos,qvel,fingertip_dist", "qpos"]
         elif scenario in ["coupled_half_cheetah-v4"]:
