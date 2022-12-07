@@ -151,7 +151,7 @@ def build_obs(
     # Add global attributes
     body_set_dict = {}
     for category in global_categories:
-        if category in ["qvel", "qpos"]:  # this is a "joint position" item
+        if category in ["qvel", "qpos"]:  # this is a "joint position/velocity" item
             for j in global_dict.get("joints", []):
                 items = getattr(data, category)[getattr(j, "{}_ids".format(category))]
                 obs_lst.extend(items if isinstance(items, list) else [items])
