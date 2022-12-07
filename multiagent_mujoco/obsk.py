@@ -127,9 +127,7 @@ def build_obs(
                     items = node.extra_obs[category](data).tolist()
                     obs_lst.extend(items if isinstance(items, list) else [items])
                 else:
-                    if category in [
-                        "qvel",
-                    ]:  # this is a "joint velocity" item
+                    if category in ["qvel"]:  # this is a "joint velocity" item
                         items = getattr(data, category)[
                             getattr(node, "{}_ids".format(category))
                         ]
