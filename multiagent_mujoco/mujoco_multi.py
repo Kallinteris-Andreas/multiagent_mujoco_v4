@@ -273,18 +273,18 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         if self.agent_obsk is None:
             return actions[self.possible_agents[0]]
 
-        env_actions = numpy.zeros((self.env.action_space.shape[0],)) + numpy.nan
+        global_action = numpy.zeros((self.env.action_space.shape[0],)) + numpy.nan
         for agent_id, partition in enumerate(self.agent_action_partitions):
-            for i, body_part in enumerate(partition):
+            for act_index, body_part in enumerate(partition):
                 assert numpy.isnan(
-                    env_actions[body_part.act_ids]
+                    global_action[body_part.act_ids]
                 ), "FATAL: At least one env action is doubly defined!"
-                env_actions[body_part.act_ids] = actions[self.possible_agents[agent_id]][i]
+                global_action[body_part.act_ids] = actions[self.possible_agents[agent_id]][act_index]
 
         assert not numpy.isnan(
-            env_actions
+            global_action
         ).any(), "FATAL: At least one env action is undefined!"
-        return env_actions
+        return global_action
 
     def map_global_action_to_local_actions(
         self, action: numpy.ndarray
