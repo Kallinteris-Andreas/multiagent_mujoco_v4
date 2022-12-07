@@ -184,7 +184,7 @@ def build_obs(
 
 def get_parts_and_edges(
     label: str, partitioning: str
-) -> tuple[list[tuple[Node, ...]], list[HyperEdge], dict[str : list[Node]]]:
+) -> list[tuple[Node, ...], list[HyperEdge], dict[str : list[Node]]]:
     """
     :param label: the mujoco task to partion
     :param partitioning: the partioneing scheme
