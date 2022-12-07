@@ -152,9 +152,13 @@ def build_obs(
     body_set_dict = {}
     for category in global_categories:
         if category in ["qvel", "qpos"]:  # this is a "joint position/velocity" item
-            for j in global_dict.get("joints", []):
-                items = getattr(data, category)[getattr(j, "{}_ids".format(category))]
-                obs_lst.extend(items if isinstance(items, list) else [items])
+            for joint in global_dict.get("joints", []):
+                if category in joint.extra_obs:
+                    items = joint.extra_obs[category](data).tolist()
+                    obs_lst.extend(items if isinstance(items, list) else [items])
+                else:
+                    items = getattr(data, category)[getattr(joint, "{}_ids".format(category))]
+                    obs_lst.extend(items if isinstance(items, list) else [items])
         else:
             for b in global_dict.get("bodies", []):
                 if category not in body_set_dict:
