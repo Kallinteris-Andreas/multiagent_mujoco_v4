@@ -126,40 +126,33 @@ def build_obs(
                 if category in node.extra_obs:
                     items = node.extra_obs[category](data).tolist()
                     obs_lst.extend(items if isinstance(items, list) else [items])
-                else:
-                    if category in ["qvel"]:  # this is a "joint velocity" item
-                        items = getattr(data, category)[
-                            getattr(node, "{}_ids".format(category))
-                        ]
-                        obs_lst.extend(items if isinstance(items, list) else [items])
-                    elif category in ["qpos"]:  # this is a "joint position" item
-                        items = getattr(data, category)[
-                            getattr(node, "{}_ids".format(category))
-                        ]
-                        obs_lst.extend(items if isinstance(items, list) else [items])
-                    elif category in ["qfrc_actuator"]:  # this is a "vel position" item
-                        items = getattr(data, category)[
-                            getattr(node, "{}_ids".format("qvel"))
-                        ]
-                        obs_lst.extend(items if isinstance(items, list) else [items])
-                    elif category in [
-                        "cvel",
-                        "cinert",
-                        "cfrc_ext",
-                    ]:  # this is a "body position" item
-                        if node.bodies is not None:
-                            for b in node.bodies:
-                                if category not in body_set_dict:
-                                    body_set_dict[category] = set()
-                                if b not in body_set_dict[category]:
-                                    items = getattr(data, category)[b].tolist()
-                                    items = getattr(node, "body_fn", lambda _id, x: x)(
-                                        b, items
-                                    )
-                                    obs_lst.extend(
-                                        items if isinstance(items, list) else [items]
-                                    )
-                                    body_set_dict[category].add(b)
+                elif category in ["qvel"]:  # this is a "joint velocity" item
+                    items = data.qvel[node.qvel_ids]
+                    obs_lst.extend(items if isinstance(items, list) else [items])
+                elif category in ["qpos"]:  # this is a "joint position" item
+                    items = data.qpos[node.qpos_ids]
+                    obs_lst.extend(items if isinstance(items, list) else [items])
+                elif category in ["qfrc_actuator"]:  # this is a "vel position" item
+                    items = data.qfrc_actuator[node.qvel_ids]
+                    obs_lst.extend(items if isinstance(items, list) else [items])
+                elif category in [
+                    "cvel",
+                    "cinert",
+                    "cfrc_ext",
+                ]:  # this is a "body position" item
+                    if node.bodies is not None:
+                        for b in node.bodies:
+                            if category not in body_set_dict:
+                                body_set_dict[category] = set()
+                            if b not in body_set_dict[category]:
+                                items = getattr(data, category)[b].tolist()
+                                items = getattr(node, "body_fn", lambda _id, x: x)(
+                                    b, items
+                                )
+                                obs_lst.extend(
+                                    items if isinstance(items, list) else [items]
+                                )
+                                body_set_dict[category].add(b)
 
     # Add global attributes
     body_set_dict = {}
