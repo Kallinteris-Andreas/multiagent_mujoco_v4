@@ -135,6 +135,14 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
     """
 
+    metadata = {
+        "render_modes": ["human", "rgb_array", "depth_array"],
+        "name": "MaMuJoCo",
+        "is_parallelizable": True,
+        # "render_fps": 0,  #depends on underlying Envrioment
+        "has_manual_policy": False,
+    }
+
     def __init__(
         self,
         scenario: str,
