@@ -117,11 +117,6 @@ def build_obs(
         observation for the agent (indicated by K_dict)
     """
 
-    # TODO: This needs to be fixed, it was designed for half-cheetah only!
-    # if add_global_pos:
-    #    obs_qpos_lst.append(global_qpos)
-    #    obs_qvel_lst.append(global_qvel)
-
     body_set_dict = {}
     obs_lst = []
     # Add parts attributes
