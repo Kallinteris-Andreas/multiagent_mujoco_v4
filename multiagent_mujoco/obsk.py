@@ -402,7 +402,13 @@ def get_parts_and_edges(
         globals = {"joints": [root_x, root_y, root_z]}
 
         if partitioning is None:
-            parts = [(thigh_joint, leg_joint, foot_joint,)]
+            parts = [
+                (
+                    thigh_joint,
+                    leg_joint,
+                    foot_joint,
+                )
+            ]
         elif partitioning == "3x1":
             parts = [(thigh_joint,), (leg_joint,), (foot_joint,)]
 
@@ -568,7 +574,12 @@ def get_parts_and_edges(
         globals = {"bodies": [worldbody, target], "joints": [target_x, target_y]}
 
         if partitioning is None:
-            parts = [(joint0, joint1,)]
+            parts = [
+                (
+                    joint0,
+                    joint1,
+                )
+            ]
         elif partitioning == "2x1":
             # isolate upper and lower arms
             parts = [(joint0,), (joint1,)]
@@ -589,7 +600,12 @@ def get_parts_and_edges(
         globals = {}
 
         if partitioning is None:
-            parts = [(joint0, joint1,)]
+            parts = [
+                (
+                    joint0,
+                    joint1,
+                )
+            ]
         elif partitioning == "2x1":
             # isolate upper and lower body
             parts = [(joint0,), (joint1,)]
@@ -621,10 +637,14 @@ def get_parts_and_edges(
 
         if partitioning is None:
             parts = [
-                (foot_joint, leg_joint, thigh_joint,
+                (
+                    foot_joint,
+                    leg_joint,
+                    thigh_joint,
                     foot_left_joint,
                     leg_left_joint,
-                    thigh_left_joint,),
+                    thigh_left_joint,
+                ),
             ]
         elif partitioning == "2x3":
             # isolate upper and lower body
@@ -707,7 +727,20 @@ def get_parts_and_edges(
 
         if partitioning is None:
             parts = [
-                (bfoot, bshin, bthigh, ffoot, fshin, fthigh, bfoot2, bshin2, bthigh2, ffoot2, fshin2, fthigh2),
+                (
+                    bfoot,
+                    bshin,
+                    bthigh,
+                    ffoot,
+                    fshin,
+                    fthigh,
+                    bfoot2,
+                    bshin2,
+                    bthigh2,
+                    ffoot2,
+                    fshin2,
+                    fthigh2,
+                ),
             ]
         elif partitioning == "1p1":
             parts = [

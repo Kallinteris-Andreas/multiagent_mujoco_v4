@@ -191,7 +191,9 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                 self.mujoco_globals,
             ) = get_parts_and_edges(scenario, agent_conf)
         else:
-            self.agent_action_partitions = [tuple([None for _ in range(self.env.action_space.shape[0])])]
+            self.agent_action_partitions = [
+                tuple([None for _ in range(self.env.action_space.shape[0])])
+            ]
             mujoco_edges = None
 
         self.possible_agents = [
@@ -212,9 +214,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
         self.observation_spaces, self.action_spaces = {}, {}
         for agent_id, partition in enumerate(self.agent_action_partitions):
-            self.action_spaces[
-                self.possible_agents[agent_id]
-            ] = gymnasium.spaces.Box(
+            self.action_spaces[self.possible_agents[agent_id]] = gymnasium.spaces.Box(
                 low=self.env.action_space.low[0],
                 high=self.env.action_space.high[0],
                 shape=(len(partition),),
@@ -279,7 +279,9 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                 assert numpy.isnan(
                     global_action[body_part.act_ids]
                 ), "FATAL: At least one env action is doubly defined!"
-                global_action[body_part.act_ids] = actions[self.possible_agents[agent_id]][act_index]
+                global_action[body_part.act_ids] = actions[
+                    self.possible_agents[agent_id]
+                ][act_index]
 
         assert not numpy.isnan(
             global_action
