@@ -202,6 +202,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         self.agents = self.possible_agents
 
         self.k_categories = self._generate_categories(scenario)
+        # self.global_categories = ['qpos', 'qvel']
 
         self.k_dicts = [
             get_joints_at_kdist(
@@ -316,6 +317,12 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     def map_global_state_to_local_observations(
         self, global_state: numpy.ndarray
     ) -> dict[str, numpy.ndarray]:
+        """
+        Arguments:
+            global_state: the global_state (generated from MaMuJoCo.state())
+        Returns:
+            A dictionary of states that would be observed by each agent given the 'global_state'
+        """
         if self.agent_obsk is None:
             return {self.possible_agents[0]: global_state}
 
@@ -364,6 +371,20 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         for agent_id, agent in enumerate(self.possible_agents):
             observations[agent] = self._get_obs_agent(agent_id, data)
         return observations
+
+    def map_local_observation_to_global_state(
+        self, local_observations: dict[str, numpy.ndarray]
+    ) -> numpy.ndarray:
+        """
+        NOT IMPLEMENTED, try using MaMuJoCo.state() instead
+        Arguments:
+            local_obserations: the local observation of each agents (generated from MaMuJoCo.step())
+        Returns:
+            the global observations that corrispond to a single agent (what you would get with MaMuJoCo.state())
+        """
+        # Dev notes for anyone who attemps to implement it:
+        # - Depending on the factorization the local observation may not observe the total global observation, you will need to handle that
+        raise NotImplementedError
 
     def observation_space(self, agent: str) -> gymnasium.spaces.Box:
         return self.observation_spaces[agent]
