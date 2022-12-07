@@ -129,8 +129,12 @@ def build_obs(
                 else:
                     if category in [
                         "qvel",
-                        "qpos",
-                    ]:  # this is a "joint position/velocity" item
+                    ]:  # this is a "joint velocity" item
+                        items = getattr(data, category)[
+                            getattr(node, "{}_ids".format(category))
+                        ]
+                        obs_lst.extend(items if isinstance(items, list) else [items])
+                    elif category in ["qpos"]:  # this is a "joint position" item
                         items = getattr(data, category)[
                             getattr(node, "{}_ids".format(category))
                         ]
