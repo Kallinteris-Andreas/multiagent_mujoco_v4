@@ -95,7 +95,11 @@ def get_joints_at_kdist(
         new_nodes = _adjacent(new_nodes) - explored_nodes
         explored_nodes = explored_nodes.union(new_nodes)
         k_dict[key] = sorted(list(new_nodes), key=lambda x: x.label)
-    # TODO assert that the nodes are mutally exclusive
+
+    # assert that the nodes in `k_dict` are unique
+    list_of_nodes = [item for sublist in list(k_dict.values()) for item in sublist]
+    assert len(list_of_nodes) == len(set(list_of_nodes))
+
     return k_dict
 
 
