@@ -410,7 +410,7 @@ def get_parts_and_edges(
 
         return parts, edges, globals
 
-    elif label in ["Humanoid-v4", "HumanoidStandup-v4"]: #TODO
+    elif label in ["Humanoid-v4", "HumanoidStandup-v4"]:  # TODO
 
         # define Mujoco-Graph
         abdomen_y = Node(
@@ -605,7 +605,6 @@ def get_parts_and_edges(
         return parts, edges, globals
 
     elif label in ["Walker2d-v4"]:
-
         # define Mujoco-Graph
         thigh_joint = Node("thigh_joint", -6, -6, 0)
         leg_joint = Node("leg_joint", -5, -5, 1)
@@ -621,7 +620,10 @@ def get_parts_and_edges(
             HyperEdge(leg_left_joint, thigh_left_joint),
             HyperEdge(thigh_joint, thigh_left_joint),
         ]
-        globals = {}
+        root_x = Node("root_x", 0, 0, None, extra_obs={"qpos": lambda data: np.array([])})
+        root_z = Node("root_z", 1, 1, None)
+        root_y = Node("root_y", 2, 2, None)
+        globals = {"joints": [root_x, root_x, root_z]}
 
         if partitioning is None:
             parts = [
