@@ -123,7 +123,7 @@ def build_obs(
 
     body_set_dict = {}
     obs_lst = []
-    # Add parts attributes
+    # Add local observations
     for k in sorted(list(k_dict.keys())):
         for node in k_dict[k]:
             for category in k_categories[k]:
@@ -152,7 +152,7 @@ def build_obs(
                                 )
                                 body_set_dict[category].add(b)
 
-    # Add global attributes
+    # Add global observations
     body_set_dict = {}
     for category in global_categories:
         if category in ["qvel", "qpos"]:  # this is a "joint position/velocity" item
@@ -243,7 +243,7 @@ def get_parts_and_edges(
             2,
             bodies=[torso, front_left_leg],
             body_fn=lambda _id, x: np.clip(x, -1, 1).tolist(),
-        )  #
+        )
         ankle1 = Node(
             "ankle1",
             -7,
@@ -251,7 +251,7 @@ def get_parts_and_edges(
             3,
             bodies=[front_left_leg, aux_1, ankle_1],
             body_fn=lambda _id, x: np.clip(x, -1, 1).tolist(),
-        )  # ,
+        )
         hip2 = Node(
             "hip2",
             -6,
@@ -259,7 +259,7 @@ def get_parts_and_edges(
             4,
             bodies=[torso, front_right_leg],
             body_fn=lambda _id, x: np.clip(x, -1, 1).tolist(),
-        )  # ,
+        )
         ankle2 = Node(
             "ankle2",
             -5,
@@ -267,7 +267,7 @@ def get_parts_and_edges(
             5,
             bodies=[front_right_leg, aux_2, ankle_2],
             body_fn=lambda _id, x: np.clip(x, -1, 1).tolist(),
-        )  # ,
+        )
         hip3 = Node(
             "hip3",
             -4,
@@ -275,7 +275,7 @@ def get_parts_and_edges(
             6,
             bodies=[torso, back_leg],
             body_fn=lambda _id, x: np.clip(x, -1, 1).tolist(),
-        )  # ,
+        )
         ankle3 = Node(
             "ankle3",
             -3,
@@ -283,7 +283,7 @@ def get_parts_and_edges(
             7,
             bodies=[back_leg, aux_3, ankle_3],
             body_fn=lambda _id, x: np.clip(x, -1, 1).tolist(),
-        )  # ,
+        )
         hip4 = Node(
             "hip4",
             -2,
@@ -291,7 +291,7 @@ def get_parts_and_edges(
             0,
             bodies=[torso, right_back_leg],
             body_fn=lambda _id, x: np.clip(x, -1, 1).tolist(),
-        )  # ,
+        )
         ankle4 = Node(
             "ankle4",
             -1,
@@ -299,7 +299,7 @@ def get_parts_and_edges(
             1,
             bodies=[right_back_leg, aux_4, ankle_4],
             body_fn=lambda _id, x: np.clip(x, -1, 1).tolist(),
-        )  # ,
+        )
 
         edges = [
             HyperEdge(ankle4, hip4),
@@ -410,7 +410,7 @@ def get_parts_and_edges(
 
         return parts, edges, globals
 
-    elif label in ["Humanoid-v4", "HumanoidStandup-v4"]:
+    elif label in ["Humanoid-v4", "HumanoidStandup-v4"]: #TODO
 
         # define Mujoco-Graph
         abdomen_y = Node(
@@ -477,9 +477,7 @@ def get_parts_and_edges(
                     left_knee,
                 ),
             ]
-        elif (
-            partitioning == "9|8"
-        ):  # 17 in total, so one action is a dummy (to be handled by pymarl)
+        elif (partitioning == "9|8"):  # 17 in total
             # isolate upper and lower body
             parts = [
                 (
