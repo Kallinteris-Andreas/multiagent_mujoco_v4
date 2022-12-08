@@ -309,8 +309,8 @@ def get_parts_and_edges(
             HyperEdge(hip4, hip1, hip2, hip3),
         ]
 
-        free_joint = Node(
-            "free",
+        torso = Node(
+            "torso",
             0,
             0,
             None,
@@ -320,7 +320,7 @@ def get_parts_and_edges(
                 "cfrc_ext": lambda data: np.clip(data.cfrc_ext[0:1], -1, 1),
             },
         )
-        globals = {"joints": [free_joint]}
+        globals = {"joints": [torso]}
 
         if partitioning is None:
             parts = [(hip1, ankle1, hip2, ankle2, hip3, ankle3, hip4, ankle4)]
