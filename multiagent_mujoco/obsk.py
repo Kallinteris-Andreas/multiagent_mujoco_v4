@@ -582,13 +582,13 @@ def get_parts_and_edges(
         return parts, edges, globals
 
     elif label in ["Swimmer-v4"]:
-
         # define Mujoco-Graph
-        joint0 = Node("rot2", -2, -2, 0)  # TODO: double-check ids
-        joint1 = Node("rot3", -1, -1, 1)
+        joint0 = Node("rot2", -2, -2, 0, extra_obs={"qvel": (lambda data: numpy.array([data.qvel[0], data.qvel[3]]))})
+        joint1 = Node("rot3", -1, -1, 1, extra_obs={"qvel": (lambda data: numpy.array([data.qvel[1], data.qvel[4]]))})
 
         edges = [HyperEdge(joint0, joint1)]
-        globals = {}
+        free_body_rot = Node("free_body_rot", 2, 2, None)
+        globals = {"joints": [free_body_rot]}
 
         if partitioning is None:
             parts = [
@@ -598,10 +598,7 @@ def get_parts_and_edges(
                 )
             ]
         elif partitioning == "2x1":
-            # isolate upper and lower body
             parts = [(joint0,), (joint1,)]
-            # TODO: There could be tons of decompositions here
-
         else:
             raise Exception("UNKNOWN partitioning config: {}".format(partitioning))
 
