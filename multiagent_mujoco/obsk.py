@@ -413,11 +413,8 @@ def get_parts_and_edges(
         return parts, edges, globals
 
     elif label in ["Humanoid-v4", "HumanoidStandup-v4"]:  # TODO
-
         # define Mujoco-Graph
-        abdomen_y = Node(
-            "abdomen_y", -16, -16, 0
-        )  # act ordering bug in env -- double check!
+        abdomen_y = Node("abdomen_y", -16, -16, 0)
         abdomen_z = Node("abdomen_z", -17, -17, 1)
         abdomen_x = Node("abdomen_x", -15, -15, 2)
         right_hip_x = Node("right_hip_x", -14, -14, 3)
@@ -455,7 +452,18 @@ def get_parts_and_edges(
             ),
         ]
 
-        globals = {}
+        root = Node(
+            "root",
+            None,
+            None,
+            None,
+            extra_obs={
+                "qpos": lambda data: data.qpos[2:7],
+                "qvel": lambda data: data.qvel[:6],
+                # "cfrc_ext": lambda data: np.clip(data.cfrc_ext[0:1], -1, 1),
+            },
+        )
+        globals = {"joints": [root]}
 
         if partitioning is None:
             parts = [
