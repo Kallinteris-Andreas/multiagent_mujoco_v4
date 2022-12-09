@@ -418,6 +418,21 @@ def get_parts_and_edges(
         return parts, edges, globals
 
     elif label in ["Humanoid-v4", "HumanoidStandup-v4"]:  # TODO
+        # bodies
+        torso = 0
+        lwaist = 1
+        pelvis = 2
+        right_thigh = 3
+        right_sin = 4
+        right_foot = 5
+        left_thigh = 6
+        left_sin = 7
+        left_foot = 8
+        right_upper_arm = 9
+        right_lower_arm = 10
+        left_upper_arm = 11
+        left_lower_arm = 12
+
         # define Mujoco-Graph
         abdomen_y = Node("abdomen_y", -16, -16, 0)
         abdomen_z = Node("abdomen_z", -17, -17, 1)
@@ -897,7 +912,7 @@ def get_parts_and_edges(
             0,
             None,
             extra_obs={
-                "qpos": lambda data: data.qpos[:7],
+                "qpos": lambda data: data.qpos[2:7],
                 "qvel": lambda data: data.qvel[:6],
                 "cfrc_ext": lambda data: np.clip(data.cfrc_ext[0:1], -1, 1),
             },
