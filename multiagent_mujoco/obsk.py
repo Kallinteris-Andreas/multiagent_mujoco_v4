@@ -457,7 +457,7 @@ def get_parts_and_edges(
             ),
         ]
 
-        root = Node(
+        root = Node(  # this is the torso
             "root",
             None,
             None,
@@ -739,7 +739,6 @@ def get_parts_and_edges(
             HyperEdge(fthigh2, fshin2),
             HyperEdge(fshin2, ffoot2),
         ]
-        globals = {}
 
         root_x = Node(
             "root_x", 0, 0, None, extra_obs={"qpos": lambda data: np.array([])}
