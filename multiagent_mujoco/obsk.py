@@ -157,9 +157,14 @@ def build_obs(
     for category in global_categories:
         if category in ["qvel", "qpos"]:  # this is a "joint position/velocity" item
             for joint in global_dict.get("joints", []):
-                if category in joint.extra_obs:
+                if category in node.extra_obs:
+                    items = node.extra_obs[category](data).tolist()
+                    obs_lst.extend(items if isinstance(items, list) else [items])
+                elif category in joint.extra_obs:
                     items = joint.extra_obs[category](data).tolist()
                     obs_lst.extend(items if isinstance(items, list) else [items])
+                elif category in ["qfrc_actuator"]:  # this is a "actuator forces" item
+                    obs_lst.extend([data.qfrc_actuator[node.qvel_ids]])
                 else:
                     items = getattr(data, category)[
                         getattr(joint, "{}_ids".format(category))
