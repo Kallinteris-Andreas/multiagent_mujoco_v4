@@ -781,7 +781,6 @@ def get_parts_and_edges(
 
     elif label in ["manyagent_swimmer-v4"]:
 
-        # Generate asset file
         try:
             n_agents = int(partitioning.split("x")[0])
             n_segs_per_agents = int(partitioning.split("x")[1])
@@ -799,18 +798,14 @@ def get_parts_and_edges(
         edges = [HyperEdge(joints[i], joints[i + 1]) for i in range(n_segs - 1)]
         globals = {}
 
-        if partitioning is None:
-            parts = tuple(joints)
-        else:
-            parts = [
-                tuple(joints[i * n_segs_per_agents : (i + 1) * n_segs_per_agents])
-                for i in range(n_agents)
-            ]
+        parts = [
+            tuple(joints[i * n_segs_per_agents : (i + 1) * n_segs_per_agents])
+            for i in range(n_agents)
+        ]
         return parts, edges, globals
 
     elif label in ["manyagent_ant-v4"]:  # TODO: FIX!
 
-        # Generate asset file
         try:
             n_agents = int(partitioning.split("x")[0])
             n_segs_per_agents = int(partitioning.split("x")[1])
@@ -909,19 +904,16 @@ def get_parts_and_edges(
         )
         globals = {"joints": [free_joint]}
 
-        if partitioning is None:
-            parts = tuple([item for sublist in joints for item in sublist])
-        else:
-            parts = [
-                [
-                    x
-                    for sublist in joints[
-                        i * n_segs_per_agents : (i + 1) * n_segs_per_agents
-                    ]
-                    for x in sublist
+        parts = [
+            [
+                x
+                for sublist in joints[
+                    i * n_segs_per_agents : (i + 1) * n_segs_per_agents
                 ]
-                for i in range(n_agents)
+                for x in sublist
             ]
+            for i in range(n_agents)
+        ]
 
         return parts, edges, globals
     else:
