@@ -161,7 +161,9 @@ def build_obs(
                     items = joint.extra_obs[category](data).tolist()
                     obs_lst.extend(items if isinstance(items, list) else [items])
                 else:
-                    items = getattr(data, category)[getattr(joint, "{}_ids".format(category))]
+                    items = getattr(data, category)[
+                        getattr(joint, "{}_ids".format(category))
+                    ]
                     obs_lst.extend(items if isinstance(items, list) else [items])
         else:
             for b in global_dict.get("bodies", []):
@@ -477,7 +479,7 @@ def get_parts_and_edges(
                     left_knee,
                 ),
             ]
-        elif (partitioning == "9|8"):  # 17 in total
+        elif partitioning == "9|8":  # 17 in total
             # isolate upper and lower body
             parts = [
                 (
@@ -583,8 +585,24 @@ def get_parts_and_edges(
 
     elif label in ["Swimmer-v4"]:
         # define Mujoco-Graph
-        joint0 = Node("rot2", -2, -2, 0, extra_obs={"qvel": (lambda data: numpy.array([data.qvel[0], data.qvel[3]]))})
-        joint1 = Node("rot3", -1, -1, 1, extra_obs={"qvel": (lambda data: numpy.array([data.qvel[1], data.qvel[4]]))})
+        joint0 = Node(
+            "rot2",
+            -2,
+            -2,
+            0,
+            extra_obs={
+                "qvel": (lambda data: numpy.array([data.qvel[0], data.qvel[3]]))
+            },
+        )
+        joint1 = Node(
+            "rot3",
+            -1,
+            -1,
+            1,
+            extra_obs={
+                "qvel": (lambda data: numpy.array([data.qvel[1], data.qvel[4]]))
+            },
+        )
 
         edges = [HyperEdge(joint0, joint1)]
         free_body_rot = Node("free_body_rot", 2, 2, None)
@@ -620,7 +638,9 @@ def get_parts_and_edges(
             HyperEdge(leg_left_joint, thigh_left_joint),
             HyperEdge(thigh_joint, thigh_left_joint),
         ]
-        root_x = Node("root_x", 0, 0, None, extra_obs={"qpos": lambda data: np.array([])})
+        root_x = Node(
+            "root_x", 0, 0, None, extra_obs={"qpos": lambda data: np.array([])}
+        )
         root_z = Node("root_z", 1, 1, None)
         root_y = Node("root_y", 2, 2, None)
         globals = {"joints": [root_x, root_x, root_z]}
