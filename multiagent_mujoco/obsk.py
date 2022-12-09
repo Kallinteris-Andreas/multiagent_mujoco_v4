@@ -820,7 +820,6 @@ def get_parts_and_edges(
         return parts, edges, globals
 
     elif label in ["manyagent_ant-v4"]:  # TODO: FIX!
-
         try:
             n_agents = int(partitioning.split("x")[0])
             n_segs_per_agents = int(partitioning.split("x")[1])
@@ -850,46 +849,45 @@ def get_parts_and_edges(
 
         edges = []
         joints = []
-        for si in range(n_segs):
+        for segment in range(n_segs):
+            torso = 1 + segment * 7
+            front_right_leg = 2 + segment * 7
+            aux1 = 3 + segment * 7
+            ankle1 = 4 + segment * 7
+            back_leg = 5 + segment * 7
+            aux2 = 6 + segment * 7
+            ankle2 = 7 + segment * 7
 
-            torso = 1 + si * 7
-            front_right_leg = 2 + si * 7
-            aux1 = 3 + si * 7
-            ankle1 = 4 + si * 7
-            back_leg = 5 + si * 7
-            aux2 = 6 + si * 7
-            ankle2 = 7 + si * 7
-
-            off = -4 * (n_segs - 1 - si)
+            off = -4 * (n_segs - 1 - segment)
             hip1n = Node(
-                "hip1_{:d}".format(si),
+                "hip1_{:d}".format(segment),
                 -4 - off,
                 -4 - off,
-                2 + 4 * si,
+                2 + 4 * segment,
                 bodies=[torso, front_right_leg],
                 body_fn=lambda _id, x: np.clip(x, -1, 1).tolist(),
             )
             ankle1n = Node(
-                "ankle1_{:d}".format(si),
+                "ankle1_{:d}".format(segment),
                 -3 - off,
                 -3 - off,
-                3 + 4 * si,
+                3 + 4 * segment,
                 bodies=[front_right_leg, aux1, ankle1],
                 body_fn=lambda _id, x: np.clip(x, -1, 1).tolist(),
             )
             hip2n = Node(
-                "hip2_{:d}".format(si),
+                "hip2_{:d}".format(segment),
                 -2 - off,
                 -2 - off,
-                0 + 4 * si,
+                0 + 4 * segment,
                 bodies=[torso, back_leg],
                 body_fn=lambda _id, x: np.clip(x, -1, 1).tolist(),
             )
             ankle2n = Node(
-                "ankle2_{:d}".format(si),
+                "ankle2_{:d}".format(segment),
                 -1 - off,
                 -1 - off,
-                1 + 4 * si,
+                1 + 4 * segment,
                 bodies=[back_leg, aux2, ankle2],
                 body_fn=lambda _id, x: np.clip(x, -1, 1).tolist(),
             )
@@ -899,7 +897,7 @@ def get_parts_and_edges(
                 HyperEdge(ankle2n, hip2n),
                 HyperEdge(hip1n, hip2n),
             ]
-            if si:
+            if segment:
                 edges += [HyperEdge(hip1m, hip2m, hip1n, hip2n)]
 
             hip1m = deepcopy(hip1n)
