@@ -1,6 +1,7 @@
 import gymnasium
 import numpy
 import pettingzoo
+import typing
 
 from .coupled_half_cheetah import CoupledHalfCheetah
 from .manyagent_ant import ManyAgentAntEnv
@@ -15,7 +16,6 @@ from .obsk import (
 # TODO for v1?
 # color the renderer
 # add global categories
-# create a mechanism for allowing the user to make custom factorizations
 
 _MUJOCO_GYM_ENVIROMENTS = [
     "Ant-v4",
@@ -134,6 +134,33 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     scenario="coupled_half_cheetah"
     agent_conf="1p1"
 
+    # How to create new agent factorizations (example 'Ant-v4', '8x1')
+    In this example we will create an agent factorization not present in MaMuJoCo the '8x1', where each agent controls a single action (first implemented by [safe-MaMuJoCo](https://github.com/chauncygu/Safe-Multi-Agent-Mujoco))
+
+    first we will load the graph of MaMuJoCo
+    ```python
+    >>> from multiagent_mujoco.obsk import get_parts_and_edges
+    >>> unpartioned_nodes, edges, global_nodes = get_parts_and_edges('Ant-v4', None)
+    ```
+    the `unpartioned_nodes` contain the nodes of the MaMuJoCo graph
+    the `edges` well, contain the edges of the graph
+    and the `global_nodes` a set of observations for all agents
+
+    To create our '8x1' partion we will need to partion the `unpartioned_nodes`
+
+    ```python
+    >>> unpartioned_nodes
+    [(hip1, ankle1, hip2, ankle2, hip3, ankle3, hip4, ankle4)]
+    >>> partioned_nodes = [(unpartioned_nodes[0][0],), (unpartioned_nodes[0][1],), (unpartioned_nodes[0][2],), (unpartioned_nodes[0][3],), (unpartioned_nodes[0][4],), (unpartioned_nodes[0][5],), (unpartioned_nodes[0][6],), (unpartioned_nodes[0][7],)]>>> partioned_nodes
+    >>> partioned_nodes
+    [(hip1,), (ankle1,), (hip2,), (ankle2,), (hip3,), (ankle3,), (hip4,), (ankle4,)]
+    ```
+    finally package the partions and create our enviroment
+    ```python
+    my_agent_factorization = {"partion": partioned_nodes, "edges": edges, "globals": global_nodes}
+    env = MaMuJoCo('Ant', '8x1', agent_factorization=my_agent_factorization)
+    ```
+
     """
 
     metadata = {
@@ -149,6 +176,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         scenario: str,
         agent_conf: str,
         agent_obsk: int = 1,
+        agent_factorization: dict[str:list] = None,
         render_mode: str = None,
     ):
         """
@@ -156,6 +184,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             scenario: The Task to solve
             agent_conf: '${Number Of Agents}x${Number Of Segments per Agent}${Optionally Additional options}', eg '1x6', '2x4', '2x4d', if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
             agent_obsk: Number of nearest joints to observe, if set to 0 it only observes local state, if set to 1 it observes local state + 1 joint over, if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
+            agent_factorization: A custom factorization of the MuJoCo enviroment overwrites agent_conf, see DOC [how to create new agent factorizations](link)
             render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/), valid values: 'human', 'rgb_array', 'depth_array'
         """
         scenario += "-v4"
@@ -185,11 +214,16 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             self.agent_obsk = agent_obsk  # if None, fully observable else k>=0 implies observe nearest k agents or joints
 
         if self.agent_obsk is not None:
-            (
-                self.agent_action_partitions,
-                mujoco_edges,
-                self.mujoco_globals,
-            ) = get_parts_and_edges(scenario, agent_conf)
+            if agent_factorization is None:
+                (
+                    self.agent_action_partitions,
+                    mujoco_edges,
+                    self.mujoco_globals,
+                ) = get_parts_and_edges(scenario, agent_conf)
+            else:
+                self.agent_action_partitions = agent_factorization["partion"]
+                mujoco_edges = agent_factorization["edges"]
+                self.mujoco_globals = agent_factorization["globals"]
         else:
             self.agent_action_partitions = [
                 tuple([None for _ in range(self.env.action_space.shape[0])])
@@ -202,7 +236,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         self.agents = self.possible_agents
 
         self.k_categories = self._generate_categories(scenario)
-        # self.global_categories = ['qpos', 'qvel']
+        self.global_categories = ["qpos", "qvel"]
 
         self.k_dicts = [
             get_joints_at_kdist(
