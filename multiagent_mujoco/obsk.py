@@ -134,7 +134,7 @@ def build_obs(
                     obs_lst.extend([data.qvel[node.qvel_ids]])
                 elif category in ["qpos"]:  # this is a "joint position" item
                     obs_lst.extend([data.qpos[node.qpos_ids]])
-                elif category in ["qfrc_actuator"]:  # this is a "vel position" item
+                elif category in ["qfrc_actuator"]:  # this is a "actuator forces" item
                     obs_lst.extend([data.qfrc_actuator[node.qvel_ids]])
                 elif category in ["cvel", "cinert", "cfrc_ext"]:
                     # this is a "body position" item

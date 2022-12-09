@@ -134,6 +134,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     scenario="coupled_half_cheetah"
     agent_conf="1p1"
 
+
     # How to create new agent factorizations (example 'Ant-v4', '8x1')
     In this example we will create an agent factorization not present in MaMuJoCo the '8x1', where each agent controls a single action (first implemented by [safe-MaMuJoCo](https://github.com/chauncygu/Safe-Multi-Agent-Mujoco))
 
