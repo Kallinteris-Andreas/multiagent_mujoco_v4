@@ -819,7 +819,7 @@ def get_parts_and_edges(
         ]
         return parts, edges, globals
 
-    elif label in ["manyagent_ant-v4"]:  # TODO: FIX!
+    elif label in ["manyagent_ant-v4"]:
         try:
             n_agents = int(partitioning.split("x")[0])
             n_segs_per_agents = int(partitioning.split("x")[1])
@@ -827,28 +827,10 @@ def get_parts_and_edges(
         except Exception:
             raise Exception("UNKNOWN partitioning config: {}".format(partitioning))
 
-        # # define Mujoco graph
-        # torso = 1
-        # front_left_leg = 2
-        # aux_1 = 3
-        # ankle_1 = 4
-        # right_back_leg = 11
-        # aux_4 = 12
-        # ankle_4 = 13
-        #
-        # off = -4*(n_segs-1)
-        # hip1 = Node("hip1", -4-off, -4-off, 2, bodies=[torso, front_left_leg], body_fn=lambda _id, x:np.clip(x, -1, 1).tolist()) #
-        # ankle1 = Node("ankle1", -3-off, -3-off, 3, bodies=[front_left_leg, aux_1, ankle_1], body_fn=lambda _id, x:np.clip(x, -1, 1).tolist())#,
-        # hip4 = Node("hip4", -2-off, -2-off, 0, bodies=[torso, right_back_leg], body_fn=lambda _id, x:np.clip(x, -1, 1).tolist())#,
-        # ankle4 = Node("ankle4", -1-off, -1-off, 1, bodies=[right_back_leg, aux_4, ankle_4], body_fn=lambda _id, x:np.clip(x, -1, 1).tolist())#,
-        #
-        # edges = [HyperEdge(ankle4, hip4),
-        #          HyperEdge(ankle1, hip1),
-        #          HyperEdge(hip4, hip1),
-        #          ]
-
         edges = []
         joints = []
+        hip1m = None
+        hip2m = None
         for segment in range(n_segs):
             torso = 1 + segment * 7
             front_right_leg = 2 + segment * 7
