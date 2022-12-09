@@ -740,12 +740,17 @@ def get_parts_and_edges(
             HyperEdge(fshin2, ffoot2),
         ]
 
-        root_x = Node(
-            "root_x", 0, 0, None, extra_obs={"qpos": lambda data: np.array([])}
+        root_x0 = Node(
+            "root_x0", 0, 0, None, extra_obs={"qpos": lambda data: np.array([])}
         )
-        root_z = Node("root_z", 1, 1, None)
-        root_y = Node("root_y", 2, 2, None)
-        globals = {"joints": [root_x, root_y, root_z]}
+        root_z0 = Node("root_z0", 1, 1, None)
+        root_y0 = Node("root_y0", 2, 2, None)
+        root_x1 = Node(
+            "root_x1", 9, 9, None, extra_obs={"qpos": lambda data: np.array([])}
+        )
+        root_z1 = Node("root_z1", 10, 10, None)
+        root_y1 = Node("root_y1", 11, 11, None)
+        globals = {"joints": [root_x0, root_y0, root_z0, root_x1, root_y1, root_z1]}
 
         if partitioning is None:
             parts = [
