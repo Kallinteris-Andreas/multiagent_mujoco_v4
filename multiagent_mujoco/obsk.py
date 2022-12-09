@@ -161,7 +161,7 @@ def build_obs(
                     items = joint.extra_obs[category](data).tolist()
                     obs_lst.extend(items if isinstance(items, list) else [items])
                 elif category in ["qfrc_actuator"]:  # this is a "actuator forces" item
-                    obs_lst.extend([data.qfrc_actuator[node.qvel_ids]])
+                    obs_lst.extend([data.qfrc_actuator[joint.qvel_ids]])
                 else:
                     items = getattr(data, category)[
                         getattr(joint, "{}_ids".format(category))
