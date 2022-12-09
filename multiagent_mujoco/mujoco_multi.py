@@ -178,6 +178,8 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         agent_conf: str,
         agent_obsk: int = 1,
         agent_factorization: dict[str:list] = None,
+        local_categories: list[list[str]] = None,
+        global_categories: list[str] = None,
         render_mode: str = None,
     ):
         """
@@ -236,8 +238,14 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         ]
         self.agents = self.possible_agents
 
-        self.k_categories = self._generate_categories(scenario)
-        self.global_categories = ["qpos", "qvel"]
+        if local_categories is None:
+            self.k_categories = self._generate_categories(scenario)
+        else:
+            self.k_categories = local_categories
+        if global_categories is None:
+            self.global_categories = ["qpos", "qvel"]
+        else:
+            self.global_categories = global_categories
 
         self.k_dicts = [
             get_joints_at_kdist(
