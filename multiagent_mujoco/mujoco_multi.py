@@ -187,7 +187,9 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             scenario: The Task to solve
             agent_conf: '${Number Of Agents}x${Number Of Segments per Agent}${Optionally Additional options}', eg '1x6', '2x4', '2x4d', if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
             agent_obsk: Number of nearest joints to observe, if set to 0 it only observes local state, if set to 1 it observes local state + 1 joint over, if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
-            agent_factorization: A custom factorization of the MuJoCo enviroment overwrites agent_conf, see DOC [how to create new agent factorizations](link)
+            agent_factorization: A custom factorization of the MuJoCo enviroment overwrites agent_conf, see DOC [how to create new agent factorizations](link).
+            local_categories: The categories of local observations for each observation depth.
+            global_categories: The categories of observation for global observations.
             render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/), valid values: 'human', 'rgb_array', 'depth_array'
         """
         scenario += "-v4"
