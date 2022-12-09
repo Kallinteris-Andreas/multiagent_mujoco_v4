@@ -1,7 +1,6 @@
 import gymnasium
 import numpy
 import pettingzoo
-import typing
 
 from .coupled_half_cheetah import CoupledHalfCheetah
 from .manyagent_ant import ManyAgentAntEnv
@@ -193,7 +192,6 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/), valid values: 'human', 'rgb_array', 'depth_array'
         """
         scenario += "-v4"
-        self.global_categories = []
 
         # load scenario from script
         if scenario in _MUJOCO_GYM_ENVIROMENTS:
