@@ -155,7 +155,7 @@ def build_obs(
     # Add global observations
     body_set_dict = {}
     for category in global_categories:
-        if category in ["qvel", "qpos"]:  # this is a "joint position/velocity" item
+        if category in ["qvel", "qpos", "qfrc_actuator"]:
             for joint in global_dict.get("joints", []):
                 if category in node.extra_obs:
                     items = node.extra_obs[category](data).tolist()
