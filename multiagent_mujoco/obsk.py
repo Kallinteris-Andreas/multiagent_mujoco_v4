@@ -99,7 +99,7 @@ def get_joints_at_kdist(
 
     # assert that the nodes in `k_dict` are unique
     list_of_nodes = [item for sublist in list(k_dict.values()) for item in sublist]
-    assert len(list_of_nodes) == len(set(list_of_nodes))
+    assert len(list_of_nodes) == len(set(list_of_nodes)), k_dict
 
     return k_dict
 
