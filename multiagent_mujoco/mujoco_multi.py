@@ -513,3 +513,18 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             for k in range(self.agent_obsk + 1)
         ]
         return categories
+
+    def _generate_global_categories(self, scenario: str) -> list[str]:
+        if self.agent_obsk is None:
+            return []
+
+        if scenario in ["Ant-v4", "manyagent_ant"]:
+            return ["qpos", "qvel"]
+        elif scenario in ["Humanoid-v4", "HumanoidStandup-v4"]:
+            return ["qpos", "qvel", "cinert", "cvel", "qfrc_actuator", "cfrc_ext"]
+        elif scenario in ["Reacher-v4"]:
+            return ["qpos", "qvel"]
+        elif scenario in ["coupled_half_cheetah-v4"]:
+            return ["qpos", "qvel"]
+        else:
+            return ["qpos", "qvel"]
