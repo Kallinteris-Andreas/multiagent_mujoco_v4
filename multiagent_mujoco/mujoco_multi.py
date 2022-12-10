@@ -239,7 +239,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         self.agents = self.possible_agents
 
         if local_categories is None:
-            self.k_categories = self._generate_categories(scenario)
+            self.k_categories = self._generate_local_categories(scenario)
         else:
             self.k_categories = local_categories
         if global_categories is None:
@@ -247,7 +247,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                 self.global_categories = []
             else:
                 # self.global_categories = self.k_categories[0]
-                self.global_categories = ["qpos", "qvel"]
+                self.global_categories = self._generate_global_categories(scenario)
         else:
             self.global_categories = global_categories
 
@@ -484,7 +484,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     def seed(self, seed: int = None):
         raise NotImplementedError
 
-    def _generate_categories(self, scenario: str) -> list[list[str]]:
+    def _generate_local_categories(self, scenario: str) -> list[list[str]]:
         """
         :param scenario: the mujoco task
         :return:
