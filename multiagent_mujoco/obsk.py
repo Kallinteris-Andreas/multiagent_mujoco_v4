@@ -478,6 +478,7 @@ def get_parts_and_edges(
             extra_obs={
                 "qpos": lambda data: data.qpos[2:7],
                 "qvel": lambda data: data.qvel[:6],
+                "qfrc_actuator": lambda data: data.qvel[:6],
                 # "cfrc_ext": lambda data: np.clip(data.cfrc_ext[0:1], -1, 1),
             },
         )
