@@ -168,12 +168,12 @@ def build_obs(
                     ]
                     obs_lst.extend(items if isinstance(items, list) else [items])
         else:
-            for b in global_dict.get("bodies", []):
+            for body in global_dict.get("bodies", []):
                 if category not in body_set_dict:
                     body_set_dict[category] = set()
-                if b not in body_set_dict[category]:
-                    obs_lst.extend(getattr(data, category)[b].tolist())
-                    body_set_dict[category].add(b)
+                if body not in body_set_dict[category]:
+                    obs_lst.extend(getattr(data, category)[body].tolist())
+                    body_set_dict[category].add(body)
 
     return np.array(obs_lst)
 
