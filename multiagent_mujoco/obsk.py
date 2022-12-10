@@ -22,6 +22,7 @@ class Node:
         A node of the mujoco graph representing a single body part and it's corresponding single action & observetions
         :param act_ids: the action assicaiated with that node
         :param extra_obs: an optional overwrite of observation types keyied by categories
+        :param bodies: is used to index ["cvel", "cinert", "cfrc_ext"] categories
         """
         self.label = label
         self.qpos_ids = qpos_ids
