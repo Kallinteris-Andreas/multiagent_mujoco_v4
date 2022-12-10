@@ -10,11 +10,11 @@ class Node:
     def __init__(
         self,
         label,
-        qpos_ids,
-        qvel_ids,
-        act_ids,
+        qpos_ids: int,
+        qvel_ids: int,
+        act_ids:int ,
         body_fn=None,
-        bodies=None,
+        bodies: list[int]=None,
         extra_obs: dict[str : typing.Callable] = None,
         tendons=None,
     ):
