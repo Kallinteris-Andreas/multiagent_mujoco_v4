@@ -139,18 +139,18 @@ def build_obs(
                 elif category in ["cvel", "cinert", "cfrc_ext"]:
                     # this is a "body position" item
                     if node.bodies is not None:
-                        for b in node.bodies:
+                        for body in node.bodies:
                             if category not in body_set_dict:
                                 body_set_dict[category] = set()
-                            if b not in body_set_dict[category]:
-                                items = getattr(data, category)[b].tolist()
+                            if body not in body_set_dict[category]:
+                                items = getattr(data, category)[body].tolist()
                                 items = getattr(node, "body_fn", lambda _id, x: x)(
-                                    b, items
+                                    body, items
                                 )
                                 obs_lst.extend(
                                     items if isinstance(items, list) else [items]
                                 )
-                                body_set_dict[category].add(b)
+                                body_set_dict[category].add(body)
 
     # Add global observations
     body_set_dict = {}
