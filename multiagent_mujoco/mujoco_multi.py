@@ -243,7 +243,11 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         else:
             self.k_categories = local_categories
         if global_categories is None:
-            self.global_categories = ["qpos", "qvel"]
+            if self.k_categories is None:
+                self.global_categories = []
+            else:
+                # self.global_categories = self.k_categories[0]
+                self.global_categories = ["qpos", "qvel"]
         else:
             self.global_categories = global_categories
 
