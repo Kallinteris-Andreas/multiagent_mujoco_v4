@@ -24,6 +24,7 @@ _MUJOCO_GYM_ENVIROMENTS = [
     "Humanoid-v4",
     "Reacher-v4",
     "Swimmer-v4",
+    # "Pusher-v4", Pusher was not documentented during the developement of MaMuJoCo and therefore is not supported
     "Walker2d-v4",
     "InvertedPendulum-v4",
     "InvertedDoublePendulum-v4",
@@ -38,7 +39,15 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
     There are 2 types of Environments included (1) multi-agent factorizations of [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/) tasks and (2) new complex MuJoCo tasks meant to me solved with multi-agent Algorithms
 
-    This Represents the first easy to use Frameworks for research of agent factorization
+    This Represents the first, easy to use Framework for research of agent factorization
+    
+    # API
+
+    MaMuJoCo uses the [PettingZoo.ParallelAPI](https://pettingzoo.farama.org/api/parallel/), but also supports a few extra functions
+    - map_local_actions_to_global_action
+    - map_global_action_to_local_actions
+    - map_global_state_to_local_observations
+    - map_local_observation_to_global_state (NOT IMPLEMENTED)
 
     # Action Spaces
 
@@ -50,7 +59,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
     Depends on Environment
 
-    # valid Configurations
+    # Valid pre-made Configurations
 
     ### 2-Agent Ant
 
