@@ -2,10 +2,15 @@
 
 
 ```diff
-+ Now Uses the standard `PettingZoo`'s `ParallelEnv` API
-+ Now Uses a modern verion of `Gymnasium` (10.8v -> 26.3v) 
-+ Now Uses newer mujoco bindings
-+ Fixed plenty of bugs
++ Now uses the standard ‘PettingZoo.ParallelEnv‘ API.
++ Now Uses a modern version of ‘Gymnasium‘ (10.8v → 26.3v).
++ Now Uses newer MuJoCo bindings (‘mujoco-py‘ → ‘mujoco‘).
++ Now Has a mechanism for allowing researchers to easily create new agent factorizations
++ Cleaned up the code base significantly.
++ Have written unit-tests and fixed a TON of bugs.
++ Have written some Documentation
++ Fixed some agent factorizations not having globals
+- Is no longer backwards compatible with the old factorizations nor are the returns comparable 
 ```
 
 # Multi-Agent Mujoco
