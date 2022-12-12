@@ -283,7 +283,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                 low=-numpy.inf,
                 high=numpy.inf,
                 shape=(len(self._get_obs_agent(agent_id)),),
-                dtype=numpy.float32,
+                dtype=self.env.observation_space.dtype
             )
 
         pass
