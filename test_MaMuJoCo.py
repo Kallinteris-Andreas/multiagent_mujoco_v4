@@ -268,7 +268,7 @@ if __name__ == "__main__":
         scenario = "InvertedPendulum"  # for debugging
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -279,7 +279,7 @@ if __name__ == "__main__":
         scenario = "Ant"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -290,7 +290,7 @@ if __name__ == "__main__":
         scenario = "Ant"
         agent_conf = "2x4"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -301,7 +301,7 @@ if __name__ == "__main__":
         scenario = "Ant"
         agent_conf = "2x4d"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -312,7 +312,7 @@ if __name__ == "__main__":
         scenario = "Ant"
         agent_conf = "4x2"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -323,7 +323,7 @@ if __name__ == "__main__":
         scenario = "HalfCheetah"
         agent_conf = "2x3"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -334,7 +334,7 @@ if __name__ == "__main__":
         scenario = "HalfCheetah"
         agent_conf = "6x1"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -345,7 +345,7 @@ if __name__ == "__main__":
         scenario = "HalfCheetah"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -356,7 +356,7 @@ if __name__ == "__main__":
         scenario = "Hopper"
         agent_conf = "3x1"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -367,7 +367,7 @@ if __name__ == "__main__":
         scenario = "Hopper"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -378,7 +378,7 @@ if __name__ == "__main__":
         scenario = "Humanoid"
         agent_conf = "9|8"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -389,7 +389,7 @@ if __name__ == "__main__":
         scenario = "Humanoid"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -400,7 +400,7 @@ if __name__ == "__main__":
         scenario = "HumanoidStandup"
         agent_conf = "9|8"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -411,7 +411,7 @@ if __name__ == "__main__":
         scenario = "HumanoidStandup"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -422,7 +422,7 @@ if __name__ == "__main__":
         scenario = "Reacher"
         agent_conf = "2x1"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         # observation mapping not implented on 'Reacher' Enviroment
         # test_env.reset()
@@ -434,7 +434,7 @@ if __name__ == "__main__":
         scenario = "Reacher"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -445,7 +445,7 @@ if __name__ == "__main__":
         scenario = "Swimmer"
         agent_conf = "2x1"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -456,7 +456,7 @@ if __name__ == "__main__":
         scenario = "Swimmer"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -467,7 +467,7 @@ if __name__ == "__main__":
         scenario = "Walker2d"
         agent_conf = "2x3"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -478,7 +478,7 @@ if __name__ == "__main__":
         scenario = "Walker2d"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         test_env.reset()
         global_observations = test_env.state()
@@ -489,35 +489,35 @@ if __name__ == "__main__":
         scenario = "manyagent_swimmer"
         agent_conf = "10x2"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         agent_conf = "6x1"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         # observation mapping not implented non-Gymansium mujoco enviroments
 
         scenario = "manyagent_ant"
         agent_conf = "2x3"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         agent_conf = "3x1"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         # observation mapping not implented non-Gymansium mujoco enviroments
 
         scenario = "coupled_half_cheetah"
         agent_conf = "1p1"
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         # observation mapping not implented non-Gymansium mujoco enviroments
 
         scenario = "coupled_half_cheetah"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
-        global_action = test_env.env.action_space.sample()
+        global_action = test_env.gym_env.action_space.sample()
         assert (global_action == test_env.map_local_actions_to_global_action(test_env.map_global_action_to_local_actions(global_action))).all()
         # observation mapping not implented non-Gymansium mujoco enviroments

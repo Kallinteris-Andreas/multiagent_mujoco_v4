@@ -166,7 +166,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     finally package the partions and create our enviroment
     ```python
     my_agent_factorization = {"partion": partioned_nodes, "edges": edges, "globals": global_nodes}
-    env = MaMuJoCo('Ant', '8x1', agent_factorization=my_agent_factorization)
+    gym_env = MaMuJoCo('Ant', '8x1', agent_factorization=my_agent_factorization)
     ```
 
     """
@@ -203,17 +203,17 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
         # load scenario from script
         if scenario in _MUJOCO_GYM_ENVIROMENTS:
-            self.env = gymnasium.make(scenario, render_mode=render_mode)
+            self.gym_env = gymnasium.make(scenario, render_mode=render_mode)
         elif scenario in ["manyagent_ant-v4"]:
-            self.env = gymnasium.wrappers.TimeLimit(
+            self.gym_env = gymnasium.wrappers.TimeLimit(
                 ManyAgentAntEnv(agent_conf, render_mode), max_episode_steps=1000
             )
         elif scenario in ["manyagent_swimmer-v4"]:
-            self.env = gymnasium.wrappers.TimeLimit(
+            self.gym_env = gymnasium.wrappers.TimeLimit(
                 ManyAgentSwimmerEnv(agent_conf, render_mode), max_episode_steps=1000
             )
         elif scenario in ["coupled_half_cheetah-v4"]:
-            self.env = gymnasium.wrappers.TimeLimit(
+            self.gym_env = gymnasium.wrappers.TimeLimit(
                 CoupledHalfCheetah(agent_conf, render_mode), max_episode_steps=1000
             )
         else:
@@ -237,7 +237,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                 self.mujoco_globals = agent_factorization["globals"]
         else:
             self.agent_action_partitions = [
-                tuple([None for _ in range(self.env.action_space.shape[0])])
+                tuple([None for _ in range(self.gym_env.action_space.shape[0])])
             ]
             mujoco_edges = None
 
@@ -267,8 +267,8 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         self.observation_spaces, self.action_spaces = {}, {}
         for agent_id, partition in enumerate(self.agent_action_partitions):
             self.action_spaces[self.possible_agents[agent_id]] = gymnasium.spaces.Box(
-                low=self.env.action_space.low[0],
-                high=self.env.action_space.high[0],
+                low=self.gym_env.action_space.low[0],
+                high=self.gym_env.action_space.high[0],
                 shape=(len(partition),),
                 dtype=numpy.float32,
             )
@@ -278,7 +278,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                 low=-numpy.inf,
                 high=numpy.inf,
                 shape=(len(self._get_obs_agent(agent_id)),),
-                dtype=self.env.observation_space.dtype,
+                dtype=self.gym_env.observation_space.dtype,
             )
 
         pass
@@ -297,7 +297,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         :param actions: the actions of all agents
         :return: see pettingzoo.utils.env.ParallelEnv.step() doc
         """
-        _, reward_n, is_terminal_n, is_truncated_n, info_n = self.env.step(
+        _, reward_n, is_terminal_n, is_truncated_n, info_n = self.gym_env.step(
             self.map_local_actions_to_global_action(actions)
         )
 
@@ -325,19 +325,19 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         if self.agent_obsk is None:
             return actions[self.possible_agents[0]]
 
-        global_action = numpy.zeros((self.env.action_space.shape[0],)) + numpy.nan
+        global_action = numpy.zeros((self.gym_env.action_space.shape[0],)) + numpy.nan
         for agent_id, partition in enumerate(self.agent_action_partitions):
             for act_index, body_part in enumerate(partition):
                 assert numpy.isnan(
                     global_action[body_part.act_ids]
-                ), "FATAL: At least one env action is doubly defined!"
+                ), "FATAL: At least one gym_env action is doubly defined!"
                 global_action[body_part.act_ids] = actions[
                     self.possible_agents[agent_id]
                 ][act_index]
 
         assert not numpy.isnan(
             global_action
-        ).any(), "FATAL: At least one env action is undefined!"
+        ).any(), "FATAL: At least one gym_env action is undefined!"
         return global_action
 
     def map_global_action_to_local_actions(
@@ -387,7 +387,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                 self.cfrc_ext = cfrc_ext
                 pass
 
-        obs_struct = observation_structure(self.env.spec.id)
+        obs_struct = observation_structure(self.gym_env.spec.id)
         qpos_end_index = obs_struct["qpos"]
         qvel_end_index = qpos_end_index + obs_struct["qvel"]
         cinert_end_index = qvel_end_index + obs_struct["cinert"]
@@ -415,8 +415,8 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             ),
         )
 
-        assert len(self.env.unwrapped.data.qpos.flat) == len(data.qpos)
-        assert len(self.env.unwrapped.data.qvel.flat) == len(data.qvel)
+        assert len(self.gym_env.unwrapped.data.qpos.flat) == len(data.qpos)
+        assert len(self.gym_env.unwrapped.data.qvel.flat) == len(data.qvel)
 
         observations = {}
         for agent_id, agent in enumerate(self.possible_agents):
@@ -444,7 +444,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         return self.action_spaces[agent]
 
     def state(self) -> numpy.array:
-        return self.env.unwrapped._get_obs()
+        return self.gym_env.unwrapped._get_obs()
 
     def _get_obs(self) -> dict[str, numpy.array]:
         "Returns all agent observations in a dict[str, ActionType]"
@@ -455,9 +455,9 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
     def _get_obs_agent(self, agent_id: int, data=None) -> numpy.array:
         if self.agent_obsk is None:
-            return self.env.unwrapped._get_obs()
+            return self.gym_env.unwrapped._get_obs()
         if data is None:
-            data = self.env.unwrapped.data
+            data = self.gym_env.unwrapped.data
 
         return build_obs(
             data,
@@ -469,7 +469,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
     def reset(self, seed=None, return_info=False, options=None):
         """Returns initial observations and states"""
-        _, info_n = self.env.reset(seed=seed)
+        _, info_n = self.gym_env.reset(seed=seed)
         info = {}
         for agent in self.possible_agents:
             info[agent] = info_n
@@ -480,10 +480,10 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             return self._get_obs(), info
 
     def render(self):
-        return self.env.render()
+        return self.gym_env.render()
 
     def close(self):
-        self.env.close()
+        self.gym_env.close()
 
     def seed(self, seed: int = None):
         raise NotImplementedError
