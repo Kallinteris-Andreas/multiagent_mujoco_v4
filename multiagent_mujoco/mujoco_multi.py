@@ -36,17 +36,18 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
     These environments were introduced in ["FACMAC: Factored Multi-Agent Centralised Policy Gradients"](https://arxiv.org/abs/2003.06709)
 
-    There are 2 types of Environments included (1) multi-agent factorizations of [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/) tasks and (2) new complex MuJoCo tasks meant to me solved with multi-agent Algorithms
+    There are 2 types of Environments, included (1) multi-agent factorizations of [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/) tasks and (2) new complex MuJoCo tasks meant to me solved with multi-agent Algorithms
 
     This Represents the first, easy to use Framework for research of agent factorization
 
     # API
 
     MaMuJoCo uses the [PettingZoo.ParallelAPI](https://pettingzoo.farama.org/api/parallel/), but also supports a few extra functions
-    - map_local_actions_to_global_action
-    - map_global_action_to_local_actions
-    - map_global_state_to_local_observations
-    - map_local_observation_to_global_state (NOT IMPLEMENTED)
+    - MaMuJoCo.map_local_actions_to_global_action
+    - MaMuJoCo.map_global_action_to_local_actions
+    - MaMuJoCo.map_global_state_to_local_observations
+    - MaMuJoCo.map_local_observation_to_global_state (NOT IMPLEMENTED)
+    - obsk.get_parts_and_edges
 
     # Action Spaces
 
@@ -56,7 +57,31 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
     # State Spaces
 
-    Depends on Environment
+    Depends on the Environment
+    
+    # Rewards
+
+    For (1) uses the same rewards of single agent gymnasium for each agent
+    
+    For (2) used the same reward structure as the 'simpler' equivalent agents but scaled
+
+    # Starting State
+
+    For (1) uses the same starting state as the single agent gymnasium equivalent
+    
+    For (2) used the same starting state structure as the 'simpler' equivalent agents 
+    
+    # Episode End
+    
+    For (1) uses the same termination and truncation mechanism as the single agent gymnasium (Note: all the agents terminate and truncation at the same time)
+    
+    For manyagent_swimmer
+        truncates all agents at 1000 steps, and never terminates
+    For manyagent_ant
+        truncates all agents at 1000 steps, and never terminates based on same condition as "Ant"
+    For coupled_half_cheetah
+        truncates all agents at 1000 steps, and never terminates
+    
 
     # Valid pre-made Configurations
 
@@ -143,7 +168,8 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
 
 
     # How to create new agent factorizations (example 'Ant-v4', '8x1')
-    In this example we will create an agent factorization not present in MaMuJoCo the '8x1', where each agent controls a single action (first implemented by [safe-MaMuJoCo](https://github.com/chauncygu/Safe-Multi-Agent-Mujoco))
+
+    In this example, we will create an agent factorization not present in MaMuJoCo the '8x1', where each agent controls a single action (first implemented by [safe-MaMuJoCo](https://github.com/chauncygu/Safe-Multi-Agent-Mujoco))
 
     first we will load the graph of MaMuJoCo
     ```python
@@ -154,7 +180,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     the `edges` well, contain the edges of the graph
     and the `global_nodes` a set of observations for all agents
 
-    To create our '8x1' partion we will need to partion the `unpartioned_nodes`
+    To create our '8x1' partition we will need to partition the `unpartioned_nodes`
 
     ```python
     >>> unpartioned_nodes
@@ -163,12 +189,11 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     >>> partioned_nodes
     [(hip1,), (ankle1,), (hip2,), (ankle2,), (hip3,), (ankle3,), (hip4,), (ankle4,)]
     ```
-    finally package the partions and create our enviroment
+    finally package the partitions and create our environment
     ```python
     my_agent_factorization = {"partion": partioned_nodes, "edges": edges, "globals": global_nodes}
     gym_env = MaMuJoCo('Ant', '8x1', agent_factorization=my_agent_factorization)
     ```
-
     """
 
     metadata = {
@@ -191,17 +216,28 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     ):
         """
         Arguments:
-            scenario: The Task to solve
-            agent_conf: '${Number Of Agents}x${Number Of Segments per Agent}${Optionally Additional options}', eg '1x6', '2x4', '2x4d', if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
-            agent_obsk: Number of nearest joints to observe, if set to 0 it only observes local state, if set to 1 it observes local state + 1 joint over, if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
-            agent_factorization: A custom factorization of the MuJoCo enviroment overwrites agent_conf, see DOC [how to create new agent factorizations](link).
-            local_categories: The categories of local observations for each observation depth.
-            global_categories: The categories of observation for global observations, default is local_categories[0]
-            render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/), valid values: 'human', 'rgb_array', 'depth_array'
+            scenario: The Task/Enviroment, valid values: 
+                "Ant", "HalfCheetah", "Hopper", "HumanoidStandup", "Humanoid", "Reacher", "Swimmer", "Walker2d", "InvertedPendulum", "InvertedDoublePendulum", "manyagent_swimmer", "manyagent_ant", "coupled_half_cheetah"
+            agent_conf: '${Number Of Agents}x${Number Of Segments per Agent}${Optionally Additional options}', eg '1x6', '2x4', '2x4d', 
+                if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
+            agent_obsk: Number of nearest joints to observe, 
+                if set to 0 it only observes local state, 
+                if set to 1 it observes local state + 1 joint over, 
+                if set to 2 it observes local state + 2 joints over, 
+                if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
+                The Default value is: 1
+            agent_factorization: A custom factorization of the MuJoCo enviroment (overwrites agent_conf), 
+                see DOC [how to create new agent factorizations](link).
+            local_categories: The categories of local observations for each observation depth, 
+                The default is: Everything is observable at depth 0, but only the position items are observable for further depth levels
+            global_categories: The categories of observation for global observations, 
+                The default is; local_categories[0]
+            render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/), 
+                valid values: 'human', 'rgb_array', 'depth_array'
         """
         scenario += "-v4"
 
-        # load scenario from script
+        # load the underlying single agent Gymansium MuJoCo Enviroment in `self.gym_env`
         if scenario in _MUJOCO_GYM_ENVIROMENTS:
             self.gym_env = gymnasium.make(scenario, render_mode=render_mode)
         elif scenario in ["manyagent_ant-v4"]:
@@ -224,6 +260,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         else:
             self.agent_obsk = agent_obsk  # if None, fully observable else k>=0 implies observe nearest k agents or joints
 
+        # load the agent factorization
         if self.agent_obsk is not None:
             if agent_factorization is None:
                 (
@@ -246,6 +283,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         ]
         self.agents = self.possible_agents
 
+        # load the observation categories
         if local_categories is None:
             self.k_categories = self._generate_local_categories(scenario)
         else:
@@ -255,6 +293,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         else:
             self.global_categories = global_categories
 
+        # load the observations per depth level
         self.k_dicts = [
             get_joints_at_kdist(
                 self.agent_action_partitions[agent_id],
@@ -319,8 +358,10 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     ) -> numpy.array:
         """
         Maps actions back into MuJoCo action space
+        Arguments:
+            action: An dict representing the action of each agent
         Returns:
-            The actions of the whole domain in a single list
+            The action of the whole domain (is what eqivilent single agent action would be)
         """
         if self.agent_obsk is None:
             return actions[self.possible_agents[0]]
@@ -434,7 +475,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
             the global observations that corrispond to a single agent (what you would get with MaMuJoCo.state())
         """
         # Dev notes for anyone who attemps to implement it:
-        # - Depending on the factorization the local observation may not observe the total global observation, you will need to handle that
+        # - Depending on the factorization the local observations may not observe the total global observable space, you will need to handle that
         raise NotImplementedError
 
     def observation_space(self, agent: str) -> gymnasium.spaces.Box:
