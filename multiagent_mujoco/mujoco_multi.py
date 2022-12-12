@@ -251,11 +251,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         else:
             self.k_categories = local_categories
         if global_categories is None:
-            if self.k_categories is None:
-                self.global_categories = []
-            else:
-                # self.global_categories = self.k_categories[0]
-                self.global_categories = self._generate_global_categories(scenario)
+            self.global_categories = self._generate_global_categories(scenario)
         else:
             self.global_categories = global_categories
 
@@ -523,6 +519,9 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         return categories
 
     def _generate_global_categories(self, scenario: str) -> list[str]:
+        """
+        Generated the default global categories of observations
+        """
         if self.agent_obsk is None:
             return []
 
