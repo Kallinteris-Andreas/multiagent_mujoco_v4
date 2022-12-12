@@ -12,9 +12,9 @@ class Node:
         label,
         qpos_ids: int,
         qvel_ids: int,
-        act_ids:int ,
+        act_ids: int,
         body_fn=None,
-        bodies: list[int]=None,
+        bodies: list[int] = None,
         extra_obs: dict[str : typing.Callable] = None,
         tendons=None,
     ):

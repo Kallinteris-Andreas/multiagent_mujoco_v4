@@ -14,7 +14,6 @@ from .obsk import (
 
 # TODO for v1?
 # color the renderer
-# add global categories
 
 _MUJOCO_GYM_ENVIROMENTS = [
     "Ant-v4",
@@ -40,7 +39,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     There are 2 types of Environments included (1) multi-agent factorizations of [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/) tasks and (2) new complex MuJoCo tasks meant to me solved with multi-agent Algorithms
 
     This Represents the first, easy to use Framework for research of agent factorization
-    
+
     # API
 
     MaMuJoCo uses the [PettingZoo.ParallelAPI](https://pettingzoo.farama.org/api/parallel/), but also supports a few extra functions
@@ -283,7 +282,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
                 low=-numpy.inf,
                 high=numpy.inf,
                 shape=(len(self._get_obs_agent(agent_id)),),
-                dtype=self.env.observation_space.dtype
+                dtype=self.env.observation_space.dtype,
             )
 
         pass
