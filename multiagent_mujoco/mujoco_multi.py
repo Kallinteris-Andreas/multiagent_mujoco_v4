@@ -58,30 +58,30 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     # State Spaces
 
     Depends on the Environment
-    
+
     # Rewards
 
     For (1) uses the same rewards of single agent gymnasium for each agent
-    
+
     For (2) used the same reward structure as the 'simpler' equivalent agents but scaled
 
     # Starting State
 
     For (1) uses the same starting state as the single agent gymnasium equivalent
-    
-    For (2) used the same starting state structure as the 'simpler' equivalent agents 
-    
+
+    For (2) used the same starting state structure as the 'simpler' equivalent agents
+
     # Episode End
-    
+
     For (1) uses the same termination and truncation mechanism as the single agent gymnasium (Note: all the agents terminate and truncation at the same time)
-    
+
     For manyagent_swimmer
         truncates all agents at 1000 steps, and never terminates
     For manyagent_ant
         truncates all agents at 1000 steps, and never terminates based on same condition as "Ant"
     For coupled_half_cheetah
         truncates all agents at 1000 steps, and never terminates
-    
+
 
     # Valid pre-made Configurations
 
@@ -216,23 +216,23 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
     ):
         """
         Arguments:
-            scenario: The Task/Enviroment, valid values: 
+            scenario: The Task/Enviroment, valid values:
                 "Ant", "HalfCheetah", "Hopper", "HumanoidStandup", "Humanoid", "Reacher", "Swimmer", "Walker2d", "InvertedPendulum", "InvertedDoublePendulum", "manyagent_swimmer", "manyagent_ant", "coupled_half_cheetah"
-            agent_conf: '${Number Of Agents}x${Number Of Segments per Agent}${Optionally Additional options}', eg '1x6', '2x4', '2x4d', 
+            agent_conf: '${Number Of Agents}x${Number Of Segments per Agent}${Optionally Additional options}', eg '1x6', '2x4', '2x4d',
                 if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
-            agent_obsk: Number of nearest joints to observe, 
-                if set to 0 it only observes local state, 
-                if set to 1 it observes local state + 1 joint over, 
-                if set to 2 it observes local state + 2 joints over, 
+            agent_obsk: Number of nearest joints to observe,
+                if set to 0 it only observes local state,
+                if set to 1 it observes local state + 1 joint over,
+                if set to 2 it observes local state + 2 joints over,
                 if it set to None the task becomes single agent (the agent observes the entire environment, and performs all the actions)
                 The Default value is: 1
-            agent_factorization: A custom factorization of the MuJoCo enviroment (overwrites agent_conf), 
+            agent_factorization: A custom factorization of the MuJoCo enviroment (overwrites agent_conf),
                 see DOC [how to create new agent factorizations](link).
-            local_categories: The categories of local observations for each observation depth, 
+            local_categories: The categories of local observations for each observation depth,
                 The default is: Everything is observable at depth 0, but only the position items are observable for further depth levels
-            global_categories: The categories of observation for global observations, 
+            global_categories: The categories of observation for global observations,
                 The default is; local_categories[0]
-            render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/), 
+            render_mode: see [Gymansium/MuJoCo](https://gymnasium.farama.org/environments/mujoco/),
                 valid values: 'human', 'rgb_array', 'depth_array'
         """
         scenario += "-v4"
