@@ -5,20 +5,22 @@
 + Now uses the standard ‘PettingZoo.ParallelEnv‘ API.
 + Now Uses a modern version of ‘Gymnasium‘ (10.8v → 26.3v).
 + Now Uses newer MuJoCo bindings (‘mujoco-py‘ → ‘mujoco‘).
++ Now Uses newer `Gymansium.MuJoco` Enviroments (v2 -> v4).
++ Now includes new mapping functions (RL -> MARL, MARL -> OTHER MARL)
 + Now Has a mechanism for allowing researchers to easily create new agent factorizations
 + Cleaned up the code base significantly.
 + Have written unit-tests and fixed a TON of bugs.
-+ Have written some Documentation
++ Have written some Documentation (There was virtiually None)
 + Fixed some agent factorizations not having globals
 - Is no longer backwards compatible with the old factorizations nor are the returns comparable 
 ```
 
 # Multi-Agent Mujoco
-Benchmark for Continuous Multi-Agent Robotic Control, based on OpenAI's Mujoco Gym environments.
+Benchmark for Continuous Multi-Agent Robotic Control, based on Farama Foundation's Mujoco Gymnasium environments.
 
 <img src="https://github.com/schroederdewitt/multiagent_mujoco/blob/master/docs/images/mamujoco.jpg" width="900" height="384">
 
-Described in the paper [Deep Multi-Agent Reinforcement Learning for Decentralized Continuous Cooperative Control](https://arxiv.org/abs/2003.06709) by Christian Schroeder de Witt, Bei Peng, Pierre-Alexandre Kamienny, Philip Torr, Wendelin Böhmer and Shimon Whiteson, Torr Vision Group and Whiteson Research Lab, University of Oxford, 2020
+Described the paper [Deep Multi-Agent Reinforcement Learning for Decentralized Continuous Cooperative Control](https://arxiv.org/abs/2003.06709) by Christian Schroeder de Witt, Bei Peng, Pierre-Alexandre Kamienny, Philip Torr, Wendelin Böhmer and Shimon Whiteson, Torr Vision Group and Whiteson Research Lab, University of Oxford, 2020
 
 # Installation
 
