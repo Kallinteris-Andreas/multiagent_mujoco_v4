@@ -1,11 +1,11 @@
 import numpy
-from pettingzoo.test import parallel_api_test, render_test  # noqa
+from pettingzoo.test import parallel_api_test
 
 from multiagent_mujoco.mujoco_multi import MaMuJoCo
 
 
 def assert_dict_numpy_are_equal(
-    dict_a: dict[any : numpy.array], dict_b: dict[any : numpy.array]
+    dict_a: dict[any, numpy.array], dict_b: dict[any, numpy.array]
 ) -> None:
     assert dict_a.keys() == dict_b.keys()
     for key in dict_a.keys():
@@ -763,7 +763,7 @@ if __name__ == "__main__":
                 test_env.map_global_action_to_local_actions(global_action)
             )
         ).all()
-        # observation mapping not implented on 'Reacher' Enviroment
+        # observation mapping not implemented on 'Reacher' Environment
         # test_env.reset()
         # global_observations = test_env.state()
         # local_observations = test_env.unwrapped._get_obs()
@@ -884,7 +884,7 @@ if __name__ == "__main__":
                 test_env.map_global_action_to_local_actions(global_action)
             )
         ).all()
-        # observation mapping not implented non-Gymansium mujoco enviroments
+        # observation mapping not implemented non-Gymansium mujoco environments
 
         scenario = "manyagent_ant"
         agent_conf = "2x3"
@@ -905,7 +905,7 @@ if __name__ == "__main__":
                 test_env.map_global_action_to_local_actions(global_action)
             )
         ).all()
-        # observation mapping not implented non-Gymansium mujoco enviroments
+        # observation mapping not implemented non-Gymansium mujoco environments
 
         scenario = "coupled_half_cheetah"
         agent_conf = "1p1"
@@ -917,9 +917,6 @@ if __name__ == "__main__":
                 test_env.map_global_action_to_local_actions(global_action)
             )
         ).all()
-        # observation mapping not implented non-Gymansium mujoco enviroments
-
-        scenario = "coupled_half_cheetah"
         agent_conf = None
         test_env = MaMuJoCo(scenario=scenario, agent_conf=agent_conf, agent_obsk=ok)
         global_action = test_env.gym_env.action_space.sample()
@@ -929,4 +926,4 @@ if __name__ == "__main__":
                 test_env.map_global_action_to_local_actions(global_action)
             )
         ).all()
-        # observation mapping not implented non-Gymansium mujoco enviroments
+        # observation mapping not implemented non-Gymansium mujoco environments

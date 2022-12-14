@@ -5,7 +5,8 @@ import pettingzoo
 from multiagent_mujoco.coupled_half_cheetah import CoupledHalfCheetah
 from multiagent_mujoco.manyagent_ant import ManyAgentAntEnv
 from multiagent_mujoco.manyagent_swimmer import ManyAgentSwimmerEnv
-from multiagent_mujoco.obsk import (build_obs, get_joints_at_kdist, get_parts_and_edges, observation_structure)
+from multiagent_mujoco.obsk import (build_obs, get_joints_at_kdist,
+                                    get_parts_and_edges, observation_structure)
 
 # TODO for v1?
 # color the renderer
@@ -204,7 +205,7 @@ class MaMuJoCo(pettingzoo.utils.env.ParallelEnv):
         scenario: str,
         agent_conf: str,
         agent_obsk: int = 1,
-        agent_factorization: dict[str:list] = None,
+        agent_factorization: dict[str, list] = None,
         local_categories: list[list[str]] = None,
         global_categories: list[str] = None,
         render_mode: str = None,
