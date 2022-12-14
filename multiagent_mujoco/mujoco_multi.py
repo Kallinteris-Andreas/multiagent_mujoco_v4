@@ -2,11 +2,10 @@ import gymnasium
 import numpy
 import pettingzoo
 
-from .coupled_half_cheetah import CoupledHalfCheetah
-from .manyagent_ant import ManyAgentAntEnv
-from .manyagent_swimmer import ManyAgentSwimmerEnv
-from .obsk import (build_obs, get_joints_at_kdist, get_parts_and_edges,
-                   observation_structure)
+from multiagent_mujoco.coupled_half_cheetah import CoupledHalfCheetah
+from multiagent_mujoco.manyagent_ant import ManyAgentAntEnv
+from multiagent_mujoco.manyagent_swimmer import ManyAgentSwimmerEnv
+from multiagent_mujoco.obsk import (build_obs, get_joints_at_kdist, get_parts_and_edges, observation_structure)
 
 # TODO for v1?
 # color the renderer
