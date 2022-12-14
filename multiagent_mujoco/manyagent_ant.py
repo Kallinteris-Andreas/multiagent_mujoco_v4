@@ -118,6 +118,7 @@ class ManyAgentAntEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         contact_cost = (
             0.5 * 1e-3 * np.sum(np.square(np.clip(self.unwrapped.data.cfrc_ext, -1, 1)))
         )
+        contact_cost = 0  # In Gymnasium.MuJoCo-v4 contanct costs are ignored
         survive_reward = 1.0
         reward = forward_reward - ctrl_cost - contact_cost + survive_reward
         state = self.state_vector()
