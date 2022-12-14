@@ -328,7 +328,7 @@ def get_parts_and_edges(
         globals = {"joints": [torso]}
 
         if partitioning is None:
-            parts = [(hip1, ankle1, hip2, ankle2, hip3, ankle3, hip4, ankle4)]
+            parts = [(hip4, ankle4, hip1, ankle1, hip2, ankle2, hip3, ankle3)]
         elif partitioning == "2x4":  # neighbouring legs together
             parts = [(hip1, ankle1, hip2, ankle2), (hip3, ankle3, hip4, ankle4)]
         elif partitioning == "2x4d":  # diagonal legs together
