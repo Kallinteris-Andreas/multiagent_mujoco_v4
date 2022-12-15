@@ -40,7 +40,7 @@ setup(
       package_data={'multiagent_mujoco.assets': ['*.xml*']},
       extras_require=extras_deps,
       install_requires=[
-            "gymnasium==0.26.2",
+            "gymnasium==0.27.0",
             "mujoco>=2.2.0",
             "PettingZoo==1.22.2",
             "Jinja2>=3.0.3",
