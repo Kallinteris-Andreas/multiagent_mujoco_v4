@@ -4,7 +4,6 @@ import itertools
 import typing
 from copy import deepcopy
 
-import numpy
 import numpy as np
 
 
@@ -130,7 +129,7 @@ def build_obs(
     k_categories: list[list[str]],
     global_dict: dict[int, list[Node]],
     global_categories: list[str],
-) -> numpy.ndarray:
+) -> np.ndarray:
     """
     Given a k_dict from get_joints_at_kdist, extract observation vector.
 
@@ -647,7 +646,7 @@ def get_parts_and_edges(
             -2,
             0,
             extra_obs={
-                "qvel": (lambda data: numpy.array([data.qvel[0], data.qvel[3]]))
+                "qvel": (lambda data: np.array([data.qvel[0], data.qvel[3]]))
             },
         )
         joint1 = Node(
@@ -656,7 +655,7 @@ def get_parts_and_edges(
             -1,
             1,
             extra_obs={
-                "qvel": (lambda data: numpy.array([data.qvel[1], data.qvel[4]]))
+                "qvel": (lambda data: np.array([data.qvel[1], data.qvel[4]]))
             },
         )
 

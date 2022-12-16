@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import collections
 
-import numpy
+import numpy as np
 import pytest
 from multiagent_mujoco.mujoco_multi import MultiAgentMujocoEnv
 from pettingzoo.test import parallel_api_test
@@ -34,6 +34,7 @@ pre_defined_factorizations = [
 
 sample_configurations = [
     scenario_conf("manyagent_swimmer", "10x2"),
+    # scenario_conf("manyagent_swimmer", "5x4"),
     scenario_conf("manyagent_swimmer", "6x1"),
     scenario_conf("manyagent_ant", "2x3"),
     scenario_conf("manyagent_ant", "3x1"),
@@ -45,7 +46,7 @@ observation_depths = [None, 0, 1, 2]
 
 
 def assert_dict_numpy_are_equal(
-    dict_a: dict[any, numpy.array], dict_b: dict[any, numpy.array]
+    dict_a: dict[any, np.ndarray], dict_b: dict[any, np.ndarray]
 ) -> None:
     assert dict_a.keys() == dict_b.keys()
     for key in dict_a.keys():
@@ -71,7 +72,7 @@ def test_action_and_observation_mapping(observation_depth, task):
         task.scenario, task.conf, agent_obsk=observation_depth
     )
     # assert action mapping
-    global_action = test_env.gym_env.action_space.sample()
+    global_action = test_env.single_agent_env.action_space.sample()
     assert (
         global_action
         == test_env.map_local_actions_to_global_action(
@@ -103,7 +104,7 @@ def test_action_mapping(observation_depth, task):
     test_env = MultiAgentMujocoEnv(
         task.scenario, task.conf, agent_obsk=observation_depth
     )
-    global_action = test_env.gym_env.action_space.sample()
+    global_action = test_env.single_agent_env.action_space.sample()
     assert (
         global_action
         == test_env.map_local_actions_to_global_action(
@@ -114,8 +115,9 @@ def test_action_mapping(observation_depth, task):
 
 def test_k_dict():
     """
-    asserts that obsk.get_joints_at_kdist() generates the correct observation factorization
+    asserts that `obsk.get_joints_at_kdist()` generates the correct observation factorization
     The outputs have been hand written
+    If this test fails it means either the factorization in `obsk.get_parts_and_edges()` are wrong or that `obsk.get_joints_at_kdist()`
     """
     scenario = "Ant"
     agent_conf = "2x4"
