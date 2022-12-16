@@ -623,10 +623,7 @@ def get_parts_and_edges(
 
         if partitioning is None:
             parts = [
-                (
-                    joint0,
-                    joint1,
-                )
+                (joint0, joint1,)
             ]
         elif partitioning == "2x1":
             # isolate upper and lower arms
@@ -666,6 +663,12 @@ def get_parts_and_edges(
 
         if partitioning is None:
             parts = [(r_shoulder_pan_joint, r_shoulder_lift_joint, r_upper_arm_roll_joint, r_elbow_flex_joint, r_forearm_roll_joint, r_wrist_flex_joint, r_wrist_roll_joint)]
+        if partitioning == "3p":
+            parts = [
+                (r_shoulder_pan_joint, r_shoulder_lift_joint, r_upper_arm_roll_joint,),  # Shoulder
+                (r_elbow_flex_joint,),  # Elbow
+                (r_forearm_roll_joint, r_wrist_flex_joint, r_wrist_roll_joint),  # Wrist
+            ]
             # TODO: There could be tons of decompositions here
         else:
             raise Exception(f"UNKNOWN partitioning config: {partitioning}")
