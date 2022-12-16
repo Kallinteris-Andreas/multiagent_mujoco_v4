@@ -25,7 +25,7 @@ _MUJOCO_GYM_ENVIROMENTS = [
     "Humanoid-v4",
     "Reacher-v4",
     "Swimmer-v4",
-    # "Pusher-v4", Pusher was not documentented during the development of MaMuJoCo and therefore is not supported
+    "Pusher-v4",
     "Walker2d-v4",
     "InvertedPendulum-v4",
     "InvertedDoublePendulum-v4",

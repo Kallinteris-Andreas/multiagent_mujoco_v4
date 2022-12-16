@@ -28,6 +28,7 @@ pre_defined_factorizations = [
     scenario_conf("Reacher", None),
     scenario_conf("Swimmer", "2x1"),
     scenario_conf("Swimmer", None),
+    scenario_conf("Pusher", None),
     scenario_conf("Walker2d", "2x3"),
     scenario_conf("Walker2d", None),
 ]
@@ -80,8 +81,8 @@ def test_action_and_observation_mapping(observation_depth, task):
         )
     ).all()
 
-    if task == scenario_conf("Reacher", "2x1"):
-        return  # observation mapping not implemented on 'Reacher' Environment
+    if task.scenario in ["Reacher", "Pusher"] and task.conf is not None:
+        return  # observation mapping not implemented on "Reacher" and "Pusher" Environment
 
     # assert observation mapping
     test_env.reset()

@@ -638,6 +638,40 @@ def get_parts_and_edges(
 
         return parts, edges, globals
 
+    elif label in ["Pusher-v4"]:
+        # define Mujoco-Graph
+        r_shoulder_pan_joint = Node("r_wrist_roll_joint", 0, 0, 0)
+        r_shoulder_lift_joint = Node("r_wrist_roll_joint", 1, 1, 1)
+        r_upper_arm_roll_joint = Node("r_upper_arm_roll_joint", 2, 2, 2)
+        r_elbow_flex_joint = Node("r_elbow_flex_joint", 3, 3, 3)
+        r_forearm_roll_joint = Node("r_forearm_roll_joint", 4, 4, 4)
+        r_wrist_flex_joint = Node("r_wrist_flex_joint", 5, 5, 5)
+        r_wrist_roll_joint = Node("r_wrist_roll_joint", 6, 6, 6)
+
+        edges = [
+            HyperEdge(r_shoulder_pan_joint, r_shoulder_lift_joint),
+            HyperEdge(r_shoulder_lift_joint, r_upper_arm_roll_joint),
+            HyperEdge(r_upper_arm_roll_joint, r_elbow_flex_joint),
+            HyperEdge(r_elbow_flex_joint, r_forearm_roll_joint),
+            HyperEdge(r_forearm_roll_joint, r_wrist_flex_joint),
+            HyperEdge(r_wrist_flex_joint, r_wrist_roll_joint),
+        ]
+
+        tips_arm_com = Node("tips_arm", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.get_body_xpos("tips_arm"))), "qvel": (lambda data: np.array([]))})
+        object_com = Node("object", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.get_body_xpos("object"))), "qvel": (lambda data: np.array([]))})
+        goal_com = Node("goal", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.get_body_xpos("goal"))), "qvel": (lambda data: np.array([]))})
+
+        globals = {"joints": [tips_arm_com, object_com, goal_com]}
+        globals = {}
+
+        if partitioning is None:
+            parts = [(r_shoulder_pan_joint, r_shoulder_lift_joint, r_upper_arm_roll_joint, r_elbow_flex_joint, r_forearm_roll_joint, r_wrist_flex_joint, r_wrist_roll_joint)]
+            # TODO: There could be tons of decompositions here
+        else:
+            raise Exception(f"UNKNOWN partitioning config: {partitioning}")
+
+        return parts, edges, globals
+
     elif label in ["Swimmer-v4"]:
         # define Mujoco-Graph
         joint0 = Node(
