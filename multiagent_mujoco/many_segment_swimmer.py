@@ -7,6 +7,11 @@ from gymnasium.utils.ezpickle import EzPickle
 from jinja2 import Template
 
 
+DEFAULT_CAMERA_CONFIG = {
+    "distance": 4.0,
+}
+
+
 class ManySegmentSwimmerEnv(mujoco_env.MujocoEnv, EzPickle):
     metadata = {
         "render_modes": [
@@ -43,6 +48,7 @@ class ManySegmentSwimmerEnv(mujoco_env.MujocoEnv, EzPickle):
             asset_path,
             4,
             observation_space=observation_space,
+            default_camera_config=DEFAULT_CAMERA_CONFIG,
             render_mode=render_mode,
         )
         EzPickle.__init__(self)

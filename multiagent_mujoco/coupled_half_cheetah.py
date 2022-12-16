@@ -6,6 +6,11 @@ from gymnasium.envs.mujoco import mujoco_env
 from gymnasium.utils.ezpickle import EzPickle
 
 
+DEFAULT_CAMERA_CONFIG = {
+    "distance": 4.0,
+}
+
+
 class CoupledHalfCheetah(mujoco_env.MujocoEnv, EzPickle):
     metadata = {
         "render_modes": [
@@ -34,6 +39,7 @@ class CoupledHalfCheetah(mujoco_env.MujocoEnv, EzPickle):
             ),
             5,
             observation_space=observation_space,
+            default_camera_config=DEFAULT_CAMERA_CONFIG,
             render_mode=render_mode,
         )
         EzPickle.__init__(self)
@@ -86,9 +92,3 @@ class CoupledHalfCheetah(mujoco_env.MujocoEnv, EzPickle):
         qvel = self.init_qvel + self.np_random.random(self.model.nv) * self._reset_noise_scale
         self.set_state(qpos, qvel)
         return self._get_obs()
-
-    def viewer_setup(self):
-        self.viewer.cam.distance = self.model.stat.extent * 0.5
-
-    def get_env_info(self):
-        return {"episode_limit": self.episode_limit}
