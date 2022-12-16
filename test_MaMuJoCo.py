@@ -28,6 +28,7 @@ pre_defined_factorizations = [
     scenario_conf("Reacher", None),
     scenario_conf("Swimmer", "2x1"),
     scenario_conf("Swimmer", None),
+    scenario_conf("Pusher", "3p"),
     scenario_conf("Pusher", None),
     scenario_conf("Walker2d", "2x3"),
     scenario_conf("Walker2d", None),
