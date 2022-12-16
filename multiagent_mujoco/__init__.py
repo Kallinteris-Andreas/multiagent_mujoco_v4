@@ -1,4 +1,4 @@
-from .coupled_half_cheetah import CoupledHalfCheetah
-from .manyagent_ant import ManyAgentAntEnv
-from .manyagent_swimmer import ManyAgentSwimmerEnv
-from .mujoco_multi import MultiAgentMujocoEnv
+from .coupled_half_cheetah import CoupledHalfCheetah  # noqa F401
+from .many_segment_ant import ManySegmentAntEnv  # noqa F401
+from .many_segment_swimmer import ManySegmentSwimmerEnv  # noqa F401
+from .mujoco_multi import MultiAgentMujocoEnv  # noqa F401

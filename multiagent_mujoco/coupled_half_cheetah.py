@@ -16,7 +16,7 @@ class CoupledHalfCheetah(mujoco_env.MujocoEnv, EzPickle):
         "render_fps": 20,
     }
 
-    def __init__(self, agent_conf, render_mode: str = None):
+    def __init__(self, render_mode: str = None):
         self._forward_reward_weight = 1
         self._ctrl_cost_weight = 0.1
         self._reset_noise_scale = 0.1

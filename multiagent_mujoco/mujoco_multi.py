@@ -5,8 +5,8 @@ import numpy as np
 import pettingzoo
 from gymnasium.wrappers.time_limit import TimeLimit
 from multiagent_mujoco.coupled_half_cheetah import CoupledHalfCheetah
-from multiagent_mujoco.manyagent_ant import ManyAgentAntEnv
-from multiagent_mujoco.manyagent_swimmer import ManyAgentSwimmerEnv
+from multiagent_mujoco.many_segment_ant import ManySegmentAntEnv
+from multiagent_mujoco.many_segment_swimmer import ManySegmentSwimmerEnv
 from multiagent_mujoco.obsk import (
     build_obs,
     get_joints_at_kdist,
@@ -253,16 +253,26 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
         if scenario in _MUJOCO_GYM_ENVIROMENTS:
             self.single_agent_env = gymnasium.make(scenario, render_mode=render_mode)
         elif scenario in ["manyagent_ant-v4"]:
+            try:
+                n_segs = int(agent_conf.split("x")[0]) * int(agent_conf.split("x")[1])
+            except Exception:
+                raise Exception(f"UNKNOWN partitioning config: {agent_conf}")
+
             self.single_agent_env = TimeLimit(
-                ManyAgentAntEnv(agent_conf, render_mode), max_episode_steps=1000
+                ManySegmentAntEnv(n_segs, render_mode), max_episode_steps=1000
             )
         elif scenario in ["manyagent_swimmer-v4"]:
+            try:
+                n_segs = int(agent_conf.split("x")[0]) * int(agent_conf.split("x")[1])
+            except Exception:
+                raise Exception(f"UNKNOWN partitioning config: {agent_conf}")
+
             self.single_agent_env = TimeLimit(
-                ManyAgentSwimmerEnv(agent_conf, render_mode), max_episode_steps=1000
+                ManySegmentSwimmerEnv(n_segs, render_mode), max_episode_steps=1000
             )
         elif scenario in ["coupled_half_cheetah-v4"]:
             self.single_agent_env = TimeLimit(
-                CoupledHalfCheetah(agent_conf, render_mode), max_episode_steps=1000
+                CoupledHalfCheetah(render_mode), max_episode_steps=1000
             )
         else:
             raise NotImplementedError("Custom env not implemented!")

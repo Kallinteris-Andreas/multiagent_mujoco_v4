@@ -7,7 +7,7 @@ from gymnasium.utils.ezpickle import EzPickle
 from jinja2 import Template
 
 
-class ManyAgentAntEnv(mujoco_env.MujocoEnv, EzPickle):
+class ManySegmentAntEnv(mujoco_env.MujocoEnv, EzPickle):
     metadata = {
         "render_modes": [
             "human",
@@ -17,22 +17,17 @@ class ManyAgentAntEnv(mujoco_env.MujocoEnv, EzPickle):
         "render_fps": 50,
     }
 
-    def __init__(self, agent_conf, render_mode: str = None):
-        # TODO change agent_conf to n_segs
+    def __init__(self, n_segs: int, render_mode: str = None):
         self.healthy_reward = 1
         self._ctrl_cost_weight = 0.5
         self._contact_cost_weight = 5e-4
-
-        n_agents = int(agent_conf.split("x")[0])
-        n_segs_per_agents = int(agent_conf.split("x")[1])
-        n_segs = n_agents * n_segs_per_agents
 
         # Check whether asset file exists already, otherwise create it
         asset_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             "assets",
-            "manyagent_ant_{}_agents_each_{}_segments.auto.xml".format(
-                n_agents, n_segs_per_agents
+            "many_segment_ant_{}_segments.auto.xml".format(
+                n_segs
             ),
         )
         self._generate_asset(n_segs=n_segs, asset_path=asset_path)
@@ -57,7 +52,7 @@ class ManyAgentAntEnv(mujoco_env.MujocoEnv, EzPickle):
         template_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             "assets",
-            "manyagent_ant.xml.template",
+            "many_segment_ant.xml.template",
         )
         with open(template_path) as file:
             template = Template(file.read())

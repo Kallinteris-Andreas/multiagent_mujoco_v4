@@ -445,19 +445,20 @@ def get_parts_and_edges(
     elif label in ["Humanoid-v4", "HumanoidStandup-v4"]:
         # TODO waiting for https://github.com/Farama-Foundation/Gymnasium/issues/204
         # bodies
-        torso = 0
-        lwaist = 1
-        pelvis = 2
-        right_thigh = 3
-        right_sin = 4
-        right_foot = 5
-        left_thigh = 6
-        left_sin = 7
-        left_foot = 8
-        right_upper_arm = 9
-        right_lower_arm = 10
-        left_upper_arm = 11
-        left_lower_arm = 12
+        worldbody = 0
+        torso = 1
+        lwaist = 2
+        pelvis = 3
+        right_thigh = 4
+        right_sin = 5
+        right_foot = 6
+        left_thigh = 7
+        left_sin = 8
+        left_foot = 9
+        right_upper_arm = 10
+        right_lower_arm = 11
+        left_upper_arm = 12
+        left_lower_arm = 13
 
         # define Mujoco-Graph
         abdomen_y = Node("abdomen_y", -16, -16, 0)
