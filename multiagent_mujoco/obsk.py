@@ -15,7 +15,7 @@ class Node:
         qvel_ids: int,
         act_ids: int,
         body_fn=None,
-        bodies: list[int] = None,
+        bodies: list[int] = [],
         extra_obs: dict[str, typing.Callable] = None,
         tendons=None,
     ):
@@ -127,7 +127,7 @@ def build_obs(
     data,
     k_dict: dict[int, list[Node]],
     k_categories: list[list[str]],
-    global_dict: dict[int, list[Node]],
+    global_nodes: list[Node],
     global_categories: list[str],
 ) -> np.ndarray:
     """
@@ -165,39 +165,43 @@ def build_obs(
                     obs_lst.extend([data.qfrc_actuator[node.qvel_ids]])
                 elif category in ["cvel", "cinert", "cfrc_ext"]:
                     # this is a "body position" item
-                    if node.bodies is not None:
-                        for body in node.bodies:
-                            if category not in body_set_dict:
-                                body_set_dict[category] = set()
-                            if body not in body_set_dict[category]:
-                                items = getattr(data, category)[body].tolist()
-                                if node.body_fn is not None:
-                                    items = node.body_fn(body, items)
-                                obs_lst.extend(
-                                    items if isinstance(items, list) else [items]
-                                )
-                                body_set_dict[category].add(body)
+                    for body in node.bodies:
+                        if category not in body_set_dict:
+                            body_set_dict[category] = set()
+                        if body not in body_set_dict[category]:
+                            items = getattr(data, category)[body].tolist()
+                            if node.body_fn is not None:
+                                items = node.body_fn(body, items)
+                            obs_lst.extend(
+                                items if isinstance(items, list) else [items]
+                            )
+                            body_set_dict[category].add(body)
 
     # Add global observations
     body_set_dict = {}
     for category in global_categories:
-        if category in ["qvel", "qpos", "qfrc_actuator"]:
-            for joint in global_dict.get("joints", []):
-                if category in joint.extra_obs:
-                    items = joint.extra_obs[category](data).tolist()
-                    obs_lst.extend(items if isinstance(items, list) else [items])
-                elif category in ["qfrc_actuator"]:  # this is a "actuator forces" item
-                    obs_lst.extend([data.qfrc_actuator[joint.qvel_ids]])
-                else:
-                    items = getattr(data, category)[getattr(joint, f"{category}_ids")]
-                    obs_lst.extend(items if isinstance(items, list) else [items])
-        else:
-            for body in global_dict.get("bodies", []):
-                if category not in body_set_dict:
-                    body_set_dict[category] = set()
-                if body not in body_set_dict[category]:
-                    obs_lst.extend(getattr(data, category)[body].tolist())
-                    body_set_dict[category].add(body)
+        # for joint in global_dict.get("joints", []):
+        for joint in global_nodes:
+            if category in joint.extra_obs:
+                items = joint.extra_obs[category](data).tolist()
+                obs_lst.extend(items if isinstance(items, list) else [items])
+            elif category in ["qfrc_actuator"]:  # this is a "actuator forces" item
+                obs_lst.extend([data.qfrc_actuator[joint.qvel_ids]])
+            elif category in ["qvel", "qpos"]:
+                items = getattr(data, category)[getattr(joint, f"{category}_ids")]
+                obs_lst.extend(items if isinstance(items, list) else [items])
+            else:
+                for body in joint.bodies:
+                    if category not in body_set_dict:
+                        body_set_dict[category] = set()
+                    if body not in body_set_dict[category]:
+                        items = getattr(data, category)[body].tolist()
+                        if joint.body_fn is not None:
+                            items = joint.body_fn(body, items)
+                        obs_lst.extend(
+                            items if isinstance(items, list) else [items]
+                        )
+                        body_set_dict[category].add(body)
 
     return np.array(obs_lst)
 
@@ -237,7 +241,7 @@ def get_parts_and_edges(
         )
         root_z = Node("root_z", 1, 1, None)
         root_y = Node("root_y", 2, 2, None)
-        globals = {"joints": [root_x, root_y, root_z]}
+        globals = [root_x, root_y, root_z]
 
         if partitioning is None:
             parts = [(bfoot, bshin, bthigh, ffoot, fshin, fthigh)]
@@ -351,7 +355,7 @@ def get_parts_and_edges(
                 "cfrc_ext": lambda data: np.clip(data.cfrc_ext[0:1], -1, 1),
             },
         )
-        globals = {"joints": [torso]}
+        globals = [torso]
 
         if partitioning is None:
             parts = [(hip4, ankle4, hip1, ankle1, hip2, ankle2, hip3, ankle3)]
@@ -423,7 +427,7 @@ def get_parts_and_edges(
             None,
             extra_obs={"qvel": lambda data: np.clip(np.array([data.qvel[2]]), -10, 10)},
         )
-        globals = {"joints": [root_x, root_y, root_z]}
+        globals = [root_x, root_y, root_z]
 
         if partitioning is None:
             parts = [
@@ -509,7 +513,7 @@ def get_parts_and_edges(
                 # "cfrc_ext": lambda data: np.clip(data.cfrc_ext[0:1], -1, 1),
             },
         )
-        globals = {"joints": [root]}
+        globals = [root]
 
         if partitioning is None:
             parts = [
@@ -617,7 +621,7 @@ def get_parts_and_edges(
         target_y = Node(
             "target_y", -1, -1, None, extra_obs={"qvel": (lambda data: np.array([]))}
         )
-        globals = {"joints": [target_x, target_y]}
+        globals = [target_x, target_y]
 
         if partitioning is None:
             parts = [
@@ -656,8 +660,8 @@ def get_parts_and_edges(
         object_com = Node("object", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.get_body_xpos("object"))), "qvel": (lambda data: np.array([]))})
         goal_com = Node("goal", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.get_body_xpos("goal"))), "qvel": (lambda data: np.array([]))})
 
-        globals = {"joints": [tips_arm_com, object_com, goal_com]}
-        globals = {}
+        globals = [tips_arm_com, object_com, goal_com]
+        globals = []
 
         if partitioning is None:
             parts = [(r_shoulder_pan_joint, r_shoulder_lift_joint, r_upper_arm_roll_joint, r_elbow_flex_joint, r_forearm_roll_joint, r_wrist_flex_joint, r_wrist_roll_joint)]
@@ -696,7 +700,7 @@ def get_parts_and_edges(
 
         edges = [HyperEdge(joint0, joint1)]
         free_body_rot = Node("free_body_rot", 2, 2, None)
-        globals = {"joints": [free_body_rot]}
+        globals = [free_body_rot]
 
         if partitioning is None:
             parts = [
@@ -733,7 +737,7 @@ def get_parts_and_edges(
         )
         root_z = Node("root_z", 1, 1, None)
         root_y = Node("root_y", 2, 2, None)
-        globals = {"joints": [root_x, root_x, root_z]}
+        globals = [root_x, root_x, root_z]
 
         if partitioning is None:
             parts = [
@@ -827,7 +831,7 @@ def get_parts_and_edges(
         )
         root_z1 = Node("root_z1", 10, 10, None)
         root_y1 = Node("root_y1", 11, 11, None)
-        globals = {"joints": [root_x0, root_y0, root_z0, root_x1, root_y1, root_z1]}
+        globals = [root_x0, root_y0, root_z0, root_x1, root_y1, root_z1]
 
         if partitioning is None:
             parts = [
@@ -872,7 +876,7 @@ def get_parts_and_edges(
             Node(f"rot{i:d}", -n_segs + i, -n_segs + i, i) for i in range(0, n_segs)
         ]
         edges = [HyperEdge(joints[i], joints[i + 1]) for i in range(n_segs - 1)]
-        globals = {}
+        globals = []
 
         parts = [
             tuple(joints[i * n_segs_per_agents : (i + 1) * n_segs_per_agents])
@@ -958,7 +962,7 @@ def get_parts_and_edges(
                 "cfrc_ext": lambda data: np.clip(data.cfrc_ext[0:1], -1, 1),
             },
         )
-        globals = {"joints": [free_joint]}
+        globals = [free_joint]
 
         parts = [
             [
