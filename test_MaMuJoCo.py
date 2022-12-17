@@ -52,6 +52,7 @@ def assert_dict_numpy_are_equal(
 ) -> None:
     assert dict_a.keys() == dict_b.keys()
     for key in dict_a.keys():
+        assert len(dict_a[key]) == len(dict_b[key])
         assert (dict_a[key] == dict_b[key]).all()
 
 

@@ -489,6 +489,13 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
             ),
         )
 
+        if len(data.cinert) != 0:
+            data.cinert = np.reshape(data.cinert, self.single_agent_env.unwrapped.data.cinert.shape)
+        if len(data.cvel) != 0:
+            data.cvel = np.reshape(data.cvel, self.single_agent_env.unwrapped.data.cvel.shape)
+        if len(data.cfrc_ext) != 0:
+            data.cfrc_ext = np.reshape(data.cfrc_ext, self.single_agent_env.unwrapped.data.cfrc_ext.shape)
+
         assert len(self.single_agent_env.unwrapped.data.qpos.flat) == len(data.qpos)
         assert len(self.single_agent_env.unwrapped.data.qvel.flat) == len(data.qvel)
 

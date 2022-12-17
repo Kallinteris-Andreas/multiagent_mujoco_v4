@@ -171,9 +171,8 @@ def build_obs(
                                 body_set_dict[category] = set()
                             if body not in body_set_dict[category]:
                                 items = getattr(data, category)[body].tolist()
-                                items = getattr(node, "body_fn", lambda _id, x: x)(
-                                    body, items
-                                )
+                                if node.body_fn is not None:
+                                    items = node.body_fn(body, items)
                                 obs_lst.extend(
                                     items if isinstance(items, list) else [items]
                                 )
@@ -443,9 +442,8 @@ def get_parts_and_edges(
         return parts, edges, globals
 
     elif label in ["Humanoid-v4", "HumanoidStandup-v4"]:
-        # TODO waiting for https://github.com/Farama-Foundation/Gymnasium/issues/204
         # bodies
-        worldbody = 0
+        # worldbody = 0
         torso = 1
         lwaist = 2
         pelvis = 3
@@ -461,23 +459,23 @@ def get_parts_and_edges(
         left_lower_arm = 13
 
         # define Mujoco-Graph
-        abdomen_y = Node("abdomen_y", -16, -16, 0)
-        abdomen_z = Node("abdomen_z", -17, -17, 1)
-        abdomen_x = Node("abdomen_x", -15, -15, 2)
-        right_hip_x = Node("right_hip_x", -14, -14, 3)
-        right_hip_z = Node("right_hip_z", -13, -13, 4)
-        right_hip_y = Node("right_hip_y", -12, -12, 5)
-        right_knee = Node("right_knee", -11, -11, 6)
-        left_hip_x = Node("left_hip_x", -10, -10, 7)
-        left_hip_z = Node("left_hip_z", -9, -9, 8)
-        left_hip_y = Node("left_hip_y", -8, -8, 9)
-        left_knee = Node("left_knee", -7, -7, 10)
-        right_shoulder1 = Node("right_shoulder1", -6, -6, 11)
-        right_shoulder2 = Node("right_shoulder2", -5, -5, 12)
-        right_elbow = Node("right_elbow", -4, -4, 13)
-        left_shoulder1 = Node("left_shoulder1", -3, -3, 14)
-        left_shoulder2 = Node("left_shoulder2", -2, -2, 15)
-        left_elbow = Node("left_elbow", -1, -1, 16)
+        abdomen_y = Node("abdomen_y", -16, -16, 0, bodies=[torso, lwaist, pelvis])
+        abdomen_z = Node("abdomen_z", -17, -17, 1, bodies=[torso, lwaist, pelvis])
+        abdomen_x = Node("abdomen_x", -15, -15, 2, bodies=[pelvis, right_thigh, left_thigh])
+        right_hip_x = Node("right_hip_x", -14, -14, 3, bodies=[right_thigh, right_sin])
+        right_hip_z = Node("right_hip_z", -13, -13, 4, bodies=[right_thigh, right_sin])
+        right_hip_y = Node("right_hip_y", -12, -12, 5, bodies=[right_thigh, right_sin])
+        right_knee = Node("right_knee", -11, -11, 6, bodies=[right_sin, right_foot])
+        left_hip_x = Node("left_hip_x", -10, -10, 7, bodies=[left_thigh, left_sin])
+        left_hip_z = Node("left_hip_z", -9, -9, 8, bodies=[left_thigh, left_sin])
+        left_hip_y = Node("left_hip_y", -8, -8, 9, bodies=[left_thigh, left_sin])
+        left_knee = Node("left_knee", -7, -7, 10, bodies=[left_sin, left_foot])
+        right_shoulder1 = Node("right_shoulder1", -6, -6, 11, bodies=[torso, right_upper_arm, right_lower_arm])
+        right_shoulder2 = Node("right_shoulder2", -5, -5, 12, bodies=[torso, right_upper_arm, right_lower_arm])
+        right_elbow = Node("right_elbow", -4, -4, 13, bodies=[right_lower_arm])
+        left_shoulder1 = Node("left_shoulder1", -3, -3, 14, bodies=[torso, left_upper_arm, left_lower_arm])
+        left_shoulder2 = Node("left_shoulder2", -2, -2, 15, bodies=[torso, left_upper_arm, left_lower_arm])
+        left_elbow = Node("left_elbow", -1, -1, 16, bodies=[left_lower_arm])
 
         edges = [
             HyperEdge(abdomen_x, abdomen_y, abdomen_z),
