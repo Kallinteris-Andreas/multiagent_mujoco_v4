@@ -72,7 +72,7 @@ class HyperEdge:
 def get_joints_at_kdist(
     agent_partition: list[tuple[Node, ...]],
     hyperedges: list[HyperEdge],
-    k: int = 0,
+    k: int,
 ) -> dict[int, list[Node]]:
     """
     Identify all joints at distance <= k from agent agent_id
