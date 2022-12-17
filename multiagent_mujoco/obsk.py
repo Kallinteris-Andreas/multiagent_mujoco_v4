@@ -566,11 +566,12 @@ def get_parts_and_edges(
         return parts, edges, globals
 
     elif label in ["Reacher-v4"]:
-
         # define Mujoco-Graph
+        # worldbody = 0
         body0 = 1
         body1 = 2
         fingertip = 3
+        # target = 4
         joint0 = Node(
             "joint0",
             -4,
@@ -610,15 +611,13 @@ def get_parts_and_edges(
         )
         edges = [HyperEdge(joint0, joint1)]
 
-        worldbody = 0
-        target = 4
         target_x = Node(
             "target_x", -2, -2, None, extra_obs={"qvel": (lambda data: np.array([]))}
         )
         target_y = Node(
             "target_y", -1, -1, None, extra_obs={"qvel": (lambda data: np.array([]))}
         )
-        globals = {"bodies": [worldbody, target], "joints": [target_x, target_y]}
+        globals = {"joints": [target_x, target_y]}
 
         if partitioning is None:
             parts = [
