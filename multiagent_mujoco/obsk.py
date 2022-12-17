@@ -656,12 +656,11 @@ def get_parts_and_edges(
             HyperEdge(r_wrist_flex_joint, r_wrist_roll_joint),
         ]
 
-        tips_arm_com = Node("tips_arm", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.get_body_xpos("tips_arm"))), "qvel": (lambda data: np.array([]))})
-        object_com = Node("object", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.get_body_xpos("object"))), "qvel": (lambda data: np.array([]))})
-        goal_com = Node("goal", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.get_body_xpos("goal"))), "qvel": (lambda data: np.array([]))})
+        tips_arm_com = Node("tips_arm", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.body("tips_arm").xpos)), "qvel": (lambda data: np.array([]))})
+        object_com = Node("object", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.body("object").xpos)), "qvel": (lambda data: np.array([]))})
+        goal_com = Node("goal", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.body("goal").xpos)), "qvel": (lambda data: np.array([]))})
 
         globals = [tips_arm_com, object_com, goal_com]
-        globals = []
 
         if partitioning is None:
             parts = [(r_shoulder_pan_joint, r_shoulder_lift_joint, r_upper_arm_roll_joint, r_elbow_flex_joint, r_forearm_roll_joint, r_wrist_flex_joint, r_wrist_roll_joint)]
