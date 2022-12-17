@@ -394,7 +394,9 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
             return actions[self.possible_agents[0]]
 
         assert self.single_agent_env.action_space.shape is not None
-        global_action = np.zeros((self.single_agent_env.action_space.shape[0],)) + np.nan
+        global_action = (
+            np.zeros((self.single_agent_env.action_space.shape[0],)) + np.nan
+        )
         for agent_id, partition in enumerate(self.agent_action_partitions):
             for act_index, body_part in enumerate(partition):
                 assert np.isnan(
@@ -484,17 +486,21 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
             qfrc_actuator=np.array(
                 global_state[cvel_end_index:qfrc_actuator_end_index]
             ),
-            cfrc_ext=np.array(
-                global_state[qfrc_actuator_end_index:cfrc_ext_end_index]
-            ),
+            cfrc_ext=np.array(global_state[qfrc_actuator_end_index:cfrc_ext_end_index]),
         )
 
         if len(data.cinert) != 0:
-            data.cinert = np.reshape(data.cinert, self.single_agent_env.unwrapped.data.cinert.shape)
+            data.cinert = np.reshape(
+                data.cinert, self.single_agent_env.unwrapped.data.cinert.shape
+            )
         if len(data.cvel) != 0:
-            data.cvel = np.reshape(data.cvel, self.single_agent_env.unwrapped.data.cvel.shape)
+            data.cvel = np.reshape(
+                data.cvel, self.single_agent_env.unwrapped.data.cvel.shape
+            )
         if len(data.cfrc_ext) != 0:
-            data.cfrc_ext = np.reshape(data.cfrc_ext, self.single_agent_env.unwrapped.data.cfrc_ext.shape)
+            data.cfrc_ext = np.reshape(
+                data.cfrc_ext, self.single_agent_env.unwrapped.data.cfrc_ext.shape
+            )
 
         assert len(self.single_agent_env.unwrapped.data.qpos.flat) == len(data.qpos)
         assert len(self.single_agent_env.unwrapped.data.qvel.flat) == len(data.qvel)

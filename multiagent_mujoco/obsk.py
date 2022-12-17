@@ -198,9 +198,7 @@ def build_obs(
                         items = getattr(data, category)[body].tolist()
                         if joint.body_fn is not None:
                             items = joint.body_fn(body, items)
-                        obs_lst.extend(
-                            items if isinstance(items, list) else [items]
-                        )
+                        obs_lst.extend(items if isinstance(items, list) else [items])
                         body_set_dict[category].add(body)
 
     return np.array(obs_lst)
@@ -465,7 +463,9 @@ def get_parts_and_edges(
         # define Mujoco-Graph
         abdomen_y = Node("abdomen_y", -16, -16, 0, bodies=[torso, lwaist, pelvis])
         abdomen_z = Node("abdomen_z", -17, -17, 1, bodies=[torso, lwaist, pelvis])
-        abdomen_x = Node("abdomen_x", -15, -15, 2, bodies=[pelvis, right_thigh, left_thigh])
+        abdomen_x = Node(
+            "abdomen_x", -15, -15, 2, bodies=[pelvis, right_thigh, left_thigh]
+        )
         right_hip_x = Node("right_hip_x", -14, -14, 3, bodies=[right_thigh, right_sin])
         right_hip_z = Node("right_hip_z", -13, -13, 4, bodies=[right_thigh, right_sin])
         right_hip_y = Node("right_hip_y", -12, -12, 5, bodies=[right_thigh, right_sin])
@@ -474,11 +474,27 @@ def get_parts_and_edges(
         left_hip_z = Node("left_hip_z", -9, -9, 8, bodies=[left_thigh, left_sin])
         left_hip_y = Node("left_hip_y", -8, -8, 9, bodies=[left_thigh, left_sin])
         left_knee = Node("left_knee", -7, -7, 10, bodies=[left_sin, left_foot])
-        right_shoulder1 = Node("right_shoulder1", -6, -6, 11, bodies=[torso, right_upper_arm, right_lower_arm])
-        right_shoulder2 = Node("right_shoulder2", -5, -5, 12, bodies=[torso, right_upper_arm, right_lower_arm])
+        right_shoulder1 = Node(
+            "right_shoulder1",
+            -6,
+            -6,
+            11,
+            bodies=[torso, right_upper_arm, right_lower_arm],
+        )
+        right_shoulder2 = Node(
+            "right_shoulder2",
+            -5,
+            -5,
+            12,
+            bodies=[torso, right_upper_arm, right_lower_arm],
+        )
         right_elbow = Node("right_elbow", -4, -4, 13, bodies=[right_lower_arm])
-        left_shoulder1 = Node("left_shoulder1", -3, -3, 14, bodies=[torso, left_upper_arm, left_lower_arm])
-        left_shoulder2 = Node("left_shoulder2", -2, -2, 15, bodies=[torso, left_upper_arm, left_lower_arm])
+        left_shoulder1 = Node(
+            "left_shoulder1", -3, -3, 14, bodies=[torso, left_upper_arm, left_lower_arm]
+        )
+        left_shoulder2 = Node(
+            "left_shoulder2", -2, -2, 15, bodies=[torso, left_upper_arm, left_lower_arm]
+        )
         left_elbow = Node("left_elbow", -1, -1, 16, bodies=[left_lower_arm])
 
         edges = [
@@ -625,7 +641,10 @@ def get_parts_and_edges(
 
         if partitioning is None:
             parts = [
-                (joint0, joint1,)
+                (
+                    joint0,
+                    joint1,
+                )
             ]
         elif partitioning == "2x1":
             # isolate upper and lower arms
@@ -656,17 +675,58 @@ def get_parts_and_edges(
             HyperEdge(r_wrist_flex_joint, r_wrist_roll_joint),
         ]
 
-        tips_arm_com = Node("tips_arm", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.body("tips_arm").xpos)), "qvel": (lambda data: np.array([]))})
-        object_com = Node("object", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.body("object").xpos)), "qvel": (lambda data: np.array([]))})
-        goal_com = Node("goal", None, None, None, extra_obs={"qpos": (lambda data: np.array(data.body("goal").xpos)), "qvel": (lambda data: np.array([]))})
+        tips_arm_com = Node(
+            "tips_arm",
+            None,
+            None,
+            None,
+            extra_obs={
+                "qpos": (lambda data: np.array(data.body("tips_arm").xpos)),
+                "qvel": (lambda data: np.array([])),
+            },
+        )
+        object_com = Node(
+            "object",
+            None,
+            None,
+            None,
+            extra_obs={
+                "qpos": (lambda data: np.array(data.body("object").xpos)),
+                "qvel": (lambda data: np.array([])),
+            },
+        )
+        goal_com = Node(
+            "goal",
+            None,
+            None,
+            None,
+            extra_obs={
+                "qpos": (lambda data: np.array(data.body("goal").xpos)),
+                "qvel": (lambda data: np.array([])),
+            },
+        )
 
         globals = [tips_arm_com, object_com, goal_com]
 
         if partitioning is None:
-            parts = [(r_shoulder_pan_joint, r_shoulder_lift_joint, r_upper_arm_roll_joint, r_elbow_flex_joint, r_forearm_roll_joint, r_wrist_flex_joint, r_wrist_roll_joint)]
+            parts = [
+                (
+                    r_shoulder_pan_joint,
+                    r_shoulder_lift_joint,
+                    r_upper_arm_roll_joint,
+                    r_elbow_flex_joint,
+                    r_forearm_roll_joint,
+                    r_wrist_flex_joint,
+                    r_wrist_roll_joint,
+                )
+            ]
         if partitioning == "3p":
             parts = [
-                (r_shoulder_pan_joint, r_shoulder_lift_joint, r_upper_arm_roll_joint,),  # Shoulder
+                (
+                    r_shoulder_pan_joint,
+                    r_shoulder_lift_joint,
+                    r_upper_arm_roll_joint,
+                ),  # Shoulder
                 (r_elbow_flex_joint,),  # Elbow
                 (r_forearm_roll_joint, r_wrist_flex_joint, r_wrist_roll_joint),  # Wrist
             ]
@@ -683,18 +743,14 @@ def get_parts_and_edges(
             -2,
             -2,
             0,
-            extra_obs={
-                "qvel": (lambda data: np.array([data.qvel[0], data.qvel[3]]))
-            },
+            extra_obs={"qvel": (lambda data: np.array([data.qvel[0], data.qvel[3]]))},
         )
         joint1 = Node(
             "rot3",
             -1,
             -1,
             1,
-            extra_obs={
-                "qvel": (lambda data: np.array([data.qvel[1], data.qvel[4]]))
-            },
+            extra_obs={"qvel": (lambda data: np.array([data.qvel[1], data.qvel[4]]))},
         )
 
         edges = [HyperEdge(joint0, joint1)]
