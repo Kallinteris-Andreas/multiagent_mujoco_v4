@@ -8,10 +8,10 @@ from multiagent_mujoco.coupled_half_cheetah import CoupledHalfCheetah
 from multiagent_mujoco.many_segment_ant import ManySegmentAntEnv
 from multiagent_mujoco.many_segment_swimmer import ManySegmentSwimmerEnv
 from multiagent_mujoco.obsk import (
+    _observation_structure,
     build_obs,
     get_joints_at_kdist,
     get_parts_and_edges,
-    observation_structure,
 )
 
 # TODO for future revisions v1?
@@ -462,7 +462,7 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
                 self.cfrc_ext = cfrc_ext
                 pass
 
-        obs_struct = observation_structure(self.single_agent_env.spec.id)
+        obs_struct = _observation_structure(self.single_agent_env.spec.id)
         qpos_end_index = obs_struct["qpos"]
         qvel_end_index = qpos_end_index + obs_struct["qvel"]
         cinert_end_index = qvel_end_index + obs_struct["cinert"]
