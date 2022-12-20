@@ -2,6 +2,7 @@
 
 
 ```diff
++ Now ALL the enviroments work
 + Now uses the standard ‘PettingZoo.ParallelEnv‘ API.
 + Now Uses a modern version of ‘Gymnasium‘ (10.8v → 26.3v).
 + Now Uses newer MuJoCo bindings (‘mujoco-py‘ → ‘mujoco‘).
