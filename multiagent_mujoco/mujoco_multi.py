@@ -165,39 +165,10 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
     scenario="manyagent_ant"
     agent_conf="$Xx$Y" # where $X, $Y any positive integers e,g, "42x6", "10x2", "2x3"
 
-    ### Coupled HalfCheetah (NEW!)
+    ### Coupled HalfCheetah
 
     scenario="coupled_half_cheetah"
     agent_conf="1p1"
-
-
-    # How to create new agent factorizations (example 'Ant-v4', '8x1')
-
-    In this example, we will create an agent factorization not present in MaMuJoCo the '8x1', where each agent controls a single action (first implemented by [safe-MaMuJoCo](https://github.com/chauncygu/Safe-Multi-Agent-Mujoco))
-
-    first we will load the graph of MaMuJoCo
-    ```python
-    >>> from multiagent_mujoco.obsk import get_parts_and_edges
-    >>> unpartioned_nodes, edges, global_nodes = get_parts_and_edges('Ant-v4', None)
-    ```
-    the `unpartioned_nodes` contain the nodes of the MaMuJoCo graph
-    the `edges` well, contain the edges of the graph
-    and the `global_nodes` a set of observations for all agents
-
-    To create our '8x1' partition we will need to partition the `unpartioned_nodes`
-
-    ```python
-    >>> unpartioned_nodes
-    [(hip1, ankle1, hip2, ankle2, hip3, ankle3, hip4, ankle4)]
-    >>> partioned_nodes = [(unpartioned_nodes[0][0],), (unpartioned_nodes[0][1],), (unpartioned_nodes[0][2],), (unpartioned_nodes[0][3],), (unpartioned_nodes[0][4],), (unpartioned_nodes[0][5],), (unpartioned_nodes[0][6],), (unpartioned_nodes[0][7],)]>>> partioned_nodes
-    >>> partioned_nodes
-    [(hip1,), (ankle1,), (hip2,), (ankle2,), (hip3,), (ankle3,), (hip4,), (ankle4,)]
-    ```
-    finally package the partitions and create our environment
-    ```python
-    my_agent_factorization = {"partition": partioned_nodes, "edges": edges, "globals": global_nodes}
-    gym_env = MaMuJoCo('Ant', '8x1', agent_factorization=my_agent_factorization)
-    ```
     """
 
     metadata = {
