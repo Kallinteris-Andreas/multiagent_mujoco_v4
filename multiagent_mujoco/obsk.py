@@ -835,7 +835,9 @@ def get_parts_and_edges(  # noqa: C901
             0,
             tendons=(tendon),
             extra_obs={
-                "ten_J": lambda data: data.ten_J[tendon],
+                "ten_J": lambda data: np.concatenate(
+                    [data.ten_J[tendon][:2], data.ten_J[tendon][9:11]]
+                ),
                 "ten_length": lambda data: data.ten_length,
                 "ten_velocity": lambda data: data.ten_velocity,
             },
@@ -853,7 +855,9 @@ def get_parts_and_edges(  # noqa: C901
             6,
             tendons=(tendon),
             extra_obs={
-                "ten_J": lambda data: data.ten_J[tendon],
+                "ten_J": lambda data: np.concatenate(
+                    [data.ten_J[tendon][:2], data.ten_J[tendon][9:11]]
+                ),
                 "ten_length": lambda data: data.ten_length,
                 "ten_velocity": lambda data: data.ten_velocity,
             },

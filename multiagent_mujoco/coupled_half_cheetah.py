@@ -39,7 +39,7 @@ class CoupledHalfCheetah(mujoco_env.MujocoEnv, EzPickle):
         self._reset_noise_scale = 0.1
 
         observation_space = gymnasium.spaces.Box(
-            low=-np.inf, high=np.inf, shape=(54,), dtype=np.float32
+            low=-np.inf, high=np.inf, shape=(40,), dtype=np.float32
         )
 
         mujoco_env.MujocoEnv.__init__(
@@ -101,10 +101,11 @@ class CoupledHalfCheetah(mujoco_env.MujocoEnv, EzPickle):
         # NOTE: does not return tendon data
         return np.concatenate(
             [
-                self.data.qpos.flat[1:9],  # exclude rootx
-                self.data.qpos.flat[10:18],  # exclude rootx
+                self.data.qpos.flat[1:9],  # exclude rootx0
+                self.data.qpos.flat[10:18],  # exclude rootx1
                 self.data.qvel.flat,
-                self.data.ten_J[0],
+                self.data.ten_J[0][:2],
+                self.data.ten_J[0][9:11],
                 self.data.ten_length,
                 self.data.ten_velocity,
             ]
