@@ -824,8 +824,7 @@ def get_parts_and_edges(  # noqa: C901
 
         return parts, edges, globals
 
-    elif label in ["coupled_half_cheetah-v4"]:
-
+    elif label in ["CoupledHalfCheetah-v4"]:
         # define Mujoco graph
         tendon = 0
 
@@ -917,7 +916,7 @@ def get_parts_and_edges(  # noqa: C901
 
         return parts, edges, globals
 
-    elif label in ["manyagent_swimmer-v4"]:
+    elif label in ["ManySegmentSwimmer-v4"]:
 
         try:
             n_agents = int(partitioning.split("x")[0])
@@ -941,7 +940,7 @@ def get_parts_and_edges(  # noqa: C901
         ]
         return parts, edges, globals
 
-    elif label in ["manyagent_ant-v4"]:
+    elif label in ["ManySegmentAnt-v4"]:
         try:
             n_agents = int(partitioning.split("x")[0])
             n_segs_per_agents = int(partitioning.split("x")[1])
