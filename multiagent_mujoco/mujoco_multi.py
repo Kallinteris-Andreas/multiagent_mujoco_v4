@@ -527,6 +527,7 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
         return categories
 
     def _generate_global_categories(self, scenario: str) -> tuple[str, ...]:
+        # TODO disable qvel
         """Generates the default global categories of observations.
 
         Args:
