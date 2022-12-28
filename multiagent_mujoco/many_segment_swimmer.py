@@ -47,7 +47,7 @@ class ManySegmentSwimmerEnv(mujoco_env.MujocoEnv, EzPickle):
         self._generate_asset(n_segs=n_segs, asset_path=asset_path)
 
         observation_space = gymnasium.spaces.Box(
-            low=-np.inf, high=np.inf, shape=(n_segs * 2 + 4,), dtype=np.float32
+            low=-np.inf, high=np.inf, shape=(n_segs * 2 + 4,), dtype=np.float64
         )
         mujoco_env.MujocoEnv.__init__(
             self,

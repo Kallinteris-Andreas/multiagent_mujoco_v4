@@ -51,7 +51,7 @@ class ManySegmentAntEnv(mujoco_env.MujocoEnv, EzPickle):
             low=-np.inf,
             high=np.inf,
             shape=(n_segs * 50 + 17,),
-            dtype=np.float32,
+            dtype=np.float64,
         )
         mujoco_env.MujocoEnv.__init__(
             self,
