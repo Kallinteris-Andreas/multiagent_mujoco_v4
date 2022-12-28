@@ -12,7 +12,12 @@ DEFAULT_CAMERA_CONFIG = {
 
 
 class CoupledHalfCheetah(mujoco_env.MujocoEnv, EzPickle):
-    """This environment consists of 2 half cheetahs coupled by an elastic tendon."""
+    """This environment consists of 2 half cheetahs coupled by an elastic tendon.
+
+    # Description
+    This environment was first (half-)implemented in the [original_mamujoco](https://github.com/schroederdewitt/multiagent_mujoco)
+    This environment consists of 2 half cheetahs coupled by an elastic tendon.
+    """
 
     metadata = {
         "render_modes": [
@@ -34,7 +39,7 @@ class CoupledHalfCheetah(mujoco_env.MujocoEnv, EzPickle):
         self._reset_noise_scale = 0.1
 
         observation_space = gymnasium.spaces.Box(
-            low=-np.inf, high=np.inf, shape=(34,), dtype=np.float32
+            low=-np.inf, high=np.inf, shape=(54,), dtype=np.float32
         )
 
         mujoco_env.MujocoEnv.__init__(
@@ -99,6 +104,9 @@ class CoupledHalfCheetah(mujoco_env.MujocoEnv, EzPickle):
                 self.data.qpos.flat[1:9],  # exclude rootx
                 self.data.qpos.flat[10:18],  # exclude rootx
                 self.data.qvel.flat,
+                self.data.ten_J[0],
+                self.data.ten_length,
+                self.data.ten_velocity,
             ]
         )
 
@@ -114,4 +122,6 @@ class CoupledHalfCheetah(mujoco_env.MujocoEnv, EzPickle):
             + self.np_random.standard_normal(self.model.nv) * self._reset_noise_scale
         )
         self.set_state(qpos, qvel)
-        return self._get_obs()
+        observation = self._get_obs()
+        assert observation.shape == self.observation_space.shape
+        return observation

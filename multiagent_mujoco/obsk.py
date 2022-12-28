@@ -829,8 +829,8 @@ def get_parts_and_edges(  # noqa: C901
         # define Mujoco graph
         tendon = 0
 
-        bthigh = Node(
-            "bthigh",
+        bthigh0 = Node(
+            "bthigh0",
             -6,
             -6,
             0,
@@ -841,14 +841,14 @@ def get_parts_and_edges(  # noqa: C901
                 "ten_velocity": lambda data: data.ten_velocity,
             },
         )
-        bshin = Node("bshin", -5, -5, 1)
-        bfoot = Node("bfoot", -4, -4, 2)
-        fthigh = Node("fthigh", -3, -3, 3)
-        fshin = Node("fshin", -2, -2, 4)
-        ffoot = Node("ffoot", -1, -1, 5)
+        bshin0 = Node("bshin0", -5, -5, 1)
+        bfoot0 = Node("bfoot0", -4, -4, 2)
+        fthigh0 = Node("fthigh0", -3, -3, 3)
+        fshin0 = Node("fshin0", -2, -2, 4)
+        ffoot0 = Node("ffoot0", -1, -1, 5)
 
-        bthigh2 = Node(
-            "bthigh2",
+        bthigh1 = Node(
+            "bthigh1",
             -6,
             -6,
             6,
@@ -859,23 +859,23 @@ def get_parts_and_edges(  # noqa: C901
                 "ten_velocity": lambda data: data.ten_velocity,
             },
         )
-        bshin2 = Node("bshin2", -5, -5, 7)
-        bfoot2 = Node("bfoot2", -4, -4, 8)
-        fthigh2 = Node("fthigh2", -3, -3, 9)
-        fshin2 = Node("fshin2", -2, -2, 10)
-        ffoot2 = Node("ffoot2", -1, -1, 11)
+        bshin1 = Node("bshin1", -5, -5, 7)
+        bfoot1 = Node("bfoot1", -4, -4, 8)
+        fthigh1 = Node("fthigh1", -3, -3, 9)
+        fshin1 = Node("fshin1", -2, -2, 10)
+        ffoot1 = Node("ffoot1", -1, -1, 11)
 
         edges = [
-            HyperEdge(bfoot, bshin),
-            HyperEdge(bshin, bthigh),
-            HyperEdge(bthigh, fthigh),
-            HyperEdge(fthigh, fshin),
-            HyperEdge(fshin, ffoot),
-            HyperEdge(bfoot2, bshin2),
-            HyperEdge(bshin2, bthigh2),
-            HyperEdge(bthigh2, fthigh2),
-            HyperEdge(fthigh2, fshin2),
-            HyperEdge(fshin2, ffoot2),
+            HyperEdge(bfoot0, bshin0),
+            HyperEdge(bshin0, bthigh0),
+            HyperEdge(bthigh0, fthigh0),
+            HyperEdge(fthigh0, fshin0),
+            HyperEdge(fshin0, ffoot0),
+            HyperEdge(bfoot1, bshin1),
+            HyperEdge(bshin1, bthigh1),
+            HyperEdge(bthigh1, fthigh1),
+            HyperEdge(fthigh1, fshin1),
+            HyperEdge(fshin1, ffoot1),
         ]
 
         root_x0 = Node(
@@ -893,24 +893,24 @@ def get_parts_and_edges(  # noqa: C901
         if partitioning is None:
             parts = [
                 (
-                    bfoot,
-                    bshin,
-                    bthigh,
-                    ffoot,
-                    fshin,
-                    fthigh,
-                    bfoot2,
-                    bshin2,
-                    bthigh2,
-                    ffoot2,
-                    fshin2,
-                    fthigh2,
+                    bfoot0,
+                    bshin0,
+                    bthigh0,
+                    ffoot0,
+                    fshin0,
+                    fthigh0,
+                    bfoot1,
+                    bshin1,
+                    bthigh1,
+                    ffoot1,
+                    fshin1,
+                    fthigh1,
                 ),
             ]
         elif partitioning == "1p1":
             parts = [
-                (bfoot, bshin, bthigh, ffoot, fshin, fthigh),
-                (bfoot2, bshin2, bthigh2, ffoot2, fshin2, fthigh2),
+                (bfoot0, bshin0, bthigh0, ffoot0, fshin0, fthigh0),
+                (bfoot1, bshin1, bthigh1, ffoot1, fshin1, fthigh1),
             ]
         else:
             raise Exception(f"UNKNOWN partitioning config: {partitioning}")
