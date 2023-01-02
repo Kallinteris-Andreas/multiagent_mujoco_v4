@@ -36,14 +36,17 @@ pip install .
 
 ```python
 import numpy
-from multiagent_mujoco.mujoco_multi import MaMuJoCo
+from multiagent_mujoco import mamujoco_v0
 
 if __name__ == "__main__":
-    #env = MaMuJoCo(scenario='InvertedPendulum', agent_conf=None, agent_obsk=1, render_mode='human')
-    env = MaMuJoCo(scenario='Swimmer', agent_conf='2x1', agent_obsk=1, render_mode='human')
-    #env = MaMuJoCo(scenario='Ant', agent_conf='2x4', agent_obsk=1, render_mode='human')
-    #env = MaMuJoCo(scenario='manyagent_swimmer', agent_conf='10x2', agent_obsk=1, render_mode='human')
-    #env = MaMuJoCo(scenario='coupled_half_cheetah', agent_conf='1p1', agent_obsk=1, render_mode='human')
+    env = mamujoco_v0.parallel_env(scenario='Ant', agent_conf='2x4', agent_obsk=0, render_mode=None)
+    # env = mamujoco_v0.parallel_env(scenario='Humanoid', agent_conf='9|8', agent_obsk=0, render_mode=None)
+    # env = mamujoco_v0.parallel_env(scenario='Reacher', agent_conf='2x1', agent_obsk=1, render_mode=None)
+    # env = mamujoco_v0.parallel_env(scenario='coupled_half_cheetah', agent_conf='1p1', agent_obsk=1, render_mode=None)
+    # env = mamujoco_v0.parallel_env(scenario='Swimmer', agent_conf='2x1', agent_obsk=0, render_mode='human')
+    # env = mamujoco_v0.parallel_env(scenario='manyagent_swimmer', agent_conf='2x1', agent_obsk=0, render_mode='human')
+    # env = mamujoco_v0.parallel_env(scenario='coupled_half_cheetah', agent_conf='1p1', agent_obsk=0, render_mode='human')
+    # env = mamujoco_v0.parallel_env(scenario='manyagent_swimmer', agent_conf='2x1', agent_obsk=0, render_mode='human')
     
     n_episodes = 1
     debug_step = 0
