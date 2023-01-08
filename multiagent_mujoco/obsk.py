@@ -893,25 +893,12 @@ def get_parts_and_edges(  # noqa: C901
 
         if partitioning is None:
             parts = [
-                (
-                    bfoot0,
-                    bshin0,
-                    bthigh0,
-                    ffoot0,
-                    fshin0,
-                    fthigh0,
-                    bfoot1,
-                    bshin1,
-                    bthigh1,
-                    ffoot1,
-                    fshin1,
-                    fthigh1,
-                ),
+                (bthigh0, bshin0, bfoot0, fthigh0, fshin0, ffoot0, bthigh1, bshin1, bfoot1, fthigh1, fshin1, ffoot1),
             ]
         elif partitioning == "1p1":  # isolate the cheetahs
             parts = [
-                (bfoot0, bshin0, bthigh0, ffoot0, fshin0, fthigh0),
-                (bfoot1, bshin1, bthigh1, ffoot1, fshin1, fthigh1),
+                (bthigh0, bshin0, bfoot0, fthigh0, fshin0, ffoot0),
+                (bthigh1, bshin1, bfoot1, fthigh1, fshin1, ffoot1),
             ]
         else:
             raise Exception(f"UNKNOWN partitioning config: {partitioning}")
