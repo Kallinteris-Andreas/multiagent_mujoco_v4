@@ -241,7 +241,7 @@ def get_parts_and_edges(  # noqa: C901
         )
         root_z = Node("root_z", 1, 1, None)
         root_y = Node("root_y", 2, 2, None)
-        globals = [root_x, root_y, root_z]
+        globals = [root_x, root_z, root_y]
 
         if partitioning is None:
             parts = [(bthigh, bshin, bfoot, fthigh, fshin, ffoot)]
@@ -427,7 +427,7 @@ def get_parts_and_edges(  # noqa: C901
             None,
             extra_obs={"qvel": lambda data: np.clip(np.array([data.qvel[2]]), -10, 10)},
         )
-        globals = [root_x, root_y, root_z]
+        globals = [root_x, root_z, root_y]
 
         if partitioning is None:
             parts = [
@@ -557,7 +557,7 @@ def get_parts_and_edges(  # noqa: C901
             ]
         elif partitioning == "9|8":  # isolate upper and lower body
             parts = [
-                (
+                (  # Upper Body
                     abdomen_x,
                     abdomen_y,
                     abdomen_z,
@@ -568,7 +568,7 @@ def get_parts_and_edges(  # noqa: C901
                     left_shoulder2,
                     left_elbow,
                 ),
-                (
+                (  # Lower Body
                     right_hip_x,
                     right_hip_y,
                     right_hip_z,
@@ -806,8 +806,7 @@ def get_parts_and_edges(  # noqa: C901
                     thigh_left_joint,
                 ),
             ]
-        elif partitioning == "2x3":
-            # isolate upper and lower body
+        elif partitioning == "2x3":  # isolate right and left foot
             parts = [
                 (foot_joint, leg_joint, thigh_joint),
                 (
