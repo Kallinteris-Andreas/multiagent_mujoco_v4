@@ -908,7 +908,7 @@ def get_parts_and_edges(  # noqa: C901
                     fthigh1,
                 ),
             ]
-        elif partitioning == "1p1":
+        elif partitioning == "1p1":  # isolate the cheetahs
             parts = [
                 (bfoot0, bshin0, bthigh0, ffoot0, fshin0, fthigh0),
                 (bfoot1, bshin1, bthigh1, ffoot1, fshin1, fthigh1),
@@ -919,7 +919,6 @@ def get_parts_and_edges(  # noqa: C901
         return parts, edges, globals
 
     elif label in ["ManySegmentSwimmer-v4"]:
-
         try:
             n_agents = int(partitioning.split("x")[0])
             n_segs_per_agents = int(partitioning.split("x")[1])

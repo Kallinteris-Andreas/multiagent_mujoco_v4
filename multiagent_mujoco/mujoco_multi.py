@@ -40,41 +40,8 @@ _MUJOCO_GYM_ENVIROMENTS = [
 
 class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
     """Class for multi agent factorizing mujoco environments.
-
-    # MaMuJoCo (Multi-Agent MuJoCo)
-
-    # Action Spaces
-
-    For (1) the action space shape is the shape of the single agent domain divided by the number of agents
-
-    For (2) it Depends on the configuration
-
-    # State Spaces
-
-    Depends on the Environment
-
-    # Rewards
-
-    For (1) uses the same rewards of single agent gymnasium for each agent
-
-    For (2) used the same reward structure as the 'simpler' equivalent agents but scaled
-
-    # Starting State
-
-    For (1) uses the same starting state as the single agent gymnasium equivalent
-
-    For (2) used the same starting state structure as the 'simpler' equivalent agents
-
-    # Episode End
-
-    For (1) uses the same termination and truncation mechanism as the single agent gymnasium (Note: all the agents terminate and truncation at the same time)
-
-    For manyagent_swimmer
-        truncates all agents at 1000 steps, and never terminates
-    For manyagent_ant
-        truncates all agents at 1000 steps, and never terminates based on same condition as "Ant"
-    For coupled_half_cheetah
-        truncates all agents at 1000 steps, and never terminates
+    
+    Doc can be found at (https://robotics.farama.org/envs/mamujoco/)
     """
 
     metadata = {
