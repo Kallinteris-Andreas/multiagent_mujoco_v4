@@ -244,11 +244,11 @@ def get_parts_and_edges(  # noqa: C901
         globals = [root_x, root_y, root_z]
 
         if partitioning is None:
-            parts = [(bfoot, bshin, bthigh, ffoot, fshin, fthigh)]
+            parts = [(bthigh, bshin, bfoot, fthigh, fshin, ffoot)]
         elif partitioning == "2x3":
-            parts = [(bfoot, bshin, bthigh), (ffoot, fshin, fthigh)]
+            parts = [(bthigh, bshin, bfoot), (fthigh, fshin, ffoot)]
         elif partitioning == "6x1":
-            parts = [(bfoot,), (bshin,), (bthigh,), (ffoot,), (fshin,), (fthigh,)]
+            parts = [(bthigh,), (bshin,), (bfoot,), (fthigh,), (fshin,), (ffoot,)]
         else:
             raise Exception(f"UNKNOWN partitioning config: {partitioning}")
 
