@@ -463,8 +463,8 @@ def get_parts_and_edges(  # noqa: C901
         left_lower_arm = 13
 
         # define Mujoco-Graph
-        abdomen_y = Node("abdomen_y", -16, -16, 0, bodies=(torso, lwaist, pelvis))
-        abdomen_z = Node("abdomen_z", -17, -17, 1, bodies=(torso, lwaist, pelvis))
+        abdomen_y = Node("abdomen_y", -17, -17, 0, bodies=(torso, lwaist, pelvis))
+        abdomen_z = Node("abdomen_z", -16, -16, 1, bodies=(torso, lwaist, pelvis))
         abdomen_x = Node(
             "abdomen_x", -15, -15, 2, bodies=(pelvis, right_thigh, left_thigh)
         )
@@ -536,47 +536,46 @@ def get_parts_and_edges(  # noqa: C901
         if partitioning is None:
             parts = [
                 (
-                    left_shoulder1,
-                    left_shoulder2,
                     abdomen_x,
                     abdomen_y,
                     abdomen_z,
-                    right_shoulder1,
-                    right_shoulder2,
-                    right_elbow,
-                    left_elbow,
-                    left_hip_x,
-                    left_hip_y,
-                    left_hip_z,
                     right_hip_x,
                     right_hip_y,
                     right_hip_z,
                     right_knee,
+                    left_hip_x,
+                    left_hip_y,
+                    left_hip_z,
                     left_knee,
+                    right_shoulder1,
+                    right_shoulder2,
+                    right_elbow,
+                    left_shoulder1,
+                    left_shoulder2,
+                    left_elbow,
                 ),
             ]
-        elif partitioning == "9|8":  # 17 in total
-            # isolate upper and lower body
+        elif partitioning == "9|8":  # isolate upper and lower body
             parts = [
                 (
-                    left_shoulder1,
-                    left_shoulder2,
                     abdomen_x,
                     abdomen_y,
                     abdomen_z,
                     right_shoulder1,
                     right_shoulder2,
                     right_elbow,
+                    left_shoulder1,
+                    left_shoulder2,
                     left_elbow,
                 ),
                 (
-                    left_hip_x,
-                    left_hip_y,
-                    left_hip_z,
                     right_hip_x,
                     right_hip_y,
                     right_hip_z,
                     right_knee,
+                    left_hip_x,
+                    left_hip_y,
+                    left_hip_z,
                     left_knee,
                 ),
             ]
