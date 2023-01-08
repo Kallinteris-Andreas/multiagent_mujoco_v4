@@ -40,7 +40,7 @@ _MUJOCO_GYM_ENVIROMENTS = [
 
 class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
     """Class for multi agent factorizing mujoco environments.
-    
+
     Doc can be found at (https://robotics.farama.org/envs/mamujoco/)
     """
 
@@ -88,7 +88,7 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
         """
         scenario += "-v4"
 
-        # load the underlying single agent Gymansium MuJoCo Environment in `self.gym_env`
+        # load the underlying single agent Gymansium MuJoCo Environment in `self.single_agent_env`
         if scenario in _MUJOCO_GYM_ENVIROMENTS:
             self.single_agent_env = gymnasium.make(scenario, render_mode=render_mode)
         elif scenario in ["ManySegmentAnt-v4"]:
