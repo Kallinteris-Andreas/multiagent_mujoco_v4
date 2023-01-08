@@ -6,7 +6,7 @@ import pettingzoo
 from gymnasium.wrappers.time_limit import TimeLimit
 
 from gymnasium_robotics.envs.multiagent_mujoco.coupled_half_cheetah import (
-    CoupledHalfCheetah,
+    CoupledHalfCheetahEnv,
 )
 from gymnasium_robotics.envs.multiagent_mujoco.many_segment_ant import ManySegmentAntEnv
 from gymnasium_robotics.envs.multiagent_mujoco.many_segment_swimmer import (
@@ -111,7 +111,7 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
             )
         elif scenario in ["CoupledHalfCheetah-v4"]:
             self.single_agent_env = TimeLimit(
-                CoupledHalfCheetah(render_mode), max_episode_steps=1000
+                CoupledHalfCheetahEnv(render_mode), max_episode_steps=1000
             )
         else:
             raise NotImplementedError("Custom env not implemented!")

@@ -1,3 +1,4 @@
+
 import os
 import typing
 
@@ -11,7 +12,7 @@ DEFAULT_CAMERA_CONFIG = {
 }
 
 
-class CoupledHalfCheetah(mujoco_env.MujocoEnv, EzPickle):
+class CoupledHalfCheetahEnv(mujoco_env.MujocoEnv, EzPickle):
     """Class for CoupledHalfCheetah mujoco environment.
 
     ## Description
