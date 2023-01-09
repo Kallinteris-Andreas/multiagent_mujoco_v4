@@ -1,3 +1,20 @@
+"""Main file for MaMuJoCo includes the MultiAgentMujocoEnv class.
+
+This file is originally from the `schroederdewitt/multiagent_mujoco` repository hosted on GitHub
+(https://github.com/schroederdewitt/multiagent_mujoco/blob/master/multiagent_mujoco/mujoco_multi.py)
+Original Author: Schroeder de Witt
+
+Then Modified by @Kallinteris-Andreas for this project
+changes:
+ - General code cleanup, factorization, type hinting, adding documentation and comments
+ - Now uses PettingZoo APIs instead of a propriatery API
+ - Now supports custom factorizations
+ - Added new functions MultiAgentMujocoEnv.map_global_action_to_local_actions, MultiAgentMujocoEnv.map_local_actions_to_global_action, MultiAgentMujocoEnv.map_local_observation_to_global_state, MultiAgentMujocoEnv.map_local_observation_to_global_state
+
+This project is covered by the Apache 2.0 License.
+"""
+
+
 from __future__ import annotations
 
 import gymnasium
