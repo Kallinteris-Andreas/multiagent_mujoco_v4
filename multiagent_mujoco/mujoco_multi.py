@@ -30,6 +30,7 @@ from gymnasium_robotics.envs.multiagent_mujoco.many_segment_swimmer import (
     ManySegmentSwimmerEnv,
 )
 from gymnasium_robotics.envs.multiagent_mujoco.obsk import (
+    Node,
     _observation_structure,
     build_obs,
     get_joints_at_kdist,
@@ -74,7 +75,7 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
         scenario: str,
         agent_conf: str | None,
         agent_obsk: int | None = 1,
-        agent_factorization: dict[str, any] | None = None,
+        agent_factorization: dict | None = None,
         local_categories: list[list[str]] | None = None,
         global_categories: tuple[str, ...] | None = None,
         render_mode: str | None = None,
@@ -107,7 +108,9 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
 
         # load the underlying single agent Gymansium MuJoCo Environment in `self.single_agent_env`
         if scenario in _MUJOCO_GYM_ENVIROMENTS:
-            self.single_agent_env = gymnasium.make(scenario, render_mode=render_mode)
+            self.single_agent_env: gymnasium.envs.mujoco.mujoco_env.MujocoEnv = (
+                gymnasium.make(scenario, render_mode=render_mode)
+            )
         elif scenario in ["ManySegmentAnt-v4"]:
             try:
                 n_segs = int(agent_conf.split("x")[0]) * int(agent_conf.split("x")[1])
@@ -152,10 +155,14 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
                 self.mujoco_globals = agent_factorization["globals"]
         else:
             assert self.single_agent_env.action_space.shape is not None
+            dummy_node = Node("dummy_node", None, None, None)
             self.agent_action_partitions = [
-                tuple(None for i in range(self.single_agent_env.action_space.shape[0]))
+                tuple(
+                    dummy_node
+                    for i in range(self.single_agent_env.action_space.shape[0])
+                )
             ]
-            mujoco_edges = None
+            mujoco_edges = []
 
         # Create agent lists
         self.possible_agents = [
@@ -175,14 +182,15 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
             self.global_categories = global_categories
 
         # load the observations per depth level
-        self.k_dicts = [
-            get_joints_at_kdist(
-                self.agent_action_partitions[agent_id],
-                mujoco_edges,
-                k=self.agent_obsk,
-            )
-            for agent_id in range(self.num_agents)
-        ]
+        if self.agent_obsk is not None:
+            self.k_dicts = [
+                get_joints_at_kdist(
+                    self.agent_action_partitions[agent_id],
+                    mujoco_edges,
+                    k=self.agent_obsk,
+                )
+                for agent_id in range(self.num_agents)
+            ]
 
         # Create observation and action spaces
         self.observation_spaces, self.action_spaces = {}, {}
@@ -475,7 +483,7 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
         """See [pettingzoo.utils.env.ParallelEnv.close](https://pettingzoo.farama.org/api/parallel/#pettingzoo.utils.env.ParallelEnv.close)."""
         self.single_agent_env.close()
 
-    def seed(self, seed: int = None):
+    def seed(self, seed: int | None = None):
         """Not implemented use env.reset(seed=...) instead."""
         raise NotImplementedError("use env.reset(seed=...) instead")
 
@@ -489,7 +497,7 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
             a list of observetion types per observation depth
         """
         if self.agent_obsk is None:
-            return None
+            return [[]]
 
         if scenario in ["Ant-v4", "ManySegmentAnt"]:
             # k_split = ["qpos,qvel,cfrc_ext", "qpos"]  # Gymansium.MuJoCo.Ant-v4 has disabled cfrc_ext by default
