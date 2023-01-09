@@ -112,6 +112,7 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
                 gymnasium.make(scenario, render_mode=render_mode)
             )
         elif scenario in ["ManySegmentAnt-v4"]:
+            assert isinstance(agent_conf, str)
             try:
                 n_segs = int(agent_conf.split("x")[0]) * int(agent_conf.split("x")[1])
             except Exception:
@@ -121,6 +122,7 @@ class MultiAgentMujocoEnv(pettingzoo.utils.env.ParallelEnv):
                 ManySegmentAntEnv(n_segs, render_mode), max_episode_steps=1000
             )
         elif scenario in ["ManySegmentSwimmer-v4"]:
+            assert isinstance(agent_conf, str)
             try:
                 n_segs = int(agent_conf.split("x")[0]) * int(agent_conf.split("x")[1])
             except Exception:
