@@ -2,18 +2,18 @@
 
 
 ```diff
-+ Now ALL the enviroments work
++ Now ALL the environments work
 + Now uses the standard ‘PettingZoo.ParallelEnv‘ API.
 + Now Uses a modern version of ‘Gymnasium‘ (10.8v → 26.3v).
 + Now Uses newer MuJoCo bindings (‘mujoco-py‘ → ‘mujoco‘).
-+ Now Uses newer `Gymansium.MuJoco` Enviroments (v2 -> v4).
++ Now Uses newer `Gymansium.MuJoco` Environments (v2 -> v4).
 + Now includes new mapping functions (RL -> MARL, MARL -> OTHER MARL)
 + Now Has a mechanism for allowing researchers to easily create new agent factorizations
 + Now also supports `Gymansium.MuJoCo.Pusher`
 + Now supports observing global state
 + Cleaned up the code base significantly.
 + Have written unit-tests and fixed a TON of bugs.
-+ Have written some Documentation (There was virtiually None)
++ Have written some Documentation (There was virtually None)
 + Fixed some agent factorizations not having globals
 - Is no longer backwards compatible with the old factorizations nor are the returns comparable 
 ```
