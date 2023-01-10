@@ -10,7 +10,7 @@
 + Now includes new mapping functions (RL -> MARL, MARL -> OTHER MARL)
 + Now Has a mechanism for allowing researchers to easily create new agent factorizations
 + Now also supports `Gymansium.MuJoCo.Pusher`
-+ Now supports observating global state
++ Now supports observing global state
 + Cleaned up the code base significantly.
 + Have written unit-tests and fixed a TON of bugs.
 + Have written some Documentation (There was virtiually None)
